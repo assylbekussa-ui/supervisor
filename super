@@ -247,10 +247,7 @@
         };
 
         // Link to WhatsApp Support Group
-        const WHATSAPP_SUPPORT_GROUP = "https://whatsapp.com/channel/0029Vb8b7oQ8vd1VF8OzZ53K";
-        
-        // Google Apps Script Web App URL (place your Google Script endpoint here)
-        const GOOGLE_APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+        const WHATSAPP_SUPPORT_GROUP = "https://chat.whatsapp.com/Cwt9SySl2f0L6v0QmvJbtf?s=sh&p=i&mlu=4";
 
         function renderChecklist() {
             const type = document.getElementById('cleaning-type').value;
@@ -293,7 +290,7 @@
             // Unlock Step 2
             document.getElementById('step-2').classList.remove('step-inactive');
 
-            // Open WhatsApp support channel / chat
+            // Open WhatsApp support group
             window.open(WHATSAPP_SUPPORT_GROUP, '_blank');
         }
 
