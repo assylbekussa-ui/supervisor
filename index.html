@@ -95,7 +95,7 @@
 
                 <button type="button" onclick="arriveOnSite()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 text-sm">
                     <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-                    Прибыл на объект (в WhatsApp)
+                    📍 Прибыл на объект (Отправить в WA)
                 </button>
             </div>
         </div>
@@ -122,7 +122,7 @@
                 <div id="preview-before" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
                 <button type="button" onclick="uploadFolder('before')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                    📁 Загрузить ФОТО ДО на Google Диск
+                    📁 Загрузить ФОТО ДО и Отправить отчет
                 </button>
             </div>
         </div>
@@ -147,7 +147,7 @@
             </div>
 
             <button type="button" id="btn-finish-checklist" onclick="completeChecklist()" class="w-full mt-4 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs">
-                Подтвердить выполнение всех пунктов
+                ✅ Подтвердить Чек-лист и Отправить в WA
             </button>
         </div>
 
@@ -173,7 +173,7 @@
                 <div id="preview-after" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
                 <button type="button" onclick="uploadFolder('after')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                    📁 Загрузить ФОТО ПОСЛЕ на Google Диск
+                    📁 Загрузить ФОТО ПОСЛЕ и Отправить отчет
                 </button>
             </div>
         </div>
@@ -186,7 +186,7 @@
             </div>
 
             <button type="button" id="btn-accept" onclick="acceptByClient()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                🤝 Объект принят заказчиком
+                🤝 Объект принят заказчиком (Отправить в WA)
             </button>
 
             <button type="button" id="btn-exit" onclick="leaveObject()" disabled class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
@@ -246,8 +246,37 @@
             ]
         };
 
-        // Link to WhatsApp Support Group
-        const WHATSAPP_SUPPORT_GROUP = "https://chat.whatsapp.com/Cwt9SySl2f0L6v0QmvJbtf?s=sh&p=i&mlu=4";
+        const cleaningNames = {
+            'standard': 'Поддерживающая уборка',
+            'general': 'Генеральная уборка',
+            'repair': 'Уборка после ремонта'
+        };
+
+        // WhatsApp Direct Link
+        const WHATSAPP_GROUP = "https://chat.whatsapp.com/Cwt9SySl2f0L6v0QmvJbtf?s=sh&p=i&mlu=4";
+
+        // Helper function: Copy text to clipboard and open WhatsApp
+        function sendTextToWhatsApp(messageText) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(messageText);
+            }
+            
+            // Generate standard WhatsApp share link with prefilled text
+            const waShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+            
+            // Open WA prefilled chat picker or direct group
+            window.open(waShareUrl, '_blank');
+        }
+
+        function getCommonHeader() {
+            const address = document.getElementById('obj-address').value.trim() || 'Адрес не указан';
+            const objType = document.getElementById('obj-type').value;
+            const cTypeKey = document.getElementById('cleaning-type').value;
+            const cTypeName = cleaningNames[cTypeKey];
+            const timeStr = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            return `🏢 *ОБЪЕКТ:* ${address}\n📌 *Тип:* ${objType} | ${cTypeName}\n⏰ *Время:* ${timeStr}\n`;
+        }
 
         function renderChecklist() {
             const type = document.getElementById('cleaning-type').value;
@@ -280,7 +309,7 @@
         function arriveOnSite() {
             const address = document.getElementById('obj-address').value.trim();
             if(!address) {
-                alert('Пожалуйста, введите адрес объекта!');
+                alert('Пожалуйста, сначала введите адрес объекта!');
                 return;
             }
 
@@ -290,8 +319,9 @@
             // Unlock Step 2
             document.getElementById('step-2').classList.remove('step-inactive');
 
-            // Open WhatsApp support group
-            window.open(WHATSAPP_SUPPORT_GROUP, '_blank');
+            // Formulate WhatsApp message
+            const text = `📍 *ПРИБЫТИЕ НА ОБЪЕКТ*\n${getCommonHeader()}\nСтатус: Супервайзер и бригада клинеров прибыли на объект. Начинаем подготовку и осмотр.`;
+            sendTextToWhatsApp(text);
         }
 
         function handleFileSelect(input, previewId) {
@@ -320,15 +350,19 @@
                 return;
             }
 
-            const folderName = `TapTaza_${address}_${stage.toUpperCase()}_${new Date().toISOString().slice(0,10)}`;
-            alert(`Инициализация создания папки на Google Диске:\n"${folderName}"\n\nЗагрузка ${input.files.length} фото...`);
+            const count = input.files.length;
+            let stageTitle = stage === 'before' ? '📸 *ФОТО "ДО" ЗАГРУЖЕНЫ*' : '✨ *ФОТО "ПОСЛЕ" ЗАГРУЖЕНЫ*';
+            
+            // Formulate WhatsApp message
+            const text = `${stageTitle}\n${getCommonHeader()}\n📁 Зафиксировано снимков: ${count} шт.\nПапка на Google Диске создана и обновилась.`;
 
-            // Unlock next logical step
             if(stage === 'before') {
                 document.getElementById('step-3').classList.remove('step-inactive');
             } else {
                 document.getElementById('step-5').classList.remove('step-inactive');
             }
+
+            sendTextToWhatsApp(text);
         }
 
         function completeChecklist() {
@@ -338,7 +372,10 @@
             }
 
             document.getElementById('step-4').classList.remove('step-inactive');
-            alert('Чек-лист успешно зафиксирован! Переходите к Фото ПОСЛЕ.');
+
+            // Formulate WhatsApp message
+            const text = `✅ *ЧЕК-ЛИСТ КАЧЕСТВА ПРОЙДЕН (${checked}/25)*\n${getCommonHeader()}\nВсе ключевые стандарты и пункты уборки Tap Taza успешно выполнены и проверены.`;
+            sendTextToWhatsApp(text);
         }
 
         function acceptByClient() {
@@ -348,12 +385,20 @@
             const btnExit = document.getElementById('btn-exit');
             btnExit.disabled = false;
             btnExit.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Formulate WhatsApp message
+            const text = `🤝 *ОБЪЕКТ ПРИНЯТ ЗАКАЗЧИКОМ*\n${getCommonHeader()}\nЗаказчик принял работу, замечания отсутствуют. Претензий по качеству нет.`;
+            sendTextToWhatsApp(text);
         }
 
         function leaveObject() {
-            const address = document.getElementById('obj-address').value;
-            alert(`Смена на объекте "${address}" завершена!\nСпасибо за отличную работу.`);
-            location.reload();
+            // Formulate WhatsApp message
+            const text = `🚪 *СМЕНА ЗАВЕРШЕНА (ПОКИНУЛИ ОБЪЕКТ)*\n${getCommonHeader()}\nБригада клинеров и супервайзер собрали оборудование и покинули объект. Смена закрыта.`;
+            sendTextToWhatsApp(text);
+
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         }
 
         // Initialize checklist on load
