@@ -197,10 +197,8 @@
     </main>
 
     <script>
-        // Google Apps Script Web App Endpoint
         const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwguOXRunpgUupRU7hE4pUyaHmsx0J_-1JHRr06aA0Tb9R2qBL7AWkfftFUdbMgkUZI/exec";
 
-        // Checklists database (25 points for each type)
         const checklists = {
             standard: [
                 "Протирка горизонтальных поверхностей на высоте рук", "Очистка внешних фасадов шкафов и тумб",
@@ -255,12 +253,10 @@
             'repair': 'Уборка после ремонта'
         };
 
-        // Helper function: Copy text to clipboard and open WhatsApp
         function sendTextToWhatsApp(messageText) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(messageText);
             }
-            
             const waShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
             window.open(waShareUrl, '_blank');
         }
@@ -336,19 +332,41 @@
             }
         }
 
-        // Helper function to convert File to Base64
-        function fileToBase64(file) {
+        // Fast Client-side Image Compression (max 1200px width, 0.7 JPEG quality)
+        function compressImage(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => {
-                    const base64 = reader.result.split(',')[1];
-                    resolve({
-                        name: file.name,
-                        type: file.type,
-                        base64: base64
-                    });
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxWidth = 1200;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        const base64 = dataUrl.split(',')[1];
+                        resolve({
+                            name: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+                            type: "image/jpeg",
+                            base64: base64
+                        });
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
                 };
-                reader.onerror = error => reject(error);
+                reader.onerror = reject;
                 reader.readAsDataURL(file);
             });
         }
@@ -369,20 +387,21 @@
 
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '⏳ Загрузка на Google Диск...';
+            btn.innerHTML = '⏳ Оптимизация и Загрузка...';
 
             try {
                 const filesArray = Array.from(input.files);
-                const base64Files = await Promise.all(filesArray.map(f => fileToBase64(f)));
+                const compressedFiles = await Promise.all(filesArray.map(f => compressImage(f)));
 
-                const folderName = `TapTaza_${address}_${stage.toUpperCase()}_${new Date().toISOString().slice(0,10)}`;
+                // Формируем уникальное имя папки с адресом
+                const sanitizedAddress = address.replace(/[/\\?%*:|"<>]/g, '-');
+                const folderName = `TapTaza_${sanitizedAddress}_${stage.toUpperCase()}_${new Date().toISOString().slice(0,10)}`;
 
                 const payload = {
                     folderName: folderName,
-                    files: base64Files
+                    files: compressedFiles
                 };
 
-                // Asynchronous POST to Google Apps Script
                 await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -393,7 +412,7 @@
                 btn.disabled = false;
 
                 let stageTitle = stage === 'before' ? '📸 *ФОТО "ДО" ЗАГРУЖЕНЫ*' : '✨ *ФОТО "ПОСЛЕ" ЗАГРУЖЕНЫ*';
-                const text = `${stageTitle}\n${getCommonHeader()}\n📁 Успешно загружено на Google Диск: ${filesArray.length} шт.`;
+                const text = `${stageTitle}\n${getCommonHeader()}\n📁 Успешно загружено в «TapTaza отчеты»: ${filesArray.length} фото.`;
 
                 if(stage === 'before') {
                     document.getElementById('step-3').classList.remove('step-inactive');
@@ -405,7 +424,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert('Произошла ошибка при загрузке. Проверьте подключение к интернету.');
+                alert('Ошибка при сжатии и передаче. Попробуйте еще раз.');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
