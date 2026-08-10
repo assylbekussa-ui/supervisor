@@ -121,7 +121,7 @@
 
                 <div id="preview-before" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
-                <button type="button" onclick="uploadFolder('before')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
+                <button type="button" onclick="uploadFolder('before', this)" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
                     📁 Загрузить ФОТО ДО и Отправить отчет
                 </button>
             </div>
@@ -172,7 +172,7 @@
 
                 <div id="preview-after" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
-                <button type="button" onclick="uploadFolder('after')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
+                <button type="button" onclick="uploadFolder('after', this)" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
                     📁 Загрузить ФОТО ПОСЛЕ и Отправить отчет
                 </button>
             </div>
@@ -197,6 +197,9 @@
     </main>
 
     <script>
+        // Google Apps Script Web App Endpoint
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwguOXRunpgUupRU7hE4pUyaHmsx0J_-1JHRr06aA0Tb9R2qBL7AWkfftFUdbMgkUZI/exec";
+
         // Checklists database (25 points for each type)
         const checklists = {
             standard: [
@@ -252,19 +255,13 @@
             'repair': 'Уборка после ремонта'
         };
 
-        // WhatsApp Direct Link
-        const WHATSAPP_GROUP = "https://chat.whatsapp.com/Cwt9SySl2f0L6v0QmvJbtf?s=sh&p=i&mlu=4";
-
         // Helper function: Copy text to clipboard and open WhatsApp
         function sendTextToWhatsApp(messageText) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(messageText);
             }
             
-            // Generate standard WhatsApp share link with prefilled text
             const waShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
-            
-            // Open WA prefilled chat picker or direct group
             window.open(waShareUrl, '_blank');
         }
 
@@ -316,10 +313,8 @@
             document.getElementById('status-badge').innerText = 'На объекте';
             document.getElementById('status-badge').className = 'px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold';
 
-            // Unlock Step 2
             document.getElementById('step-2').classList.remove('step-inactive');
 
-            // Formulate WhatsApp message
             const text = `📍 *ПРИБЫТИЕ НА ОБЪЕКТ*\n${getCommonHeader()}\nСтатус: Супервайзер и бригада клинеров прибыли на объект. Начинаем подготовку и осмотр.`;
             sendTextToWhatsApp(text);
         }
@@ -341,28 +336,79 @@
             }
         }
 
-        function uploadFolder(stage) {
+        // Helper function to convert File to Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve({
+                        name: file.name,
+                        type: file.type,
+                        base64: base64
+                    });
+                };
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function uploadFolder(stage, btn) {
             const address = document.getElementById('obj-address').value.trim();
             const input = document.getElementById(stage === 'before' ? 'files-before' : 'files-after');
 
-            if (!input.files || input.files.length === 0) {
-                alert('Сначала выберите фотографии!');
+            if (!address) {
+                alert('Сначала укажите адрес объекта!');
                 return;
             }
 
-            const count = input.files.length;
-            let stageTitle = stage === 'before' ? '📸 *ФОТО "ДО" ЗАГРУЖЕНЫ*' : '✨ *ФОТО "ПОСЛЕ" ЗАГРУЖЕНЫ*';
-            
-            // Formulate WhatsApp message
-            const text = `${stageTitle}\n${getCommonHeader()}\n📁 Зафиксировано снимков: ${count} шт.\nПапка на Google Диске создана и обновилась.`;
-
-            if(stage === 'before') {
-                document.getElementById('step-3').classList.remove('step-inactive');
-            } else {
-                document.getElementById('step-5').classList.remove('step-inactive');
+            if (!input.files || input.files.length === 0) {
+                alert('Сначала выберите или сделайте фотографии!');
+                return;
             }
 
-            sendTextToWhatsApp(text);
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Загрузка на Google Диск...';
+
+            try {
+                const filesArray = Array.from(input.files);
+                const base64Files = await Promise.all(filesArray.map(f => fileToBase64(f)));
+
+                const folderName = `TapTaza_${address}_${stage.toUpperCase()}_${new Date().toISOString().slice(0,10)}`;
+
+                const payload = {
+                    folderName: folderName,
+                    files: base64Files
+                };
+
+                // Asynchronous POST to Google Apps Script
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                let stageTitle = stage === 'before' ? '📸 *ФОТО "ДО" ЗАГРУЖЕНЫ*' : '✨ *ФОТО "ПОСЛЕ" ЗАГРУЖЕНЫ*';
+                const text = `${stageTitle}\n${getCommonHeader()}\n📁 Успешно загружено на Google Диск: ${filesArray.length} шт.`;
+
+                if(stage === 'before') {
+                    document.getElementById('step-3').classList.remove('step-inactive');
+                } else {
+                    document.getElementById('step-5').classList.remove('step-inactive');
+                }
+
+                sendTextToWhatsApp(text);
+
+            } catch (err) {
+                console.error(err);
+                alert('Произошла ошибка при загрузке. Проверьте подключение к интернету.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function completeChecklist() {
@@ -373,7 +419,6 @@
 
             document.getElementById('step-4').classList.remove('step-inactive');
 
-            // Formulate WhatsApp message
             const text = `✅ *ЧЕК-ЛИСТ КАЧЕСТВА ПРОЙДЕН (${checked}/25)*\n${getCommonHeader()}\nВсе ключевые стандарты и пункты уборки Tap Taza успешно выполнены и проверены.`;
             sendTextToWhatsApp(text);
         }
@@ -386,13 +431,11 @@
             btnExit.disabled = false;
             btnExit.classList.remove('opacity-50', 'cursor-not-allowed');
 
-            // Formulate WhatsApp message
             const text = `🤝 *ОБЪЕКТ ПРИНЯТ ЗАКАЗЧИКОМ*\n${getCommonHeader()}\nЗаказчик принял работу, замечания отсутствуют. Претензий по качеству нет.`;
             sendTextToWhatsApp(text);
         }
 
         function leaveObject() {
-            // Formulate WhatsApp message
             const text = `🚪 *СМЕНА ЗАВЕРШЕНА (ПОКИНУЛИ ОБЪЕКТ)*\n${getCommonHeader()}\nБригада клинеров и супервайзер собрали оборудование и покинули объект. Смена закрыта.`;
             sendTextToWhatsApp(text);
 
