@@ -1125,7 +1125,7 @@
                     <!-- Days Distribution Chart -->
                     <div class="card">
                         <div class="card-header">
-                            <h3>📊 Распределение новых заказов</h3>
+                            <h3>📊 Динамика доходов (₸)</h3>
                             <button class="btn btn-outline" style="padding:4px 10px; font-size:12px;" onclick="renderAnalytics()">🔄 Пересчитать</button>
                         </div>
                         <canvas id="daysChart" height="140"></canvas>
@@ -1433,17 +1433,11 @@
                         <label class="form-label">📸 1. Фото ДО уборки</label>
                         <input type="file" id="photosBefore" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="previewPhotos(this, 'previewBefore')">
                         <div class="photo-preview-grid" id="previewBefore"></div>
-                        <button type="button" onclick="uploadFolderToDrive('BEFORE', 'photosBefore', this)" class="btn btn-outline" style="width:100%; margin-top:10px; background:var(--accent-light); color:var(--accent); font-weight:700; justify-content:center;">
-                            📁 Загрузить ФОТО ДО на Google Диск
-                        </button>
                     </div>
                     <div>
                         <label class="form-label">✨ 2. Фото ПОСЛЕ уборки</label>
                         <input type="file" id="photosAfter" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="previewPhotos(this, 'previewAfter')">
                         <div class="photo-preview-grid" id="previewAfter"></div>
-                        <button type="button" onclick="uploadFolderToDrive('AFTER', 'photosAfter', this)" class="btn btn-outline" style="width:100%; margin-top:10px; background:var(--accent-light); color:var(--accent); font-weight:700; justify-content:center;">
-                            📁 Загрузить ФОТО ПОСЛЕ на Google Диск
-                        </button>
                     </div>
                 </div>
 
@@ -1972,102 +1966,6 @@
 
     <!-- JavaScript Application State & Logic -->
     <script>
-
-        // Google Apps Script Integration for Google Drive Uploads
-        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwguOXRunpgUupRU7hE4pUyaHmsx0J_-1JHRr06aA0Tb9R2qBL7AWkfftFUdbMgkUZI/exec";
-
-        function compressImage(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        const maxWidth = 1200;
-
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                        const base64 = dataUrl.split(',')[1];
-                        resolve({
-                            name: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
-                            type: "image/jpeg",
-                            base64: base64
-                        });
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function uploadFolderToDrive(stage, inputId, btn) {
-            const selectedOrderId = document.getElementById('superOrderSelect').value;
-            const ord = state.orders.find(o => o.id === selectedOrderId);
-            const address = ord ? ord.customerAddress : 'Объект_TapTaza';
-            const input = document.getElementById(inputId);
-
-            if (!input || !input.files || input.files.length === 0) {
-                showToast('Сначала выберите или сделайте фотографии!', '⚠️');
-                return;
-            }
-
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '⏳ Оптимизация и Загрузка...';
-
-            try {
-                const filesArray = Array.from(input.files);
-                const compressedFiles = await Promise.all(filesArray.map(f => compressImage(f)));
-
-                const sanitizedAddress = address.replace(/[/\\?%*:|"<>]/g, '-');
-                const folderName = `TapTaza_${sanitizedAddress}_${stage}_${new Date().toISOString().slice(0,10)}`;
-
-                const payload = {
-                    folderName: folderName,
-                    files: compressedFiles
-                };
-
-                await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload)
-                });
-
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-
-                showToast(`Загружено ${filesArray.length} фото на Google Диск!`, '📁');
-
-                const stageTitle = stage === 'BEFORE' ? '📸 *ФОТО "ДО" ЗАГРУЖЕНЫ В GOOGLE ДИСК*' : '✨ *ФОТО "ПОСЛЕ" ЗАГРУЖЕНЫ В GOOGLE ДИСК*';
-                const messageText = `${stageTitle}\n🏢 *Заказ:* #${selectedOrderId}\n📍 *Адрес:* ${address}\n📁 *Папка:* ${folderName}\nЗагружено снимков: ${filesArray.length}`;
-
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(messageText);
-                }
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`, '_blank');
-
-            } catch (err) {
-                console.error(err);
-                showToast('Ошибка при загрузке в Google Диск.', '❌');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
         // Global Application State
         let state = {
             orders: [
@@ -2257,7 +2155,15 @@
 
             updateMapPins();
 
-            // Render Chart
+            // Calculate revenue per day of week (0 = Mon, 6 = Sun)
+            const daysRevenue = [0, 0, 0, 0, 0, 0, 0];
+            state.orders.forEach(ord => {
+                const dateObj = ord.createdAt ? new Date(ord.createdAt) : new Date();
+                const dayIdx = (dateObj.getDay() + 6) % 7; // Convert JS 0 (Sun) .. 6 (Sat) to 0 (Mon) .. 6 (Sun)
+                daysRevenue[dayIdx] += Number(ord.totalPrice || 0);
+            });
+
+            // Render Revenue Chart
             const ctx = document.getElementById('daysChart').getContext('2d');
             if (daysChart) daysChart.destroy();
             daysChart = new Chart(ctx, {
@@ -2265,16 +2171,34 @@
                 data: {
                     labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
                     datasets: [{
-                        label: 'Заказы',
-                        data: [0, 0, 0, 0, 0, 0, 0],
+                        label: 'Доход (₸)',
+                        data: daysRevenue,
                         backgroundColor: '#0d9488',
                         borderRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Доход: ' + context.raw.toLocaleString() + ' ₸';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ₸';
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -2557,6 +2481,7 @@
 
             const newOrder = {
                 id: orderNo,
+                createdAt: new Date().toISOString(),
                 customerName: custName,
                 customerPhone: custPhone,
                 customerAddress: custAddr,
