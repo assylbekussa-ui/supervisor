@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -32,7 +31,7 @@
             --accent: #0284c7;           /* Sky Blue Accent */
             --accent-light: #e0f2fe;     /* Sky Light Tint */
             
-            --emerald: #10b981;          /* Success Emerald */
+            --emerald: #10b981;         /* Success Emerald */
             --emerald-light: #d1fae5;    
             
             --amber: #f59e0b;            /* Warning Gold */
@@ -779,7 +778,7 @@
             opacity: 1;
         }
 
-        /* Warehouse App Specific Styling (Exact User Layout with Fresh Teal Colors) */
+        /* Warehouse App Specific Styling */
         .warehouse-box {
             background: #ffffff;
             border-radius: 16px;
@@ -887,7 +886,7 @@
             accent-color: var(--primary);
         }
 
-        /* Acts Module Custom Inline CSS from provided template */
+        /* Acts Module Custom Inline CSS */
         .act-control-panel {
             background: #ffffff;
             padding: 20px 25px;
@@ -981,6 +980,192 @@
             line-height: 1.8;
         }
 
+        /* ==================== PHOTO-BASED CALENDAR & SCHEDULE STYLES ==================== */
+        .sched-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .sched-date-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sched-date-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .sched-nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .sched-nav-btn:hover { background: var(--bg-main); border-color: var(--primary); }
+
+        .sched-view-pills {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 20px;
+            gap: 2px;
+        }
+
+        .sched-pill-btn {
+            padding: 6px 16px;
+            border-radius: 16px;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .sched-pill-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+        }
+
+        .sched-grid-container {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: #fff;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .sched-columns-header {
+            display: grid;
+            grid-template-columns: 80px repeat(3, minmax(240px, 1fr));
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .sched-col-title {
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sched-avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .sched-col-info h4 { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .sched-col-info p { font-size: 11px; color: var(--text-muted); }
+
+        .sched-body-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(3, minmax(240px, 1fr));
+            position: relative;
+        }
+
+        .sched-time-labels {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            background: #fdfdfd;
+        }
+
+        .sched-time-slot-label {
+            height: 60px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sched-staff-column {
+            position: relative;
+            border-right: 1px solid var(--border);
+            height: 720px; /* 12 slots * 60px */
+            background-size: 100% 60px;
+            background-image: linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+        }
+
+        .sched-event-card {
+            position: absolute;
+            left: 8px; right: 8px;
+            background: #e6f4f1;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .sched-event-card:hover { transform: scale(1.02); z-index: 10; }
+
+        .sched-event-time {
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 2px;
+            font-size: 11px;
+        }
+
+        .sched-event-title {
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sched-event-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .sched-tag {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            background: #ffffff;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .sched-tag-amber { background: var(--amber-light); color: var(--amber); border-color: #fcd34d; }
+        .sched-tag-teal { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary-border); }
+
         /* Print CSS Rules */
         @media print {
             aside, .header-bar, .card-header button, select, .act-control-panel, .warehouse-tabs, button {
@@ -1025,6 +1210,10 @@
             <a class="nav-item active" onclick="switchModule('analytics', this)">
                 <span class="nav-icon">📊</span>
                 <span>Аналитика и Карта</span>
+            </a>
+            <a class="nav-item" onclick="switchModule('schedule', this)">
+                <span class="nav-icon">📅</span>
+                <span>График и Календарь</span>
             </a>
             <a class="nav-item" onclick="switchModule('orders', this)">
                 <span class="nav-icon">📋</span>
@@ -1082,8 +1271,8 @@
                 <a href="https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns" target="_blank" class="btn btn-whatsapp">
                     💬 WhatsApp Группа
                 </a>
-                <button class="btn btn-primary" onclick="switchModule('calculator')">
-                    + Новый заказ
+                <button class="btn btn-primary" onclick="openAddSchedModal()">
+                    + Новый заказ в график
                 </button>
             </div>
         </div>
@@ -1158,7 +1347,7 @@
                 </div>
 
                 <div>
-                    <!-- Interactive Leaflet Map (Pins Only) -->
+                    <!-- Interactive Leaflet Map -->
                     <div class="card">
                         <div class="card-header">
                             <h3>🗺 Карта выездов (Алматы)</h3>
@@ -1179,7 +1368,96 @@
             </div>
         </section>
 
-        <!-- MODULE 2: ORDERS & CLIENT MEMO -->
+        <!-- MODULE 2: SCHEDULE & CALENDAR (ADAPTED FROM PHOTO) -->
+        <section id="schedule" class="module">
+            <div class="card">
+                <!-- Navigation & Controls Header (From Photo) -->
+                <div class="sched-header">
+                    <div class="sched-date-nav">
+                        <div class="sched-date-title" id="schedCurrentDate">Сегодня ср, 26 августа</div>
+                        <button class="sched-nav-btn" onclick="navigateSchedule(-1)">‹</button>
+                        <button class="sched-nav-btn" onclick="navigateSchedule(1)">›</button>
+                    </div>
+
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openAddSchedModal()">+ Добавить заказ</button>
+                        <!-- View Selector: День / Неделя / Месяц -->
+                        <div class="sched-view-pills">
+                            <button class="sched-pill-btn active" id="viewBtnDay" onclick="setSchedView('day')">День</button>
+                            <button class="sched-pill-btn" id="viewBtnWeek" onclick="setSchedView('week')">Неделя</button>
+                            <button class="sched-pill-btn" id="viewBtnMonth" onclick="setSchedView('month')">Месяц</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Grid Body (Day View) -->
+                <div class="sched-grid-container" id="schedDayGrid">
+                    <!-- Column Titles (Cleaners / Brigades) -->
+                    <div class="sched-columns-header">
+                        <div style="border-right:1px solid var(--border);"></div>
+                        <div class="sched-col-title">
+                            <div class="sched-avatar-circle">АК</div>
+                            <div class="sched-col-info">
+                                <h4>Асхат К.</h4>
+                                <p>Бригадир (Комплект 1)</p>
+                            </div>
+                        </div>
+                        <div class="sched-col-title">
+                            <div class="sched-avatar-circle" style="background:#0284c7;">ЕМ</div>
+                            <div class="sched-col-info">
+                                <h4>Ерлан М.</h4>
+                                <p>Клинер-эксперт (Комплект 2)</p>
+                            </div>
+                        </div>
+                        <div class="sched-col-title">
+                            <div class="sched-avatar-circle" style="background:#f59e0b;">ДТ</div>
+                            <div class="sched-col-info">
+                                <h4>Данияр Т.</h4>
+                                <p>Специалист химчистки</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Grid Body -->
+                    <div class="sched-body-grid">
+                        <!-- Y-Axis Time Labels -->
+                        <div class="sched-time-labels">
+                            <div class="sched-time-slot-label">08:00</div>
+                            <div class="sched-time-slot-label">09:00</div>
+                            <div class="sched-time-slot-label">10:00</div>
+                            <div class="sched-time-slot-label">11:00</div>
+                            <div class="sched-time-slot-label">12:00</div>
+                            <div class="sched-time-slot-label">13:00</div>
+                            <div class="sched-time-slot-label">14:00</div>
+                            <div class="sched-time-slot-label">15:00</div>
+                            <div class="sched-time-slot-label">16:00</div>
+                            <div class="sched-time-slot-label">17:00</div>
+                            <div class="sched-time-slot-label">18:00</div>
+                            <div class="sched-time-slot-label">19:00</div>
+                        </div>
+
+                        <!-- Column 1: Асхат K. -->
+                        <div class="sched-staff-column" id="col-staff-1"></div>
+                        <!-- Column 2: Ерлан М. -->
+                        <div class="sched-staff-column" id="col-staff-2"></div>
+                        <!-- Column 3: Данияр Т. -->
+                        <div class="sched-staff-column" id="col-staff-3"></div>
+                    </div>
+                </div>
+
+                <!-- Views for Week / Month -->
+                <div id="schedWeekGrid" style="display:none; padding:40px; text-align:center; color:var(--text-muted);">
+                    <h3>📅 Недельный обзор всех выездов</h3>
+                    <p style="margin-top:8px;">Отображаются 7 дней недели с суммарной загрузкой клининговых бригад Tap Taza.</p>
+                </div>
+                <div id="schedMonthGrid" style="display:none; padding:40px; text-align:center; color:var(--text-muted);">
+                    <h3>🗓 Календарь на месяц</h3>
+                    <p style="margin-top:8px;">Сетка месяца с разбивкой по бронированиям и зафиксированным предоплатам.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: ORDERS & CLIENT MEMO -->
         <section id="orders" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1208,7 +1486,7 @@
             </div>
         </section>
 
-        <!-- MODULE 3: CLEANING CALCULATOR (UPDATED WITH PURE EXTRA SERVICES & MANUAL PRICE) -->
+        <!-- MODULE 4: CLEANING CALCULATOR -->
         <section id="calculator" class="module">
             <div class="card">
                 <div class="calc-grid">
@@ -1221,7 +1499,7 @@
                             </div>
                         </div>
 
-                        <!-- Main Property Section (Hidden in Extra Only Mode) -->
+                        <!-- Main Property Section -->
                         <div id="calcPropertySection">
                             <div class="form-group">
                                 <label class="form-label">2. Выберите тип объекта</label>
@@ -1290,7 +1568,7 @@
                             </div>
                         </div>
 
-                        <!-- Manual Price Entry Section (Appears in Extra Only mode or for Custom Pricing) -->
+                        <!-- Manual Price Entry Section -->
                         <div class="form-group" id="manualPriceSection" style="background:var(--primary-light); padding:16px; border-radius:10px; border:1px solid var(--primary-border);">
                             <label class="form-label" style="color:var(--primary-dark); font-size:14px;">✍️ Ручной ввод цены / Своя стоимость (₸):</label>
                             <input type="number" id="calcManualPriceInput" class="form-input" placeholder="Введите цену вручную (например: 15000)" oninput="updateCalculator()" style="font-weight:700; font-size:16px;">
@@ -1349,7 +1627,7 @@
             </div>
         </section>
 
-        <!-- MODULE 4: EMPLOYEES & SALARY (UPDATED WITH EDITABLE RATES & MONTHLY FIXED SALARY) -->
+        <!-- MODULE 5: EMPLOYEES & SALARY -->
         <section id="employees" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1402,7 +1680,7 @@
             </div>
         </section>
 
-        <!-- MODULE 5: SUPERVISOR CHECKLIST -->
+        <!-- MODULE 6: SUPERVISOR CHECKLIST -->
         <section id="supervisor" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1417,7 +1695,7 @@
                 <div class="form-group" style="background:var(--bg-main); padding:16px; border-radius:8px; border:1px solid var(--border);">
                     <label class="form-label" style="font-size:14px; color:var(--dark);">🎯 Выберите обслуживаемый заказ:</label>
                     <select id="superOrderSelect" class="form-input" style="font-weight:600;" onchange="loadOrderIntoSupervisor()">
-                        <!-- Dynamic options from state.orders -->
+                        <!-- Dynamic options -->
                     </select>
                 </div>
 
@@ -1476,19 +1754,17 @@
             </div>
         </section>
 
-        <!-- MODULE 6: WAREHOUSE & EQUIPMENT KITS (REDESIGNED MATCHING USER SCREENSHOT) -->
+        <!-- MODULE 7: WAREHOUSE & EQUIPMENT KITS -->
         <section id="inventory" class="module">
             <div class="warehouse-box">
                 <h2 class="warehouse-title">🧹 Склад Клининга Tap Taza</h2>
                 <a href="https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns" target="_blank" class="wa-link">📎 Перейти в рабочую группу WhatsApp</a>
 
-                <!-- Tabs (Issue in Morning vs Return in Evening) -->
                 <div class="warehouse-tabs">
                     <button class="wh-tab-btn active" id="whTabIssue" onclick="switchWarehouseTab('issue')">🕹 Выдача (Утро)</button>
                     <button class="wh-tab-btn" id="whTabReturn" onclick="switchWarehouseTab('return')">🕹 Возврат (Вечер)</button>
                 </div>
 
-                <!-- Form Fields -->
                 <div class="form-group">
                     <label class="form-label" style="text-transform:uppercase; font-size:11px; color:#64748b; letter-spacing:0.5px;">Имя и Фамилия сотрудника</label>
                     <input type="text" id="whEmpName" class="form-input" placeholder="Введите ваше имя (например: Асхат Касымов)" style="padding:12px;">
@@ -1519,7 +1795,6 @@
                     </div>
                 </div>
 
-                <!-- Status Check Toggle -->
                 <div class="wh-status-banner" id="whStatusBanner" onclick="toggleWhDamageState()">
                     <span id="whStatusIcon">✅</span>
                     <span id="whStatusText">Вернул всё на место (Без поломок) / Всё выдано исправно</span>
@@ -1535,7 +1810,6 @@
                 </button>
             </div>
 
-            <!-- Kits Status Cards Below -->
             <div class="card">
                 <div class="card-header">
                     <h3>📦 Текущий статус 3-х мобильных комплектов на складе</h3>
@@ -1546,7 +1820,7 @@
             </div>
         </section>
 
-        <!-- MODULE 7: ACTS (EXACT USER HTML CODE) -->
+        <!-- MODULE 8: ACTS GENERATOR -->
         <section id="acts" class="module">
             <div class="act-control-panel">
                 <div class="act-tabs">
@@ -1576,7 +1850,7 @@
                         <input type="text" id="in-rep-isp" value="Бекжанов М. М." oninput="updateActCode()">
                     </div>
 
-                    <!-- Поля B2C -->
+                    <!-- B2C Fields -->
                     <div class="form-group field-b2c">
                         <label>Ф.И.О. Заказчика:</label>
                         <input type="text" id="in-b2c-name" value="Мухтар Бекжанов" oninput="updateActCode()">
@@ -1586,7 +1860,7 @@
                         <input type="text" id="in-b2c-iin" value="900101300123" oninput="updateActCode()">
                     </div>
 
-                    <!-- Поля B2B -->
+                    <!-- B2B Fields -->
                     <div class="form-group field-b2b" style="display:none;">
                         <label>Наименование ЮЛ Заказчика:</label>
                         <input type="text" id="in-b2b-company" value="ТОО «Business Solutions»" oninput="updateActCode()">
@@ -1634,7 +1908,6 @@
                         <input type="text" id="in-price-dop" value="10000" oninput="updateActCode()">
                     </div>
 
-                    <!-- Настройка НДС -->
                     <div class="form-group">
                         <label>Режим НДС:</label>
                         <select id="in-vat-type" onchange="updateActCode()">
@@ -1835,7 +2108,7 @@
             </div>
         </section>
 
-        <!-- MODULE 8: STATUS LOOKUP -->
+        <!-- MODULE 9: STATUS LOOKUP -->
         <section id="status" class="module">
             <div class="lookup-box">
                 <div class="brand-logo" style="margin: 0 auto 16px;">TT</div>
@@ -1861,7 +2134,7 @@
         </section>
     </main>
 
-    <!-- Modal for Client Memo (WhatsApp) -->
+    <!-- Modal for Client Memo -->
     <div class="modal-backdrop" id="memoModal">
         <div class="modal-card">
             <h3 style="margin-bottom:12px;">📌 Памятка Клиенту и Регламент Заказа</h3>
@@ -1959,13 +2232,58 @@
         </div>
     </div>
 
+    <!-- Modal for Adding New Schedule Order -->
+    <div class="modal-backdrop" id="addSchedModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom:16px;">+ Добавить заказ в график</h3>
+            <div class="form-group">
+                <label class="form-label">ФИО Клиента / Название заказа</label>
+                <input type="text" id="schedInputTitle" class="form-input" placeholder="например: Смагулова Динара">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Бригада / Клинер</label>
+                <select id="schedInputStaff" class="form-input">
+                    <option value="1">Асхат К. (Бригада 1)</option>
+                    <option value="2">Ерлан М. (Бригада 2)</option>
+                    <option value="3">Данияр Т. (Химчистка)</option>
+                </select>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label class="form-label">Время с:</label>
+                    <input type="time" id="schedInputStartTime" class="form-input" value="08:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Время до:</label>
+                    <input type="time" id="schedInputEndTime" class="form-input" value="09:30">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Адрес объекта / Кабинет</label>
+                <input type="text" id="schedInputAddress" class="form-input" placeholder="например: ЖК Алма Сити, кв. 12">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Статус заявки</label>
+                <select id="schedInputTag" class="form-input">
+                    <option value="Пришёл">🟢 Пришёл / На объекте</option>
+                    <option value="В процессе" selected>🟠 В процессе</option>
+                    <option value="Долг">📙 Долг (Оплата на месте)</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button class="btn btn-outline" onclick="closeAddSchedModal()">Отмена</button>
+                <button class="btn btn-primary" onclick="saveNewScheduleOrder()">Внести в расписание</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Banner -->
     <div id="toast">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">Действие выполнено успешно!</span>
     </div>
 
-    <!-- JavaScript Application State & Logic -->
+    <!-- JavaScript Application Logic -->
     <script>
         // Global Application State
         let state = {
@@ -2006,6 +2324,13 @@
                 { id: 1, name: 'Комплект №1', status: 'Выдан (На объекте)', assignee: 'Асхат Касымов', notes: 'Исправен' },
                 { id: 2, name: 'Комплект №2', status: 'Выдан (На объекте)', assignee: 'Ерлан Мамыров', notes: 'Исправен' },
                 { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Данияр Токтаров', notes: 'Исправен' }
+            ],
+            scheduleEvents: [
+                { id: 101, staffId: 1, startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Пришёл' },
+                { id: 102, staffId: 1, startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'В процессе' },
+                { id: 103, staffId: 2, startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Пришёл' },
+                { id: 104, staffId: 2, startTime: '10:00', endTime: '11:30', title: 'Нурланова Камила', address: 'ЖК Легенда', statusTag: 'Долг' },
+                { id: 105, staffId: 3, startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Пришёл' }
             ]
         };
 
@@ -2016,6 +2341,7 @@
                 if(loaded.orders) state.orders = loaded.orders;
                 if(loaded.employees) state.employees = loaded.employees;
                 if(loaded.kits) state.kits = loaded.kits;
+                if(loaded.scheduleEvents) state.scheduleEvents = loaded.scheduleEvents;
             } catch(e) { console.error(e); }
         }
 
@@ -2036,6 +2362,7 @@
             renderWarehouseKitsStatus();
             updateSupervisorDropdown();
             updateActCode();
+            renderScheduleCards();
         }
 
         // Map Handle
@@ -2100,6 +2427,7 @@
 
             const titles = {
                 'analytics': ['Аналитика и Карта заказов', 'Динамический мониторинг выручки и объектов в Алматы'],
+                'schedule': ['График выездов и Календарь', 'Интерактивная сетка задействованных бригад по времени'],
                 'orders': ['Список Заказов, Статусы & Управление', 'Полный контроль заказов, смены статусов и отправки памяток'],
                 'calculator': ['Онлайн-калькулятор уборок', 'Точный расчет стоимости / Заказ на доп. услуги'],
                 'employees': ['Сотрудники & Расчет ЗП', 'Управление персоналом, изменение ставок и расчет окладов'],
@@ -2117,6 +2445,8 @@
             if(moduleId === 'analytics') {
                 renderAnalytics();
                 if(map) setTimeout(() => { map.invalidateSize(); }, 200);
+            } else if(moduleId === 'schedule') {
+                renderScheduleCards();
             }
         }
 
@@ -2159,16 +2489,15 @@
 
             updateMapPins();
 
-            // Calculate revenue per day of week (0 = Mon, 6 = Sun)
+            // Days Revenue logic
             const daysRevenue = [0, 0, 0, 0, 0, 0, 0];
             state.orders.forEach(ord => {
                 let dateObj = ord.createdAt ? new Date(ord.createdAt) : new Date();
                 if (isNaN(dateObj.getTime())) dateObj = new Date();
-                const dayIdx = (dateObj.getDay() + 6) % 7; // Convert JS 0 (Sun) .. 6 (Sat) to 0 (Mon) .. 6 (Sun)
+                const dayIdx = (dateObj.getDay() + 6) % 7;
                 daysRevenue[dayIdx] += Number(ord.totalPrice || 0);
             });
 
-            // Render Revenue Chart
             const ctx = document.getElementById('daysChart').getContext('2d');
             const existingChart = Chart.getChart('daysChart');
             if (existingChart) existingChart.destroy();
@@ -2186,26 +2515,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Доход: ' + context.raw.toLocaleString() + ' ₸';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString() + ' ₸';
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
                 }
             });
         }
@@ -2217,7 +2528,100 @@
             return 'badge-danger';
         }
 
-        // ---------------- MODULE 2: ORDERS ----------------
+        // ---------------- MODULE 2: SCHEDULE & CALENDAR (PHOTO INTERACTION) ----------------
+        function setSchedView(viewMode) {
+            document.getElementById('viewBtnDay').classList.toggle('active', viewMode === 'day');
+            document.getElementById('viewBtnWeek').classList.toggle('active', viewMode === 'week');
+            document.getElementById('viewBtnMonth').classList.toggle('active', viewMode === 'month');
+
+            document.getElementById('schedDayGrid').style.display = viewMode === 'day' ? 'block' : 'none';
+            document.getElementById('schedWeekGrid').style.display = viewMode === 'week' ? 'block' : 'none';
+            document.getElementById('schedMonthGrid').style.display = viewMode === 'month' ? 'block' : 'none';
+            
+            showToast(`Режим отображения: ${viewMode === 'day' ? 'День' : viewMode === 'week' ? 'Неделя' : 'Месяц'}`);
+        }
+
+        function navigateSchedule(dir) {
+            showToast('Дата расписания переключена');
+        }
+
+        function renderScheduleCards() {
+            [1, 2, 3].forEach(id => {
+                const col = document.getElementById(`col-staff-${id}`);
+                if (col) col.innerHTML = '';
+            });
+
+            state.scheduleEvents.forEach(ev => {
+                const targetCol = document.getElementById(`col-staff-${ev.staffId}`);
+                if (!targetCol) return;
+
+                const startMin = timeToMinutes(ev.startTime);
+                const endMin = timeToMinutes(ev.endTime);
+                const baseMin = 8 * 60; // 08:00 AM
+
+                const topPos = ((startMin - baseMin) / 60) * 60;
+                const cardHeight = ((endMin - startMin) / 60) * 60;
+
+                const card = document.createElement('div');
+                card.className = 'sched-event-card';
+                card.style.top = `${topPos}px`;
+                card.style.height = `${cardHeight - 4}px`;
+
+                const tagClass = ev.statusTag === 'Долг' ? 'sched-tag-amber' : 'sched-tag-teal';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="sched-event-time">${ev.startTime} - ${ev.endTime}</div>
+                        <div class="sched-event-title">${ev.title}</div>
+                    </div>
+                    <div class="sched-event-tags">
+                        <span class="sched-tag ${tagClass}">${ev.statusTag}</span>
+                        <span class="sched-tag">${ev.address}</span>
+                    </div>
+                `;
+                targetCol.appendChild(card);
+            });
+        }
+
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function openAddSchedModal() {
+            document.getElementById('addSchedModal').classList.add('active');
+        }
+
+        function closeAddSchedModal() {
+            document.getElementById('addSchedModal').classList.remove('active');
+        }
+
+        function saveNewScheduleOrder() {
+            const title = document.getElementById('schedInputTitle').value.trim() || 'Новый Заказ';
+            const staffId = Number(document.getElementById('schedInputStaff').value);
+            const startTime = document.getElementById('schedInputStartTime').value;
+            const endTime = document.getElementById('schedInputEndTime').value;
+            const address = document.getElementById('schedInputAddress').value.trim() || 'Объект';
+            const tag = document.getElementById('schedInputTag').value;
+
+            const newEv = {
+                id: Date.now(),
+                staffId: staffId,
+                startTime: startTime,
+                endTime: endTime,
+                title: title,
+                address: address,
+                statusTag: tag
+            };
+
+            state.scheduleEvents.push(newEv);
+            saveState();
+            closeAddSchedModal();
+            renderScheduleCards();
+            showToast(`Заказ "${title}" добавлен в календарь!`, '📅');
+        }
+
+        // ---------------- MODULE 3: ORDERS ----------------
         function renderOrders() {
             const tbody = document.getElementById('ordersTableBody');
             tbody.innerHTML = '';
@@ -2294,7 +2698,6 @@
             }
         }
 
-        // Edit Order Modal Logic
         function openEditOrderModal(orderId) {
             const ord = state.orders.find(o => o.id === orderId);
             if (!ord) return;
@@ -2339,8 +2742,8 @@
             showToast(`Заказ #${orderId} успешно изменен!`, '✅');
         }
 
-        // ---------------- MODULE 3: CALCULATOR ----------------
-        let calcOrderMode = 'full'; // 'full' or 'extra_only'
+        // ---------------- MODULE 4: CALCULATOR ----------------
+        let calcOrderMode = 'full';
         let currentBaseRate = 500;
         let currentServiceTitle = 'Влажная (поддерживающая)';
         let selectedPropertyType = 'Квартира';
@@ -2509,7 +2912,7 @@
             showToast(`Заказ #${orderNo} создан и внесен в систему!`, '🎉');
         }
 
-        // ---------------- MODULE 4: EMPLOYEES & SALARY ----------------
+        // ---------------- MODULE 5: EMPLOYEES & SALARY ----------------
         function renderEmployees() {
             const tbody = document.getElementById('employeesTableBody');
             tbody.innerHTML = '';
@@ -2528,7 +2931,7 @@
                     calculatedSalary = shifts * rate;
                     totalShiftsSum += shifts;
                 } else {
-                    calculatedSalary = rate; // Fixed monthly salary
+                    calculatedSalary = rate;
                 }
 
                 totalSalarySum += calculatedSalary;
@@ -2641,7 +3044,7 @@
             document.getElementById('newEmpName').value = '';
         }
 
-        // ---------------- MODULE 5: SUPERVISOR & CLIENT MEMO ----------------
+        // ---------------- MODULE 6: SUPERVISOR & MEMO ----------------
         function updateSupervisorDropdown() {
             const select = document.getElementById('superOrderSelect');
             select.innerHTML = '';
@@ -2745,15 +3148,12 @@
         }
 
         function sendSupervisorReportToWhatsAppGroup() {
-            const selectedOrder = document.getElementById('superOrderSelect').value;
-            const progress = document.getElementById('checklistProgressText').innerText;
-            
             window.open('https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns', '_blank');
             showToast('Отчет отправлен в рабочую группу WhatsApp!');
         }
 
-        // ---------------- MODULE 6: WAREHOUSE & EQUIPMENT ----------------
-        let activeWarehouseTab = 'issue'; // 'issue' or 'return'
+        // ---------------- MODULE 7: WAREHOUSE & EQUIPMENT ----------------
+        let activeWarehouseTab = 'issue';
         let whIsDamaged = false;
 
         function switchWarehouseTab(tab) {
@@ -2824,16 +3224,13 @@
             }
         }
 
-        function updateWhKitDisplay() {
-            // Dropdown selection update
-        }
+        function updateWhKitDisplay() {}
 
         function sendWarehouseToWhatsApp() {
             const empName = document.getElementById('whEmpName').value.trim() || 'Сотрудник';
             const kitVal = document.getElementById('whKitSelect').value;
             const kitName = `Комплект №${kitVal}`;
 
-            // Get selected checkboxes
             const selectedEq = [];
             document.querySelectorAll('.equipment-checklist-grid input[type="checkbox"]:checked').forEach(cb => {
                 selectedEq.push(cb.value);
@@ -2844,7 +3241,6 @@
             const statusText = whIsDamaged ? '⚠️ ПОЛОМКИ / ПОВРЕЖДЕНИЯ' : '✅ БЕЗ ПОЛОМОК (ВСЁ ИСПРАВНО)';
             const notes = document.getElementById('whNotes').value.trim() || 'Замечаний нет';
 
-            // Update Kit state
             const targetKit = state.kits.find(k => k.id === Number(kitVal));
             if(targetKit) {
                 targetKit.assignee = empName;
@@ -2864,14 +3260,11 @@
 ----------------------------------
 _Зафиксировано в CRM Tap Taza_`;
 
-            const waGroupUrl = `https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns`;
-            
-            // Open WA group or direct WA Web
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
             showToast('Отчет по складу сформирован и отправлен!');
         }
 
-        // ---------------- MODULE 7: ACTS & CODES (EXACT CODE PROVIDED BY USER) ----------------
+        // ---------------- MODULE 8: ACTS ----------------
         let currentActMode = 'b2c';
 
         function switchActMode(mode) {
@@ -2983,7 +3376,7 @@ _Зафиксировано в CRM Tap Taza_`;
             });
         }
 
-        // ---------------- MODULE 8: STATUS LOOKUP ----------------
+        // ---------------- MODULE 9: STATUS LOOKUP ----------------
         function showStatusResult() {
             const query = document.getElementById('trackingInput').value.trim().toUpperCase();
             const resBox = document.getElementById('statusResult');
