@@ -8,20 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Leaflet Map CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK for Real-time Multi-Device Sync -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
-            --primary: #0d9488;         
+            --primary: #0d9488;          
             --primary-dark: #0f766e;     
             --primary-hover: #115e59;    
             --primary-light: #f0fdfa;    
@@ -341,6 +338,16 @@
         .btn-primary:hover {
             background-color: var(--primary-dark);
             box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+        }
+
+        .btn-sync {
+            background-color: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+        }
+
+        .btn-sync:hover {
+            background-color: #0369a1;
         }
 
         .btn-whatsapp {
@@ -1328,7 +1335,6 @@
 </head>
 <body>
 
-    <!-- Mobile Top Header Bar -->
     <header class="mobile-header">
         <div class="brand-mini">
             <div class="brand-logo-mini">TT</div>
@@ -1339,10 +1345,8 @@
         </button>
     </header>
 
-    <!-- Drawer Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Sidebar / Drawer Menu -->
     <aside id="mainSidebar">
         <div class="brand">
             <div class="brand-logo">TT</div>
@@ -1403,17 +1407,18 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main>
-        <!-- Header -->
         <div class="header-bar">
             <div class="header-title">
                 <h2 id="page-title">Аналитика и Карта заказов</h2>
                 <p id="page-subtitle">Оперативный мониторинг загрузки клининговых бригад в Алматы</p>
             </div>
             <div class="header-actions">
+                <button class="btn btn-sync" onclick="syncWithFirebase()" title="Синхронизировать данные с Firebase DB">
+                    🔄 Синхронизация Firebase
+                </button>
                 <button class="btn btn-outline" onclick="reloadPageData()" title="Перезагрузить и обновить актуальную информацию">
-                    🔄 Обновить сайт
+                    ↻ Обновить сайт
                 </button>
                 <a href="https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns" target="_blank" class="btn btn-whatsapp">
                     💬 WhatsApp Группа
@@ -1424,7 +1429,6 @@
             </div>
         </div>
 
-        <!-- MODULE 1: ANALYTICS & MAP -->
         <section id="analytics" class="module active">
             <div class="grid-4">
                 <div class="stat-card">
@@ -1509,7 +1513,6 @@
             </div>
         </section>
 
-        <!-- MODULE 2: SCHEDULE & CALENDAR -->
         <section id="schedule" class="module">
             <div class="card">
                 <div class="sched-header">
@@ -1594,7 +1597,6 @@
             </div>
         </section>
 
-        <!-- MODULE 3: ORDERS & CLIENT MEMO -->
         <section id="orders" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1621,7 +1623,6 @@
             </div>
         </section>
 
-        <!-- MODULE 4: CLEANING CALCULATOR -->
         <section id="calculator" class="module">
             <div class="card">
                 <div class="calc-grid">
@@ -1757,7 +1758,6 @@
             </div>
         </section>
 
-        <!-- MODULE 5: EMPLOYEES & SALARY -->
         <section id="employees" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1808,7 +1808,6 @@
             </div>
         </section>
 
-        <!-- MODULE 6: SUPERVISOR CHECKLIST -->
         <section id="supervisor" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1876,7 +1875,6 @@
             </div>
         </section>
 
-        <!-- MODULE 7: WAREHOUSE & EQUIPMENT KITS -->
         <section id="inventory" class="module">
             <div class="warehouse-box">
                 <h2 class="warehouse-title">🧹 Склад Клининга</h2>
@@ -1936,7 +1934,6 @@
             </div>
         </section>
 
-        <!-- MODULE 8: ACTS GENERATOR -->
         <section id="acts" class="module">
             <div class="act-control-panel">
                 <div class="act-tabs">
@@ -1966,7 +1963,6 @@
                         <input type="text" id="in-rep-isp" value="Бекжанов М. М." oninput="updateActCode()">
                     </div>
 
-                    <!-- B2C Fields -->
                     <div class="form-group field-b2c">
                         <label>Ф.И.О. Заказчика:</label>
                         <input type="text" id="in-b2c-name" value="Мухтар Бекжанов" oninput="updateActCode()">
@@ -1976,7 +1972,6 @@
                         <input type="text" id="in-b2c-iin" value="900101300123" oninput="updateActCode()">
                     </div>
 
-                    <!-- B2B Fields -->
                     <div class="form-group field-b2b" style="display:none;">
                         <label>Наименование ЮЛ Заказчика:</label>
                         <input type="text" id="in-b2b-company" value="ТОО «Business Solutions»" oninput="updateActCode()">
@@ -2046,9 +2041,7 @@
                 </div>
             </div>
 
-            <!-- Бланк документа -->
             <div class="act-document-sheet">
-                <!-- ВАРИАНТ B2C -->
                 <div id="view-b2c">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2121,7 +2114,6 @@
                     </div>
                 </div>
 
-                <!-- ВАРИАНТ B2B -->
                 <div id="view-b2b" style="display:none;">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2199,7 +2191,6 @@
             </div>
         </section>
 
-        <!-- MODULE 9: STATUS LOOKUP -->
         <section id="status" class="module">
             <div class="lookup-box">
                 <div class="brand-logo" style="margin: 0 auto 16px;">TT</div>
@@ -2224,7 +2215,6 @@
         </section>
     </main>
 
-    <!-- Modal for Client Memo -->
     <div class="modal-backdrop" id="memoModal">
         <div class="modal-card">
             <h3 style="margin-bottom:12px;">📌 Памятка Клиенту</h3>
@@ -2236,7 +2226,6 @@
         </div>
     </div>
 
-    <!-- Modal for Editing Order in CRM -->
     <div class="modal-backdrop" id="editOrderModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование Заказа</h3>
@@ -2288,7 +2277,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding Employee -->
     <div class="modal-backdrop" id="addEmpModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">+ Добавить Сотрудника</h3>
@@ -2322,17 +2310,24 @@
         </div>
     </div>
 
-    <!-- Modal for Adding New Schedule Order -->
     <div class="modal-backdrop" id="addSchedModal">
         <div class="modal-card">
-            <h3 style="margin-bottom:16px;">+ Добавить заказ в график</h3>
+            <h3 style="margin-bottom:16px;">📅 Назначить заказ в график</h3>
+            
+            <div class="form-group" style="background:var(--primary-light); padding:12px; border-radius:10px; border:1px solid var(--primary-border);">
+                <label class="form-label" style="color:var(--primary-dark);"> Выберите действующий заказ из реестра:</label>
+                <select id="schedSelectOrder" class="form-input" style="font-weight:700;" onchange="onSchedOrderSelectChange(this.value)">
+                    <option value="">-- Загрузка заказов... --</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">Дата выезда</label>
                 <input type="date" id="schedInputDate" class="form-input">
             </div>
             <div class="form-group">
-                <label class="form-label">Название заказа / ФИО</label>
-                <input type="text" id="schedInputTitle" class="form-input">
+                <label class="form-label">Название заказа / Клиент</label>
+                <input type="text" id="schedInputTitle" class="form-input" placeholder="Автозаполнение из заказа">
             </div>
             <div class="form-group">
                 <label class="form-label">Столбец в графике</label>
@@ -2343,8 +2338,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Исполнитель</label>
-                <input type="text" id="schedInputCleanerName" class="form-input" placeholder="Имя клинера">
+                <label class="form-label">Исполнитель / Клинер</label>
+                <input type="text" id="schedInputCleanerName" class="form-input" placeholder="Гуля / Рыскуль / Жадыра">
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div class="form-group">
@@ -2353,12 +2348,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Время до:</label>
-                    <input type="time" id="schedInputEndTime" class="form-input" value="09:30">
+                    <input type="time" id="schedInputEndTime" class="form-input" value="12:00">
                 </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Адрес объекта</label>
-                <input type="text" id="schedInputAddress" class="form-input">
+                <input type="text" id="schedInputAddress" class="form-input" placeholder="Автозаполнение из заказа">
             </div>
             <div class="form-group">
                 <label class="form-label">Статус оплаты / заявки</label>
@@ -2371,12 +2366,11 @@
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
                 <button class="btn btn-outline" onclick="closeAddSchedModal()">Отмена</button>
-                <button class="btn btn-primary" onclick="saveNewScheduleOrder()">Сохранить</button>
+                <button class="btn btn-primary" onclick="saveNewScheduleOrder()">Сохранить в график</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal for Editing/Deleting Schedule Order -->
     <div class="modal-backdrop" id="editSchedModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование заказа в графике</h3>
@@ -2434,13 +2428,11 @@
         </div>
     </div>
 
-    <!-- Toast Banner -->
     <div id="toast">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">Действие выполнено успешно!</span>
     </div>
 
-    <!-- JavaScript Application Logic with Real-time Firebase Synchronization -->
     <script>
         // Инициализация Firebase Realtime Database
         const firebaseConfig = {
@@ -2523,9 +2515,8 @@
                 { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Жадыра', notes: 'Исправен' }
             ],
             scheduleEvents: [
-                { id: 101, date: getTodayISOStr(), staffId: 1, cleanerName: 'Гуля', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Оплачен' },
-                { id: 102, date: getTodayISOStr(), staffId: 1, cleanerName: 'Рыскуль', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'Ожидает оплаты' },
-                { id: 103, date: getTodayISOStr(), staffId: 2, cleanerName: 'Жадыра', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Выставили счет на оплату (компания)' }
+                { id: 101, orderId: 'TT-8921', date: getTodayISOStr(), staffId: 1, cleanerName: 'Гуля', startTime: '08:00', endTime: '12:00', title: 'Мухтар Бекжанов (Генеральная уборка)', address: 'г. Алматы, пр. Аль-Фараби, д. 77', statusTag: 'Оплачен' },
+                { id: 102, orderId: 'TT-8922', date: getTodayISOStr(), staffId: 2, cleanerName: 'Рыскуль', startTime: '13:00', endTime: '18:00', title: 'ТОО «Алма Инвест» (После ремонта)', address: 'мкр. Самал-2, д. 14', statusTag: 'Ожидает оплаты' }
             ]
         };
 
@@ -2546,7 +2537,7 @@
             }
         }
 
-        // Подписка на обновление данных из Firebase Realtime DB для всех устройств
+        // Синхронизация с Firebase в реальном времени
         dbRef.on('value', (snapshot) => {
             const remoteData = snapshot.val();
             if (remoteData) {
@@ -2558,8 +2549,28 @@
             }
         });
 
+        // Принудительная синхронизация по кнопке
+        async function syncWithFirebase() {
+            showToast('Синхронизация с Firebase...', '🔄');
+            try {
+                const snap = await dbRef.once('value');
+                if (snap.exists()) {
+                    state = snap.val();
+                    localStorage.setItem('tap_taza_state', JSON.stringify(state));
+                    renderAllModules();
+                    showToast('Данные успешно синхронизированы!', '✅');
+                } else {
+                    await dbRef.set(state);
+                    showToast('Данные загружены в облако!', '☁️');
+                }
+            } catch (err) {
+                console.error("Firebase sync error:", err);
+                showToast('Ошибка подключения к Firebase', '⚠️');
+            }
+        }
+
         function reloadPageData() {
-            showToast('Обновление информации...', '🔄');
+            showToast('Обновление информации...', '↻');
             renderAllModules();
         }
 
@@ -3038,8 +3049,42 @@
             return h * 60 + m;
         }
 
-        function openAddSchedModal() {
+        // Заполнение выпадающего списка активных заказов в модалке графика
+        function populateSchedOrderDropdown(selectedOrderId = '') {
+            const select = document.getElementById('schedSelectOrder');
+            select.innerHTML = '<option value="">-- Выберите заказ из реестра --</option>';
+
+            state.orders.forEach(ord => {
+                const opt = document.createElement('option');
+                opt.value = ord.id;
+                opt.textContent = `#${ord.id} — ${ord.customerName} (${ord.serviceType}) — ${Number(ord.totalPrice).toLocaleString()} ₸`;
+                if(ord.id === selectedOrderId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        // Автозаполнение полей при выборе заказа в графике
+        function onSchedOrderSelectChange(orderId) {
+            if (!orderId) return;
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+
+            document.getElementById('schedInputTitle').value = `${ord.customerName} (${ord.serviceType})`;
+            document.getElementById('schedInputAddress').value = ord.customerAddress;
+            document.getElementById('schedInputTag').value = ord.prepaymentReceived ? 'Оплачен' : 'Ожидает оплаты';
+        }
+
+        function openAddSchedModal(preselectedOrderId = '') {
+            populateSchedOrderDropdown(preselectedOrderId);
             document.getElementById('schedInputDate').value = getISOFormattedDate(currentScheduleDate);
+
+            if (preselectedOrderId) {
+                onSchedOrderSelectChange(preselectedOrderId);
+            } else {
+                document.getElementById('schedInputTitle').value = '';
+                document.getElementById('schedInputAddress').value = '';
+            }
+
             document.getElementById('addSchedModal').classList.add('active');
         }
 
@@ -3047,7 +3092,14 @@
             document.getElementById('addSchedModal').classList.remove('active');
         }
 
+        // Прямой переход в модалку графика из строки заказа
+        function addOrderToScheduleDirect(orderId) {
+            switchModule('schedule');
+            openAddSchedModal(orderId);
+        }
+
         function saveNewScheduleOrder() {
+            const orderId = document.getElementById('schedSelectOrder').value;
             const dateVal = document.getElementById('schedInputDate').value || getISOFormattedDate(currentScheduleDate);
             const title = document.getElementById('schedInputTitle').value.trim() || 'Новый Заказ';
             const staffId = Number(document.getElementById('schedInputStaff').value);
@@ -3059,6 +3111,7 @@
 
             const newEv = {
                 id: Date.now(),
+                orderId: orderId || null,
                 date: dateVal,
                 staffId: staffId,
                 cleanerName: cleanerName,
@@ -3070,10 +3123,19 @@
             };
 
             state.scheduleEvents.push(newEv);
+
+            // Автоматическое увеличение количества смен у клинера при назначении
+            if(cleanerName) {
+                const emp = state.employees.find(e => e.name.toLowerCase() === cleanerName.toLowerCase());
+                if (emp && emp.payType === 'daily') {
+                    emp.shifts = (emp.shifts || 0) + 1;
+                }
+            }
+
             saveState();
             closeAddSchedModal();
-            renderScheduleCards();
-            showToast(`Заказ добавлен!`, '📅');
+            renderAllModules();
+            showToast(`Заказ добавлен в график!`, '📅');
         }
 
         function openEditSchedModal(eventId) {
@@ -3163,8 +3225,9 @@
                     </td>
                     <td>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <button class="btn btn-outline" style="padding:4px 8px; font-size:11px; background:#f0fdfa;" onclick="addOrderToScheduleDirect('${ord.id}')">📅 В график</button>
                             <button class="btn btn-whatsapp" style="padding:4px 8px; font-size:11px;" onclick="openMemoModal('${ord.id}')">📲 Памятка</button>
-                            <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="openEditOrderModal('${ord.id}')">✏️ Редактировать</button>
+                            <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="openEditOrderModal('${ord.id}')">✏️</button>
                             <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteOrder('${ord.id}')">🗑</button>
                         </div>
                     </td>
@@ -3376,22 +3439,25 @@
             const orderNo = 'TT-' + Math.floor(1000 + Math.random() * 9000);
 
             let extrasTitles = selectedExtrasList.map(e => e.title);
-            if(windowCount > 0) extrasTitles.push(`🪟 Мойка окон (${windowCount} шт)`);
-
-            const manualPriceVal = document.getElementById('calcManualPriceInput').value;
-            let calculatedPrice = 0;
-
-            if(manualPriceVal && Number(manualPriceVal) > 0) {
-                calculatedPrice = Number(manualPriceVal);
-            } else if(calcOrderMode === 'extra_only') {
-                calculatedPrice = extraTotal + (windowCount * 2500);
-            } else {
-                const area = document.getElementById('areaSlider').value;
-                calculatedPrice = (area * currentBaseRate) + extraTotal + (windowCount * 2500);
-                if(calculatedPrice < 50000) calculatedPrice = 50000;
+            if (windowCount > 0) {
+                extrasTitles.push(`🪟 Мойка окон (${windowCount} шт)`);
             }
 
-            const serviceTitleText = calcOrderMode === 'extra_only' ? 'Заказ на доп. услуги (Химчистка / Допы)' : `${currentServiceTitle} (${document.getElementById('areaSlider').value} м²)`;
+            const manualPriceVal = document.getElementById('calcManualPriceInput').value;
+            let finalPrice = 0;
+
+            if (manualPriceVal && Number(manualPriceVal) > 0) {
+                finalPrice = Number(manualPriceVal);
+            } else if (calcOrderMode === 'extra_only') {
+                finalPrice = extraTotal + (windowCount * 2500);
+            } else {
+                const area = parseInt(document.getElementById('areaSlider').value);
+                finalPrice = (area * currentBaseRate) + extraTotal + (windowCount * 2500);
+                if (finalPrice < 50000) finalPrice = 50000;
+            }
+
+            const areaVal = calcOrderMode === 'full' ? document.getElementById('areaSlider').value + ' м²' : 'Доп. услуги';
+            const fullServiceTitle = calcOrderMode === 'full' ? `${currentServiceTitle} (${areaVal})` : 'Дополнительные услуги';
 
             const newOrder = {
                 id: orderNo,
@@ -3399,69 +3465,73 @@
                 customerName: custName,
                 customerPhone: custPhone,
                 customerAddress: custAddr,
-                serviceType: serviceTitleText,
+                serviceType: fullServiceTitle,
                 extras: extrasTitles,
-                totalPrice: calculatedPrice,
+                totalPrice: finalPrice,
                 prepaymentReceived: prepayReceived,
                 status: 'Новый заказ',
-                lat: 43.22 + Math.random()*0.03,
-                lng: 76.92 + Math.random()*0.03
+                lat: 43.2389 + (Math.random() - 0.5) * 0.04,
+                lng: 76.8897 + (Math.random() - 0.5) * 0.04
             };
 
             state.orders.unshift(newOrder);
+
+            // Автоматическое заполнение формы Акта выполненных работ
+            document.getElementById('in-act-num').value = orderNo.replace('TT-', '');
+            document.getElementById('in-b2c-name').value = custName;
+            document.getElementById('in-phone').value = custPhone;
+            document.getElementById('in-object-address').value = custAddr;
+            document.getElementById('in-price-main').value = finalPrice;
+            document.getElementById('in-dop-name').value = extrasTitles.length > 0 ? extrasTitles.join(', ') : 'Нет';
+            document.getElementById('in-dop-qty').value = '1 комплект';
+            document.getElementById('in-price-dop').value = '0';
+
             saveState();
             renderAllModules();
-
+            showToast(`Заказ #${orderNo} перенесен в реестр и Акт!`, '📄');
             switchModule('orders');
-            showToast(`Заказ #${orderNo} создан!`, '🎉');
         }
 
+        // ==========================================
+        // 👥 Управление Сотрудниками и ЗП
+        // ==========================================
         function renderEmployees() {
             const tbody = document.getElementById('employeesTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
-            let totalEmp = state.employees.length;
-            let totalShiftsSum = 0;
-            let totalSalarySum = 0;
+            let totalEmps = state.employees.length;
+            let totalShiftsCount = 0;
+            let totalFund = 0;
 
             state.employees.forEach(emp => {
-                const payType = emp.payType || 'daily';
-                const rate = emp.rate || 12000;
-                const shifts = emp.shifts || 0;
-
-                let calculatedSalary = 0;
-                if(payType === 'daily') {
-                    calculatedSalary = shifts * rate;
-                    totalShiftsSum += shifts;
+                let payout = 0;
+                if (emp.payType === 'daily') {
+                    payout = (emp.shifts || 0) * (emp.rate || 0);
+                    totalShiftsCount += (emp.shifts || 0);
                 } else {
-                    calculatedSalary = rate;
+                    payout = emp.rate || 0;
                 }
+                totalFund += payout;
 
-                totalSalarySum += calculatedSalary;
+                const payTypeLabel = emp.payType === 'daily' ? 'Посменная (в день)' : 'Фиксированный оклад';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><b>${emp.name}</b></td>
-                    <td>${emp.role || 'Сотрудник'}</td>
+                    <td><span class="badge badge-info">${emp.role}</span></td>
+                    <td>${payTypeLabel}</td>
+                    <td><b>${Number(emp.rate).toLocaleString()} ₸</b></td>
                     <td>
-                        <select class="select-status" onchange="changeEmployeePayType(${emp.id}, this.value)">
-                            <option value="daily" ${payType === 'daily' ? 'selected' : ''}>Посменно</option>
-                            <option value="monthly" ${payType === 'monthly' ? 'selected' : ''}>Оклад</option>
-                        </select>
+                        ${emp.payType === 'daily' ? `
+                            <div class="counter-box">
+                                <button class="counter-btn" onclick="changeEmpShifts(${emp.id}, -1)">-</button>
+                                <span style="font-weight:700; min-width:20px; text-align:center;">${emp.shifts || 0}</span>
+                                <button class="counter-btn" onclick="changeEmpShifts(${emp.id}, 1)">+</button>
+                            </div>
+                        ` : '<span style="color:var(--text-muted);">Оклад</span>'}
                     </td>
-                    <td>
-                        <input type="number" class="form-input" style="width:100px; font-weight:700; padding:4px 8px;" value="${rate}" onchange="changeEmployeeRate(${emp.id}, this.value)"> ₸
-                    </td>
-                    <td>
-                        ${payType === 'daily' ? `
-                        <div class="counter-box">
-                            <button class="counter-btn" onclick="changeEmployeeShifts(${emp.id}, -1)">-</button>
-                            <span style="font-weight:700; min-width:20px; text-align:center;">${shifts}</span>
-                            <button class="counter-btn" onclick="changeEmployeeShifts(${emp.id}, 1)">+</button>
-                        </div>
-                        ` : '<span style="color:var(--text-muted); font-style:italic">Оклад</span>'}
-                    </td>
-                    <td><b style="color:var(--primary-dark); font-size:14px;">${calculatedSalary.toLocaleString()} ₸</b></td>
+                    <td><strong style="color:var(--primary-dark); font-size:14px;">${payout.toLocaleString()} ₸</strong></td>
                     <td>
                         <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteEmployee(${emp.id})">🗑</button>
                     </td>
@@ -3469,43 +3539,17 @@
                 tbody.appendChild(tr);
             });
 
-            document.getElementById('empTotalCount').innerText = `${totalEmp} чел.`;
-            document.getElementById('empTotalShifts').innerText = `${totalShiftsSum} смен`;
-            document.getElementById('empTotalSalary').innerText = `${totalSalarySum.toLocaleString()} ₸`;
-
-            saveState();
+            document.getElementById('empTotalCount').innerText = `${totalEmps} чел.`;
+            document.getElementById('empTotalShifts').innerText = `${totalShiftsCount} смен`;
+            document.getElementById('empTotalSalary').innerText = `${totalFund.toLocaleString()} ₸`;
         }
 
-        function changeEmployeePayType(empId, payType) {
+        function changeEmpShifts(empId, delta) {
             const emp = state.employees.find(e => e.id === empId);
             if (emp) {
-                emp.payType = payType;
+                emp.shifts = Math.max(0, (emp.shifts || 0) + delta);
+                saveState();
                 renderEmployees();
-            }
-        }
-
-        function changeEmployeeRate(empId, newRate) {
-            const emp = state.employees.find(e => e.id === empId);
-            if (emp) {
-                emp.rate = Number(newRate) || 0;
-                renderEmployees();
-            }
-        }
-
-        function changeEmployeeShifts(empId, delta) {
-            const emp = state.employees.find(e => e.id === empId);
-            if (emp) {
-                emp.shifts = (emp.shifts || 0) + delta;
-                if (emp.shifts < 0) emp.shifts = 0;
-                renderEmployees();
-            }
-        }
-
-        function deleteEmployee(empId) {
-            if (confirm('Удалить сотрудника?')) {
-                state.employees = state.employees.filter(e => e.id !== empId);
-                renderEmployees();
-                showToast('Сотрудник удален', '🗑');
             }
         }
 
@@ -3519,229 +3563,193 @@
 
         function saveNewEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
-            const role = document.getElementById('newEmpRole').value.trim() || 'Сотрудник';
+            const role = document.getElementById('newEmpRole').value.trim() || 'Клинер';
             const payType = document.getElementById('newEmpPayType').value;
             const rate = Number(document.getElementById('newEmpRate').value) || 12000;
-            const shifts = parseInt(document.getElementById('newEmpShifts').value) || 0;
+            const shifts = Number(document.getElementById('newEmpShifts').value) || 0;
 
-            if (!name) return;
+            if (!name) {
+                alert('Введите ФИО сотрудника');
+                return;
+            }
 
             const newEmp = {
                 id: Date.now(),
-                name: name,
-                role: role,
-                payType: payType,
-                rate: rate,
-                shifts: shifts
+                name,
+                role,
+                payType,
+                rate,
+                shifts
             };
 
             state.employees.push(newEmp);
+            saveState();
             closeAddEmployeeModal();
             renderEmployees();
-            showToast(`Сотрудник добавлен!`);
-            document.getElementById('newEmpName').value = '';
+            showToast(`Сотрудник ${name} добавлен!`, '👥');
         }
 
+        function deleteEmployee(empId) {
+            if (confirm('Удалить сотрудника из системы?')) {
+                state.employees = state.employees.filter(e => e.id !== empId);
+                saveState();
+                renderEmployees();
+                showToast('Сотрудник удален', '🗑');
+            }
+        }
+
+        // ==========================================
+        // 🎒 Панель Супервайзера (Чек-лист)
+        // ==========================================
         function updateSupervisorDropdown() {
             const select = document.getElementById('superOrderSelect');
-            select.innerHTML = '';
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Выберите заказ для проверки --</option>';
 
             state.orders.forEach(ord => {
                 const opt = document.createElement('option');
                 opt.value = ord.id;
-                opt.innerText = `Заказ #${ord.id} — ${ord.customerAddress}`;
+                opt.textContent = `#${ord.id} — ${ord.customerName} (${ord.customerAddress})`;
                 select.appendChild(opt);
             });
         }
 
-        function openMemoModal(orderId) {
-            const ord = state.orders.find(o => o.id === orderId);
-            if (!ord) return;
-
-            const extrasText = ord.extras && ord.extras.length > 0 ? ord.extras.join(', ') : 'Нет';
-            const prepayText = ord.prepaymentReceived ? '✅ Предоплата зафиксирована (20 000 ₸)' : '❌ Предоплата не получена';
-
-            const memoText = `
-                <b>ПАМЯТКА КЛИЕНТУ И РЕГЛАМЕНТ ЗАКАЗА ТОО «Tap Taza»</b><br><br>
-                Уважаемый(ая) <b>${ord.customerName}</b>! Ваш заказ <b>#${ord.id}</b> принят.<br>
-                • <b>Услуга:</b> ${ord.serviceType}<br>
-                • <b>Доп. услуги:</b> ${extrasText}<br>
-                • <b>Адрес объекта:</b> ${ord.customerAddress}<br>
-                • <b>Стоимость:</b> ${Number(ord.totalPrice).toLocaleString()} ₸ (${prepayText})<br><br>
-                <b>ПРАВИЛА ПОДГОТОВКИ ОБЪЕКТА:</b><br>
-                1. Обеспечить доступ к помещению, наличие воды и электроснабжения.<br>
-                2. <b>ЦЕННЫЕ ВЕЩИ:</b> Просим до начала уборки убрать ценности в закрываемые места.<br>
-                3. <b>ПРИЕМКА И КОНТРОЛЬ КАЧЕСТВА:</b> Для жилых помещений приемка уборки производится не позднее чем через 1 час после завершения работ, а проверка качества поверхностей — в течение первых 30 минут.<br><br>
-                📞 Контакты: +7 771 071 93 75
-            `;
-
-            document.getElementById('memoContent').innerHTML = memoText;
-
-            const cleanPhone = ord.customerPhone.replace(/[^0-9]/g, '');
-            const rawMsg = `Здравствуйте, ${ord.customerName}! Информация по заказу #${ord.id} в Tap Taza:
-
-Услуга: ${ord.serviceType}
-Доп. услуги: ${extrasText}
-Адрес: ${ord.customerAddress}
-Стоимость: ${ord.totalPrice} ₸
-
-Памятка клиенту:
-1. Уберите ценные вещи в закрываемые места.
-2. Обеспечьте доступ к воде и свету.
-3. Приемка работы производится не позднее чем через 1 час, проверка поверхностей — в течение 30 минут.
-
-Тел: +7 771 071 93 75`;
-
-            document.getElementById('btnSendMemoWA').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(rawMsg)}`;
-            document.getElementById('memoModal').classList.add('active');
+        function loadOrderIntoSupervisor() {
+            const orderId = document.getElementById('superOrderSelect').value;
+            if (!orderId) return;
+            showToast(`Загружен заказ #${orderId}`, '🎯');
+            updateChecklistProgress();
         }
-
-        function closeMemoModal() {
-            document.getElementById('memoModal').classList.remove('active');
-        }
-
-        function loadOrderIntoSupervisor() {}
 
         function updateChecklistProgress() {
             const checkboxes = document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]');
             const total = checkboxes.length;
             let checkedCount = 0;
-            checkboxes.forEach(cb => { if(cb.checked) checkedCount++; });
 
-            const percent = Math.round((checkedCount / total) * 100);
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
             document.getElementById('checklistProgressText').innerText = `${checkedCount} / ${total} (${percent}%)`;
-            document.getElementById('checklistProgressFill').style.width = percent + '%';
+            document.getElementById('checklistProgressFill').style.width = `${percent}%`;
         }
 
-        function selectAllChecklist(select) {
-            document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]').forEach(cb => {
-                cb.checked = select;
-            });
+        function selectAllChecklist(status) {
+            const checkboxes = document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = status);
             updateChecklistProgress();
         }
 
-        function previewPhotos(input, targetId) {
-            const container = document.getElementById(targetId);
+        function previewPhotos(input, containerId) {
+            const container = document.getElementById(containerId);
             container.innerHTML = '';
-            if(input.files) {
+            if (input.files) {
                 Array.from(input.files).forEach(file => {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = (e) => {
                         const img = document.createElement('img');
                         img.src = e.target.result;
                         img.className = 'photo-preview-item';
                         container.appendChild(img);
-                    }
+                    };
                     reader.readAsDataURL(file);
                 });
             }
         }
 
         function submitSupervisorChecklist() {
-            showToast('Чек-лист сохранен!', '✅');
+            const orderId = document.getElementById('superOrderSelect').value;
+            if (!orderId) {
+                alert('Выберите заказ!');
+                return;
+            }
+            showToast(`Чек-лист по заказу #${orderId} успешно принят!`, '✅');
         }
 
         function sendSupervisorReportToWhatsAppGroup() {
-            window.open('https://chat.whatsapp.com/DMlGLlPaIal6H09ZSoesns', '_blank');
+            const orderId = document.getElementById('superOrderSelect').value || '---';
+            const progressText = document.getElementById('checklistProgressText').innerText;
+            const text = encodeURIComponent(`🎒 *ОТЧЕТ СУПЕРВАЙЗЕРА TAP TAZA*\nОбъект: Заказ #${orderId}\nГотовность чек-листа: ${progressText}\nКачество: Проверено и соответствует стандарту!`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
         }
 
-        let activeWarehouseTab = 'issue';
-        let whIsDamaged = false;
+        // ==========================================
+        // 🧹 Склад & Комплекты Инвентаря
+        // ==========================================
+        let currentWhTab = 'issue';
+        let isWhDamaged = false;
 
         function switchWarehouseTab(tab) {
-            activeWarehouseTab = tab;
+            currentWhTab = tab;
             document.getElementById('whTabIssue').classList.toggle('active', tab === 'issue');
             document.getElementById('whTabReturn').classList.toggle('active', tab === 'return');
-            
-            if(tab === 'issue') {
-                document.getElementById('whStatusText').innerText = 'Всё выдано исправно / Взял инвентарь';
-            } else {
-                document.getElementById('whStatusText').innerText = whIsDamaged ? '❌ Есть повреждения / проблемы' : '✅ Вернул всё на место (Без поломок)';
-            }
+            showToast(`Режим склада: ${tab === 'issue' ? 'Выдача (Утро)' : 'Возврат (Вечер)'}`);
         }
 
         function toggleWhDamageState() {
-            whIsDamaged = !whIsDamaged;
+            isWhDamaged = !isWhDamaged;
             const banner = document.getElementById('whStatusBanner');
             const icon = document.getElementById('whStatusIcon');
             const text = document.getElementById('whStatusText');
 
-            if(whIsDamaged) {
+            if (isWhDamaged) {
                 banner.classList.add('damaged');
-                icon.innerText = '❌';
-                text.innerText = 'Есть поломки или недосдача';
+                icon.innerText = '⚠️';
+                text.innerText = 'Обнаружены поломки / некомплект!';
             } else {
                 banner.classList.remove('damaged');
                 icon.innerText = '✅';
-                text.innerText = activeWarehouseTab === 'issue' ? 'Всё выдано исправно' : 'Вернул всё на место (Без поломок)';
+                text.innerText = 'Вернул всё на место (Без поломок)';
+            }
+        }
+
+        function updateWhKitDisplay() {
+            const kitId = Number(document.getElementById('whKitSelect').value);
+            const kit = state.kits.find(k => k.id === kitId);
+            if (kit && kit.assignee) {
+                document.getElementById('whEmpName').value = kit.assignee;
             }
         }
 
         function renderWarehouseKitsStatus() {
             const grid = document.getElementById('whKitsStatusGrid');
+            if (!grid) return;
             grid.innerHTML = '';
 
             state.kits.forEach(kit => {
                 const card = document.createElement('div');
                 card.className = 'kit-card';
-
                 card.innerHTML = `
                     <div class="kit-card-header">
-                        <span class="kit-title">🧰 ${kit.name}</span>
+                        <span class="kit-title">${kit.name}</span>
                         <span class="badge ${getStatusBadgeClass(kit.status)}">${kit.status}</span>
                     </div>
-                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><b>Ответственный:</b> ${kit.assignee}</p>
-
-                    <div style="margin-top:8px;">
-                        <select class="select-status" style="width:100%; margin-top:4px;" onchange="updateKitStatus(${kit.id}, this.value)">
-                            <option value="Сдан на складе" ${kit.status === 'Сдан на складе' ? 'selected' : ''}>🟢 Сдан на складе</option>
-                            <option value="Выдан (На объекте)" ${kit.status === 'Выдан (На объекте)' ? 'selected' : ''}>🟠 Выдан (На объекте)</option>
-                            <option value="Поломка / На ремонте" ${kit.status === 'Поломка / На ремонте' ? 'selected' : ''}>🔴 Поломка / На ремонте</option>
-                        </select>
-                    </div>
+                    <p style="font-size:12px; color:var(--text-muted);">Ответственный: <b>${kit.assignee || 'На складе'}</b></p>
+                    <p style="font-size:11px; color:var(--text-light); margin-top:4px;">Состояние: ${kit.notes}</p>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function updateKitStatus(kitId, newStatus) {
-            const kit = state.kits.find(k => k.id === kitId);
-            if(kit) {
-                kit.status = newStatus;
-                saveState();
-                renderWarehouseKitsStatus();
-            }
-        }
-
-        function updateWhKitDisplay() {}
-
         function sendWarehouseToWhatsApp() {
-            const empName = document.getElementById('whEmpName').value.trim() || 'Сотрудник';
-            const kitVal = document.getElementById('whKitSelect').value;
-            const kitName = `Комплект №${kitVal}`;
+            const empName = document.getElementById('whEmpName').value || 'Не указан';
+            const kitId = document.getElementById('whKitSelect').value;
+            const notes = document.getElementById('whNotes').value;
+            const tabTitle = currentWhTab === 'issue' ? 'ВЫДАЧА (Утро)' : 'ВОЗВРАТ (Вечер)';
 
-            const selectedEq = [];
+            const eqItems = [];
             document.querySelectorAll('.equipment-checklist-grid input[type="checkbox"]:checked').forEach(cb => {
-                selectedEq.push(cb.value);
+                eqItems.push(cb.value);
             });
 
-            const eqText = selectedEq.length > 0 ? selectedEq.join(', ') : 'Только базовый комплект';
-            const actionText = activeWarehouseTab === 'issue' ? '🕹 ВЫДАЧА (УТРО)' : '🕹 ВОЗВРАТ (ВЕЧЕР)';
-            const statusText = whIsDamaged ? '⚠️ ПОЛОМКИ' : '✅ БЕЗ ПОЛОМОК';
-            const notes = document.getElementById('whNotes').value.trim() || 'Замечаний нет';
-
-            const message = `🧹 *СКЛАД КЛИНИНГА TAP TAZA*
-----------------------------------
-*Операция:* ${actionText}
-*Сотрудник:* ${empName}
-*Комплект:* ${kitName}
-*Доп. оборудование:* ${eqText}
-*Состояние:* ${statusText}
-*Комментарии:* ${notes}`;
-
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+            const text = encodeURIComponent(`📦 *ОТЧЕТ СКЛАДА TAP TAZA*\nОперация: ${tabTitle}\nСотрудник: ${empName}\nКомплект: №${kitId}\nДоп. экипировка: ${eqItems.length > 0 ? eqItems.join(', ') : 'Стандарт'}\nСтатус: ${isWhDamaged ? '⚠️ Зафиксированы повреждения' : '✅ Без поломок'}\nЗамечания: ${notes || 'Нет'}`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
         }
 
+        // ==========================================
+        // 📑 Генератор Актов Выполненных Работ
+        // ==========================================
         let currentActMode = 'b2c';
 
         function switchActMode(mode) {
@@ -3749,8 +3757,8 @@
             document.getElementById('tab-b2c').classList.toggle('active', mode === 'b2c');
             document.getElementById('tab-b2b').classList.toggle('active', mode === 'b2b');
 
-            document.querySelectorAll('.field-b2c').forEach(el => el.style.display = mode === 'b2c' ? 'flex' : 'none');
-            document.querySelectorAll('.field-b2b').forEach(el => el.style.display = mode === 'b2b' ? 'flex' : 'none');
+            document.querySelectorAll('.field-b2c').forEach(el => el.style.display = mode === 'b2c' ? 'block' : 'none');
+            document.querySelectorAll('.field-b2b').forEach(el => el.style.display = mode === 'b2b' ? 'block' : 'none');
 
             document.getElementById('view-b2c').style.display = mode === 'b2c' ? 'block' : 'none';
             document.getElementById('view-b2b').style.display = mode === 'b2b' ? 'block' : 'none';
@@ -3759,79 +3767,67 @@
         }
 
         function updateActCode() {
-            const actNum = document.getElementById('in-act-num').value || '________';
-            const city = document.getElementById('in-city').value || '____________________';
-            const rawDate = document.getElementById('in-date').value;
-            const binIsp = document.getElementById('in-bin-isp').value || '_______________________';
-            const repIsp = document.getElementById('in-rep-isp').value || '_______________________';
+            const actNum = document.getElementById('in-act-num').value || '101';
+            const city = document.getElementById('in-city').value || 'Алматы';
+            const dateVal = document.getElementById('in-date').value ? new Date(document.getElementById('in-date').value) : new Date();
 
-            let day = '__', month = '______________', year = '_';
-            if (rawDate) {
-                const d = new Date(rawDate);
-                const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-                day = String(d.getDate()).padStart(2, '0');
-                month = months[d.getMonth()];
-                year = String(d.getFullYear()).slice(-2);
-            }
+            const day = String(dateVal.getDate()).padStart(2, '0');
+            const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+            const month = months[dateVal.getMonth()];
+            const year = String(dateVal.getFullYear()).slice(-2);
 
-            const priceMain = Number(document.getElementById('in-price-main').value.replace(/\s/g, '')) || 0;
-            const priceDop = Number(document.getElementById('in-price-dop').value.replace(/\s/g, '')) || 0;
-            const dopName = document.getElementById('in-dop-name').value || 'Доп. услуги';
-            const dopQty = document.getElementById('in-dop-qty').value || '________';
+            const binIsp = document.getElementById('in-bin-isp').value || '230540012345';
+            const repIsp = document.getElementById('in-rep-isp').value || 'Бекжанов М. М.';
 
-            const subtotal = priceMain + priceDop;
+            const b2cName = document.getElementById('in-b2c-name').value || 'Мухтар Бекжанов';
+            const b2cIin = document.getElementById('in-b2c-iin').value || '---';
+            const phone = document.getElementById('in-phone').value || '+7 771 071 93 75';
+            const objAddress = document.getElementById('in-object-address').value || 'г. Алматы';
+
+            const b2bCompany = document.getElementById('in-b2b-company').value || 'ТОО «Business Solutions»';
+            const b2bBin = document.getElementById('in-b2b-bin').value || '---';
+            const repZak = document.getElementById('in-rep-zak').value || 'Петров П. П.';
+
+            const priceMain = Number(document.getElementById('in-price-main').value) || 0;
+            const dopName = document.getElementById('in-dop-name').value || 'Дополнительные услуги';
+            const dopQty = document.getElementById('in-dop-qty').value || '1 услуга';
+            const priceDop = Number(document.getElementById('in-price-dop').value) || 0;
+            const totalSum = priceMain + priceDop;
+
             const vatType = document.getElementById('in-vat-type').value;
-
-            let finalTotal = subtotal;
             let vatText = 'Без НДС';
+            if (vatType === 'included') vatText = `${(totalSum * 0.16).toFixed(0)} ₸ (16% в т.ч.)`;
+            if (vatType === 'added') vatText = `${(totalSum * 0.16).toFixed(0)} ₸ (16% сверху)`;
 
-            if (vatType === 'included') {
-                const vatVal = Math.round(subtotal - (subtotal / 1.16));
-                vatText = vatVal.toLocaleString('ru-RU') + ' тенге (16%)';
-            } else if (vatType === 'added') {
-                const vatVal = Math.round(subtotal * 0.16);
-                finalTotal = subtotal + vatVal;
-                vatText = vatVal.toLocaleString('ru-RU') + ' тенге (16% сверху)';
-            }
+            const remarks = document.getElementById('in-remarks').value || 'Замечаний не имею, работы выполнены полностью.';
 
-            const objAddress = document.getElementById('in-object-address').value || '___________________________________________';
-            const customRemarks = document.getElementById('in-remarks').value;
+            // Обновление B2C
+            document.querySelectorAll('.out-act-num').forEach(el => el.innerText = actNum);
+            document.querySelectorAll('.out-city').forEach(el => el.innerText = city);
+            document.querySelectorAll('.out-day').forEach(el => el.innerText = day);
+            document.querySelectorAll('.out-month').forEach(el => el.innerText = month);
+            document.querySelectorAll('.out-year').forEach(el => el.innerText = year);
+            document.querySelectorAll('.out-bin-isp').forEach(el => el.innerText = binIsp);
+            document.querySelectorAll('.out-rep-isp').forEach(el => el.innerText = repIsp);
 
-            document.querySelectorAll('.out-act-num').forEach(e => e.innerText = actNum);
-            document.querySelectorAll('.out-city').forEach(e => e.innerText = city);
-            document.querySelectorAll('.out-day').forEach(e => e.innerText = day);
-            document.querySelectorAll('.out-month').forEach(e => e.innerText = month);
-            document.querySelectorAll('.out-year').forEach(e => e.innerText = year);
-            document.querySelectorAll('.out-bin-isp').forEach(e => e.innerText = binIsp);
-            document.querySelectorAll('.out-rep-isp').forEach(e => e.innerText = repIsp);
-            document.querySelectorAll('.out-object-address').forEach(e => e.innerText = objAddress);
+            document.querySelectorAll('.out-b2c-name').forEach(el => el.innerText = b2cName);
+            document.querySelectorAll('.out-b2c-name-sig').forEach(el => el.innerText = b2cName);
+            document.querySelectorAll('.out-b2c-iin').forEach(el => el.innerText = b2cIin);
+            document.querySelectorAll('.out-phone').forEach(el => el.innerText = phone);
+            document.querySelectorAll('.out-object-address').forEach(el => el.innerText = objAddress);
 
-            document.querySelectorAll('.out-price-main').forEach(e => e.innerText = priceMain ? priceMain.toLocaleString('ru-RU') : '________');
-            document.querySelectorAll('.out-price-dop').forEach(e => e.innerText = priceDop ? priceDop.toLocaleString('ru-RU') : '________');
-            document.querySelectorAll('.out-dop-name').forEach(e => e.innerText = dopName);
-            document.querySelectorAll('.out-dop-qty').forEach(e => e.innerText = dopQty);
-            document.querySelectorAll('.out-total-sum').forEach(e => e.innerText = finalTotal ? finalTotal.toLocaleString('ru-RU') : '____________');
+            document.querySelectorAll('.out-price-main').forEach(el => el.innerText = priceMain.toLocaleString());
+            document.querySelectorAll('.out-dop-name').forEach(el => el.innerText = dopName);
+            document.querySelectorAll('.out-dop-qty').forEach(el => el.innerText = dopQty);
+            document.querySelectorAll('.out-price-dop').forEach(el => el.innerText = priceDop.toLocaleString());
+            document.querySelectorAll('.out-total-sum').forEach(el => el.innerText = totalSum.toLocaleString());
+            document.querySelectorAll('.out-vat').forEach(el => el.innerText = vatText);
+            document.querySelectorAll('.out-remarks-b2c').forEach(el => el.innerText = remarks);
 
-            if (currentActMode === 'b2c') {
-                const b2cName = document.getElementById('in-b2c-name').value || '___________________________________________';
-                const b2cIin = document.getElementById('in-b2c-iin').value || '_________________________________';
-                const phone = document.getElementById('in-phone').value || '___________________________________________';
-
-                document.querySelectorAll('.out-b2c-name').forEach(e => e.innerText = b2cName);
-                document.querySelectorAll('.out-b2c-name-sig').forEach(e => e.innerText = b2cName);
-                document.querySelectorAll('.out-b2c-iin').forEach(e => e.innerText = b2cIin);
-                document.querySelectorAll('.out-phone').forEach(e => e.innerText = phone);
-                document.querySelectorAll('.out-remarks-b2c').forEach(e => e.innerText = customRemarks || 'Замечаний не имею, работы выполнены полностью.');
-            } else {
-                const company = document.getElementById('in-b2b-company').value || '___________________________________________';
-                const bin = document.getElementById('in-b2b-bin').value || '_________________________________';
-                const repZak = document.getElementById('in-rep-zak').value || '_______________________';
-
-                document.querySelectorAll('.out-b2b-company').forEach(e => e.innerText = company);
-                document.querySelectorAll('.out-b2b-bin').forEach(e => e.innerText = bin);
-                document.querySelectorAll('.out-rep-zak').forEach(e => e.innerText = repZak);
-                document.querySelectorAll('.out-vat').forEach(e => e.innerText = vatText);
-            }
+            // Обновление B2B
+            document.querySelectorAll('.out-b2b-company').forEach(el => el.innerText = b2bCompany);
+            document.querySelectorAll('.out-b2b-bin').forEach(el => el.innerText = b2bBin);
+            document.querySelectorAll('.out-rep-zak').forEach(el => el.innerText = repZak);
         }
 
         function saveAsPDF() {
@@ -3839,54 +3835,85 @@
         }
 
         function copyShareableLink() {
-            const mode = currentActMode;
-            const act = encodeURIComponent(document.getElementById('in-act-num').value);
-            const priceMain = encodeURIComponent(document.getElementById('in-price-main').value);
-            const priceDop = encodeURIComponent(document.getElementById('in-price-dop').value);
-            const vat = document.getElementById('in-vat-type').value;
-            const baseUrl = window.location.href.split('?')[0];
-            const fullUrl = `${baseUrl}?mode=${mode}&act=${act}&price1=${priceMain}&price2=${priceDop}&vat=${vat}`;
-
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                showToast('Ссылка скопирована!');
-            });
+            navigator.clipboard.writeText(window.location.href);
+            showToast('Ссылка на CRM скопирована в буфер!', '🔗');
         }
 
+        // ==========================================
+        // 🔍 Проверка Статуса Заказа
+        // ==========================================
         function showStatusResult() {
-            const query = document.getElementById('trackingInput').value.trim().toUpperCase();
-            const resBox = document.getElementById('statusResult');
+            const val = document.getElementById('trackingInput').value.trim().toUpperCase();
+            const resultBox = document.getElementById('statusResult');
 
-            if (!query) return;
+            if (!val) {
+                alert('Введите номер заказа!');
+                return;
+            }
 
-            const ord = state.orders.find(o => o.id.toUpperCase() === query || o.id.toUpperCase() === 'TT-' + query);
+            const ord = state.orders.find(o => o.id.toUpperCase() === val || o.id.replace('TT-', '') === val);
 
             if (ord) {
-                document.getElementById('statusOrderTitle').innerText = 'Заказ № ' + ord.id;
+                document.getElementById('statusOrderTitle').innerText = `Заказ #${ord.id}`;
                 document.getElementById('statusCustomer').innerText = ord.customerName;
                 document.getElementById('statusAddress').innerText = ord.customerAddress;
                 document.getElementById('statusServiceType').innerText = ord.serviceType;
-                document.getElementById('statusPrepay').innerText = ord.prepaymentReceived ? '✅ Получена (20k)' : '❌ Не получена';
+                document.getElementById('statusPrepay').innerText = ord.prepaymentReceived ? '✅ Получена (20 000 ₸)' : '❌ Не получена';
 
                 const badge = document.getElementById('statusBadge');
                 badge.innerText = ord.status;
                 badge.className = `badge ${getStatusBadgeClass(ord.status)}`;
 
-                resBox.style.display = 'block';
+                resultBox.style.display = 'block';
+                showToast(`Заказ #${ord.id} найден!`, '🔍');
             } else {
-                showToast('Заказ не найден', '⚠️');
-                resBox.style.display = 'none';
+                resultBox.style.display = 'none';
+                alert(`Заказ "${val}" не найден в системе.`);
             }
         }
 
-        window.onload = function() {
-            document.getElementById('in-date').valueAsDate = new Date();
+        // ==========================================
+        // 📌 Модальное Окно Памятки Клиенту
+        // ==========================================
+        function openMemoModal(orderId) {
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+
+            const memoText = `📌 *ПАМЯТКА ДЛЯ КЛИЕНТА TAP TAZA*\n\n` +
+                `Уважаемый(ая) ${ord.customerName}!\n` +
+                `Благодарим вас за выбор службы чистоты Tap Taza.\n\n` +
+                `📋 *Детали вашего заказа №${ord.id}:*\n` +
+                `• Адрес: ${ord.customerAddress}\n` +
+                `• Услуга: ${ord.serviceType}\n` +
+                `• Сумма заказа: ${Number(ord.totalPrice).toLocaleString()} ₸\n` +
+                `• Залог за бронирование: ${ord.prepaymentReceived ? '✅ Получен (20,000 ₸)' : '❌ Ожидает оплаты'}\n\n` +
+                `💡 *Подготовка к приезду бригады:*\n` +
+                `1. Пожалуйста, обеспечьте доступ к воде и электричеству.\n` +
+                `2. Уберите личные ценные вещи и документы в безопасное место.\n` +
+                `3. Если у вас есть особые пожелания к уборке, сообщите их супервайзеру до начала работ.\n\n` +
+                `С уважением, команда Tap Taza! ✨`;
+
+            document.getElementById('memoContent').innerHTML = memoText.replace(/\n/g, '<br>');
+
+            const cleanPhone = ord.customerPhone.replace(/[^0-9]/g, '');
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(memoText)}`;
+            document.getElementById('btnSendMemoWA').href = waUrl;
+
+            document.getElementById('memoModal').classList.add('active');
+        }
+
+        function closeMemoModal() {
+            document.getElementById('memoModal').classList.remove('active');
+        }
+
+        // ==========================================
+        // 🚀 Инициализация Приложения
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
             initMap();
             renderAllModules();
             updateCalculator();
-            updateChecklistProgress();
-        };
+        });
     </script>
 </body>
 </html>
-
-
