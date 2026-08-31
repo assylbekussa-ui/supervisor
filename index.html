@@ -1129,10 +1129,10 @@
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
         }
-        .sched-event-card:hover { transform: scale(1.02); z-index: 10; }
+        .sched-event-card:hover { transform: scale(1.02); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
 
         .sched-event-time {
             font-weight: 800;
@@ -1166,8 +1166,11 @@
             border: 1px solid var(--border);
         }
 
+        /* Status Colors */
         .sched-tag-amber { background: var(--amber-light); color: var(--amber); border-color: #fcd34d; }
-        .sched-tag-teal { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary-border); }
+        .sched-tag-green { background: var(--emerald-light); color: #047857; border-color: #a7f3d0; }
+        .sched-tag-blue  { background: var(--accent-light); color: #0369a1; border-color: #bae6fd; }
+        .sched-tag-teal  { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary-border); }
 
         /* Print CSS Rules */
         @media print {
@@ -1377,7 +1380,7 @@
                 <!-- Navigation & Controls Header -->
                 <div class="sched-header">
                     <div class="sched-date-nav">
-                        <div class="sched-date-title" id="schedCurrentDate">Сегодня ср, 26 августа</div>
+                        <div class="sched-date-title" id="schedCurrentDate">Сегодня</div>
                         <button class="sched-nav-btn" onclick="navigateSchedule(-1)" title="Предыдущий период">‹</button>
                         <button class="sched-nav-btn" onclick="navigateSchedule(1)" title="Следующий период">›</button>
                     </div>
@@ -2155,7 +2158,7 @@
         </div>
     </div>
 
-    <!-- Modal for Editing Order -->
+    <!-- Modal for Editing Order in CRM -->
     <div class="modal-backdrop" id="editOrderModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование Заказа</h3>
@@ -2251,7 +2254,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">ФИО Клиента / Название заказа</label>
-                <input type="text" id="schedInputTitle" class="form-input" placeholder="например: Смагулова Динара">
+                <input type="text" id="schedInputTitle" class="form-input" placeholder="например: CHANEL эскалатор">
             </div>
             <div class="form-group">
                 <label class="form-label">Столбец в графике</label>
@@ -2277,19 +2280,78 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Адрес объекта / Кабинет</label>
-                <input type="text" id="schedInputAddress" class="form-input" placeholder="например: ЖК Алма Сити, кв. 12">
+                <input type="text" id="schedInputAddress" class="form-input" placeholder="например: Самал 2, 111">
             </div>
             <div class="form-group">
-                <label class="form-label">Статус заявки</label>
+                <label class="form-label">Статус оплаты / заявки</label>
                 <select id="schedInputTag" class="form-input">
-                    <option value="Пришёл">🟢 Пришёл / На объекте</option>
-                    <option value="В процессе" selected>🟠 В процессе</option>
-                    <option value="Долг">📙 Долг (Оплата на месте)</option>
+                    <option value="Ожидает оплаты">⏳ Ожидает оплаты</option>
+                    <option value="Оплачен">✅ Оплачен</option>
+                    <option value="Выставили счет на оплату (компания)">🏢 Выставили счет на оплату (компания)</option>
+                    <option value="Счет оплачен (компания)">💼 Счет оплачен (компания)</option>
                 </select>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
                 <button class="btn btn-outline" onclick="closeAddSchedModal()">Отмена</button>
                 <button class="btn btn-primary" onclick="saveNewScheduleOrder()">Внести в расписание</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing/Deleting Schedule Order -->
+    <div class="modal-backdrop" id="editSchedModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom:16px;">✏️ Редактирование заказа в графике</h3>
+            <input type="hidden" id="editSchedId">
+            <div class="form-group">
+                <label class="form-label">Дата выезда</label>
+                <input type="date" id="editSchedDate" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">ФИО Клиента / Название заказа</label>
+                <input type="text" id="editSchedTitle" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Столбец в графике</label>
+                <select id="editSchedStaff" class="form-input">
+                    <option value="1">1 Бригада</option>
+                    <option value="2">2 Бригада</option>
+                    <option value="3">Химчистка</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Бригада / Клинер (ручной ввод)</label>
+                <input type="text" id="editSchedCleanerName" class="form-input">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label class="form-label">Время с:</label>
+                    <input type="time" id="editSchedStartTime" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Время до:</label>
+                    <input type="time" id="editSchedEndTime" class="form-input">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Адрес объекта</label>
+                <input type="text" id="editSchedAddress" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Статус оплаты / заявки</label>
+                <select id="editSchedTag" class="form-input">
+                    <option value="Ожидает оплаты">⏳ Ожидает оплаты</option>
+                    <option value="Оплачен">✅ Оплачен</option>
+                    <option value="Выставили счет на оплату (компания)">🏢 Выставили счет на оплату (компания)</option>
+                    <option value="Счет оплачен (компания)">💼 Счет оплачен (компания)</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                <button class="btn btn-danger" onclick="deleteScheduleOrder()">🗑 Удалить из графика</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-outline" onclick="closeEditSchedModal()">Отмена</button>
+                    <button class="btn btn-primary" onclick="saveEditedScheduleOrder()">Сохранить изменения</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2302,9 +2364,17 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Calendar & Schedule Date Control State
-        let currentScheduleDate = new Date(2026, 7, 26); // Default 26 Aug 2026
+        // Calendar & Schedule Date Control State (Defaults dynamically to Real Today)
+        let currentScheduleDate = new Date();
         let activeSchedView = 'day';
+
+        function getTodayISOStr() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
 
         // Global Application State
         let state = {
@@ -2347,13 +2417,11 @@
                 { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Данияр Токтаров', notes: 'Исправен' }
             ],
             scheduleEvents: [
-                { id: 101, date: '2026-08-26', staffId: 1, cleanerName: 'Асхат К.', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Пришёл' },
-                { id: 102, date: '2026-08-26', staffId: 1, cleanerName: 'Асхат и Ерлан', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'В процессе' },
-                { id: 103, date: '2026-08-26', staffId: 2, cleanerName: 'Ерлан М.', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Пришёл' },
-                { id: 104, date: '2026-08-26', staffId: 2, cleanerName: 'Ерлан М.', startTime: '10:00', endTime: '11:30', title: 'Нурланова Камила', address: 'ЖК Легенда', statusTag: 'Долг' },
-                { id: 105, date: '2026-08-26', staffId: 3, cleanerName: 'Данияр Т.', startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Пришёл' },
-                { id: 106, date: '2026-08-27', staffId: 1, cleanerName: 'Бригада 1', startTime: '09:00', endTime: '11:00', title: 'Муканов Бауржан', address: 'ЖК Медеу', statusTag: 'В процессе' },
-                { id: 107, date: '2026-08-28', staffId: 2, cleanerName: 'Ерлан М.', startTime: '10:00', endTime: '13:00', title: 'Аскарова Айнур', address: 'мкр. Аксай', statusTag: 'Пришёл' }
+                { id: 101, date: getTodayISOStr(), staffId: 1, cleanerName: 'Асхат К.', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Оплачен' },
+                { id: 102, date: getTodayISOStr(), staffId: 1, cleanerName: 'Асхат и Ерлан', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'Ожидает оплаты' },
+                { id: 103, date: getTodayISOStr(), staffId: 2, cleanerName: 'Ерлан М.', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Выставили счет на оплату (компания)' },
+                { id: 104, date: getTodayISOStr(), staffId: 2, cleanerName: 'Ерлан М.', startTime: '21:30', endTime: '23:59', title: 'CHANEL эскалатор', address: 'Самал 2, 111', statusTag: 'Счет оплачен (компания)' },
+                { id: 105, date: getTodayISOStr(), staffId: 3, cleanerName: 'Данияр Т.', startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Оплачен' }
             ]
         };
 
@@ -2470,6 +2538,8 @@
                 renderAnalytics();
                 if(map) setTimeout(() => { map.invalidateSize(); }, 200);
             } else if(moduleId === 'schedule') {
+                // AUTO-UPDATE DATE TO TODAY WHEN SWITCHING TO SCHEDULE TAB
+                currentScheduleDate = new Date();
                 updateScheduleDateDisplay();
                 renderScheduleCards();
             }
@@ -2562,7 +2632,7 @@
             const dayNum = date.getDate();
             const monthName = months[date.getMonth()];
             
-            const today = new Date(2026, 7, 26);
+            const today = new Date();
             const isToday = date.toDateString() === today.toDateString();
             
             const prefix = isToday ? 'Сегодня ' : '';
@@ -2622,6 +2692,14 @@
             return `${y}-${m}-${d}`;
         }
 
+        function getSchedTagClass(tag) {
+            if (tag === 'Оплачен') return 'sched-tag-green';
+            if (tag === 'Ожидает оплаты') return 'sched-tag-amber';
+            if (tag === 'Выставили счет на оплату (компания)') return 'sched-tag-blue';
+            if (tag === 'Счет оплачен (компания)') return 'sched-tag-teal';
+            return 'sched-tag-teal';
+        }
+
         function renderScheduleCards() {
             if (activeSchedView === 'day') {
                 renderDayView();
@@ -2641,11 +2719,8 @@
 
             const currentDateStr = getISOFormattedDate(currentScheduleDate);
 
-            // Filter events for the current date
-            const filteredEvents = state.scheduleEvents.filter(ev => {
-                if (!ev.date) return currentDateStr === '2026-08-26';
-                return ev.date === currentDateStr;
-            });
+            // Filter events for current date
+            const filteredEvents = state.scheduleEvents.filter(ev => ev.date === currentDateStr);
 
             filteredEvents.forEach(ev => {
                 const targetCol = document.getElementById(`col-staff-${ev.staffId}`);
@@ -2661,8 +2736,9 @@
                 card.className = 'sched-event-card';
                 card.style.top = `${topPos}px`;
                 card.style.height = `${cardHeight - 4}px`;
+                card.onclick = () => openEditSchedModal(ev.id);
 
-                const tagClass = ev.statusTag === 'Долг' ? 'sched-tag-amber' : 'sched-tag-teal';
+                const tagClass = getSchedTagClass(ev.statusTag);
                 const cleanerInfo = ev.cleanerName ? `<div style="font-size:10px; color:var(--primary-dark); font-weight:700;">👤 ${ev.cleanerName}</div>` : '';
 
                 card.innerHTML = `
@@ -2672,7 +2748,7 @@
                         ${cleanerInfo}
                     </div>
                     <div class="sched-event-tags">
-                        <span class="sched-tag ${tagClass}">${ev.statusTag}</span>
+                        <span class="sched-tag ${tagClass}">${ev.statusTag || 'Ожидает оплаты'}</span>
                         <span class="sched-tag">${ev.address}</span>
                     </div>
                 `;
@@ -2730,6 +2806,8 @@
                     card.style.marginBottom = '8px';
                     card.style.fontSize = '11px';
                     card.style.textAlign = 'left';
+                    card.style.cursor = 'pointer';
+                    card.onclick = () => openEditSchedModal(ev.id);
 
                     const colName = ev.staffId == 1 ? '1 Бригада' : (ev.staffId == 2 ? '2 Бригада' : 'Химчистка');
                     const cleanerText = ev.cleanerName ? ` (${ev.cleanerName})` : '';
@@ -2739,7 +2817,7 @@
                         <div style="font-weight:700; color:var(--text-main); margin:2px 0;">${ev.title}</div>
                         <div style="color:var(--text-muted); font-size:10px;"><b>${colName}</b>${cleanerText}</div>
                         <div style="color:var(--text-muted); font-size:10px;">📍 ${ev.address}</div>
-                        <span class="sched-tag ${ev.statusTag === 'Долг' ? 'sched-tag-amber' : 'sched-tag-teal'}" style="margin-top:4px; display:inline-block;">${ev.statusTag}</span>
+                        <span class="sched-tag ${getSchedTagClass(ev.statusTag)}" style="margin-top:4px; display:inline-block;">${ev.statusTag || 'Ожидает оплаты'}</span>
                     `;
                     dayCol.appendChild(card);
                 });
@@ -2834,6 +2912,11 @@
                     badge.style.whiteSpace = 'nowrap';
                     badge.style.overflow = 'hidden';
                     badge.style.textOverflow = 'ellipsis';
+                    badge.style.cursor = 'pointer';
+                    badge.onclick = (e) => {
+                        e.stopPropagation();
+                        openEditSchedModal(ev.id);
+                    };
                     const colName = ev.staffId == 1 ? '1 Бр' : (ev.staffId == 2 ? '2 Бр' : 'Хим');
                     const cleanerText = ev.cleanerName ? ` - ${ev.cleanerName}` : '';
                     badge.innerText = `${ev.startTime} ${ev.title} (${colName}${cleanerText})`;
@@ -2888,6 +2971,59 @@
             closeAddSchedModal();
             renderScheduleCards();
             showToast(`Заказ "${title}" добавлен на ${dateVal}!`, '📅');
+        }
+
+        /* Editing and Deleting Schedule Order */
+        function openEditSchedModal(eventId) {
+            const ev = state.scheduleEvents.find(e => e.id === eventId);
+            if (!ev) return;
+
+            document.getElementById('editSchedId').value = ev.id;
+            document.getElementById('editSchedDate').value = ev.date;
+            document.getElementById('editSchedTitle').value = ev.title;
+            document.getElementById('editSchedStaff').value = ev.staffId;
+            document.getElementById('editSchedCleanerName').value = ev.cleanerName || '';
+            document.getElementById('editSchedStartTime').value = ev.startTime;
+            document.getElementById('editSchedEndTime').value = ev.endTime;
+            document.getElementById('editSchedAddress').value = ev.address;
+            document.getElementById('editSchedTag').value = ev.statusTag || 'Ожидает оплаты';
+
+            document.getElementById('editSchedModal').classList.add('active');
+        }
+
+        function closeEditSchedModal() {
+            document.getElementById('editSchedModal').classList.remove('active');
+        }
+
+        function saveEditedScheduleOrder() {
+            const eventId = Number(document.getElementById('editSchedId').value);
+            const ev = state.scheduleEvents.find(e => e.id === eventId);
+            if (!ev) return;
+
+            ev.date = document.getElementById('editSchedDate').value;
+            ev.title = document.getElementById('editSchedTitle').value.trim() || 'Заказ';
+            ev.staffId = Number(document.getElementById('editSchedStaff').value);
+            ev.cleanerName = document.getElementById('editSchedCleanerName').value.trim();
+            ev.startTime = document.getElementById('editSchedStartTime').value;
+            ev.endTime = document.getElementById('editSchedEndTime').value;
+            ev.address = document.getElementById('editSchedAddress').value.trim();
+            ev.statusTag = document.getElementById('editSchedTag').value;
+
+            saveState();
+            closeEditSchedModal();
+            renderScheduleCards();
+            showToast('Заказ в графике успешно обновлен!', '✏️');
+        }
+
+        function deleteScheduleOrder() {
+            const eventId = Number(document.getElementById('editSchedId').value);
+            if (confirm('Вы действительно хотите удалить этот заказ из графика?')) {
+                state.scheduleEvents = state.scheduleEvents.filter(e => e.id !== eventId);
+                saveState();
+                closeEditSchedModal();
+                renderScheduleCards();
+                showToast('Заказ удален из графика!', '🗑');
+            }
         }
 
         // ---------------- MODULE 3: ORDERS ----------------
