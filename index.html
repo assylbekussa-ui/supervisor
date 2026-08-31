@@ -8,12 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Leaflet Map CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -1346,7 +1347,6 @@
 </head>
 <body>
 
-    <!-- Mobile Top Header Bar -->
     <header class="mobile-header">
         <div class="brand-mini">
             <div class="brand-logo-mini">TT</div>
@@ -1357,10 +1357,8 @@
         </button>
     </header>
 
-    <!-- Drawer Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Sidebar / Drawer Menu -->
     <aside id="mainSidebar">
         <div class="brand">
             <div class="brand-logo">TT</div>
@@ -1421,9 +1419,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main>
-        <!-- Header -->
         <div class="header-bar">
             <div class="header-title">
                 <h2 id="page-title">Аналитика и Карта заказов</h2>
@@ -1442,7 +1438,6 @@
             </div>
         </div>
 
-        <!-- MODULE 1: ANALYTICS & MAP -->
         <section id="analytics" class="module active">
             <div class="grid-4">
                 <div class="stat-card">
@@ -1477,7 +1472,6 @@
 
             <div class="dashboard-grid">
                 <div>
-                    <!-- Days Distribution Chart -->
                     <div class="card">
                         <div class="card-header">
                             <h3>📊 Динамика доходов (₸)</h3>
@@ -1486,7 +1480,6 @@
                         <canvas id="daysChart" height="140"></canvas>
                     </div>
 
-                    <!-- Active Orders Table in Analytics -->
                     <div class="card">
                         <div class="card-header">
                             <h3>📋 Действующие заказы в системе</h3>
@@ -1504,15 +1497,13 @@
                                     </tr>
                                 </thead>
                                 <tbody id="analyticsOrdersTableBody">
-                                    <!-- Dynamic Rows -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <!-- Interactive Leaflet Map -->
                     <div class="card">
                         <div class="card-header">
                             <h3>🗺 Карта выездов (Алматы)</h3>
@@ -1521,7 +1512,6 @@
                         <div id="mapContainer"></div>
                     </div>
 
-                    <!-- Financial Summary Quick Card -->
                     <div class="card" style="background: linear-gradient(135deg, var(--dark), var(--dark-surface)); color:#fff;">
                         <h3 style="color:#fff; margin-bottom:8px;">💡 Депозиты и Предоплаты</h3>
                         <p style="font-size:13px; opacity:0.9;">Фиксированный залог за бронирование даты — <b>20,000 ₸</b>.</p>
@@ -1533,10 +1523,8 @@
             </div>
         </section>
 
-        <!-- MODULE 2: SCHEDULE & CALENDAR -->
         <section id="schedule" class="module">
             <div class="card">
-                <!-- Navigation & Controls Header -->
                 <div class="sched-header">
                     <div class="sched-date-nav">
                         <div class="sched-date-title" id="schedCurrentDate">Сегодня</div>
@@ -1554,7 +1542,6 @@
                     </div>
                 </div>
 
-                <!-- Schedule Grid Body (Day View) -->
                 <div class="sched-grid-container" id="schedDayGrid">
                     <div class="sched-columns-header">
                         <div style="border-right:1px solid var(--border);"></div>
@@ -1581,7 +1568,6 @@
                         </div>
                     </div>
 
-                    <!-- Time Grid Body (00:00 to 23:59) -->
                     <div class="sched-body-grid">
                         <div class="sched-time-labels">
                             <div class="sched-time-slot-label">00:00</div>
@@ -1621,7 +1607,6 @@
             </div>
         </section>
 
-        <!-- MODULE 3: ORDERS & CLIENT MEMO -->
         <section id="orders" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1643,14 +1628,12 @@
                             </tr>
                         </thead>
                         <tbody id="ordersTableBody">
-                            <!-- Dynamic Orders Rows -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 4: CLEANING CALCULATOR -->
         <section id="calculator" class="module">
             <div class="card">
                 <div class="calc-grid">
@@ -1663,7 +1646,6 @@
                             </div>
                         </div>
 
-                        <!-- Main Property Section -->
                         <div id="calcPropertySection">
                             <div class="form-group">
                                 <label class="form-label">2. Выберите тип объекта</label>
@@ -1689,7 +1671,6 @@
                             </div>
                         </div>
 
-                        <!-- Extras Section -->
                         <div class="form-group">
                             <label class="form-label">Выберите дополнительные услуги Tap Taza:</label>
                             <div class="extra-services">
@@ -1732,7 +1713,6 @@
                             </div>
                         </div>
 
-                        <!-- Manual Price Entry Section -->
                         <div class="form-group" id="manualPriceSection" style="background:var(--primary-light); padding:14px; border-radius:10px; border:1px solid var(--primary-border);">
                             <label class="form-label" style="color:var(--primary-dark); font-size:13px;">✍️ Ручной ввод цены (₸):</label>
                             <input type="number" id="calcManualPriceInput" class="form-input" placeholder="Введите цену вручную" oninput="updateCalculator()" style="font-weight:700; font-size:15px;">
@@ -1754,7 +1734,6 @@
                         </div>
                     </div>
 
-                    <!-- Calculator Summary -->
                     <div class="calc-summary-box">
                         <h3 style="color:#2dd4bf; margin-bottom:16px; font-size:18px;">Итоговый расчет стоимости</h3>
                         <div class="summary-row">
@@ -1790,7 +1769,6 @@
             </div>
         </section>
 
-        <!-- MODULE 5: EMPLOYEES & SALARY -->
         <section id="employees" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1836,14 +1814,12 @@
                             </tr>
                         </thead>
                         <tbody id="employeesTableBody">
-                            <!-- Dynamic Employees Rows -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 6: SUPERVISOR CHECKLIST -->
         <section id="supervisor" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1857,8 +1833,7 @@
                 <div class="form-group" style="background:var(--bg-main); padding:14px; border-radius:8px; border:1px solid var(--border);">
                     <label class="form-label">🎯 Обслуживаемый заказ:</label>
                     <select id="superOrderSelect" class="form-input" style="font-weight:600;" onchange="loadOrderIntoSupervisor()">
-                        <!-- Dynamic options -->
-                    </select>
+                        </select>
                 </div>
 
                 <div style="margin-bottom:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
@@ -1913,7 +1888,6 @@
             </div>
         </section>
 
-        <!-- MODULE 7: WAREHOUSE & EQUIPMENT KITS -->
         <section id="inventory" class="module">
             <div class="warehouse-box">
                 <h2 class="warehouse-title">🧹 Склад Клининга</h2>
@@ -1973,7 +1947,6 @@
             </div>
         </section>
 
-        <!-- MODULE 8: ACTS GENERATOR -->
         <section id="acts" class="module">
             <div class="act-control-panel">
                 <div class="act-tabs">
@@ -2003,7 +1976,6 @@
                         <input type="text" id="in-rep-isp" value="Бекжанов М. М." oninput="updateActCode()">
                     </div>
 
-                    <!-- B2C Fields -->
                     <div class="form-group field-b2c">
                         <label>Ф.И.О. Заказчика:</label>
                         <input type="text" id="in-b2c-name" value="Мухтар Бекжанов" oninput="updateActCode()">
@@ -2013,7 +1985,6 @@
                         <input type="text" id="in-b2c-iin" value="900101300123" oninput="updateActCode()">
                     </div>
 
-                    <!-- B2B Fields -->
                     <div class="form-group field-b2b" style="display:none;">
                         <label>Наименование ЮЛ Заказчика:</label>
                         <input type="text" id="in-b2b-company" value="ТОО «Business Solutions»" oninput="updateActCode()">
@@ -2083,9 +2054,7 @@
                 </div>
             </div>
 
-            <!-- Бланк документа -->
             <div class="act-document-sheet">
-                <!-- ВАРИАНТ B2C -->
                 <div id="view-b2c">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2099,31 +2068,30 @@
                     </div>
 
                     <div class="act-info-block">
-                        <strong>Исполнитель:</strong> ТОО «Tap Taza» БИН: <span class="out-bin-isp">_______________________</span><br>
-                        <strong>Заказчик:</strong> Ф.И.О.: <span class="out-b2c-name">___________________________________________</span><br>
-                        ИИН: <span class="out-b2c-iin">_________________________________</span><br>
-                        Телефон: <span class="out-phone">___________________________________________</span><br>
-                        Адрес объекта: <span class="out-object-address">___________________________________________</span>
+                        <strong>Исполнитель:</strong> ТОО «Tap Taza», БИН: <span class="out-bin-isp">_______________________</span><br>
+                        <strong>Заказчик (Ф.И.О.):</strong> <span class="out-b2c-name">___________________________________________</span><br>
+                        <strong>ИИН:</strong> <span class="out-b2c-iin">_________________________________</span> | <strong>Тел:</strong> <span class="out-phone">_____________________</span><br>
+                        <strong>Адрес объекта:</strong> <span class="out-object-address">___________________________________________</span>
                     </div>
 
                     <div class="act-doc-section-title">1. Основание</div>
-                    <p>Настоящий Акт составлен в подтверждение оказания услуг по Публичной оферте ТОО «Tap Taza».</p>
+                    <p>Настоящий Акт составлен в подтверждение оказания клининговых услуг на основании Публичной оферты ТОО «Tap Taza» и заявки Заказчика.</p>
 
                     <div class="act-doc-section-title">2. Перечень оказанных услуг</div>
                     <table class="act-doc-table">
                         <thead>
                             <tr>
                                 <th style="width: 30px;">№</th>
-                                <th>Услуга</th>
+                                <th>Наименование услуги</th>
                                 <th style="width: 80px;">Кол-во</th>
-                                <th style="width: 80px;">Цена, ₸</th>
-                                <th style="width: 80px;">Сумма, ₸</th>
+                                <th style="width: 90px;">Цена, ₸</th>
+                                <th style="width: 90px;">Сумма, ₸</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>Разовая уборка помещения</td>
+                                <td>Разовая уборка помещения (основная услуга)</td>
                                 <td>1 услуга</td>
                                 <td class="out-price-main">________</td>
                                 <td class="out-price-main">________</td>
@@ -2137,29 +2105,28 @@
                             </tr>
                         </tbody>
                     </table>
+                    <p style="margin-top: 8px;"><strong>Итого стоимость оказанных услуг:</strong> <span class="out-total-sum">____________</span> тенге.</p>
 
-                    <p><strong>Итого стоимость услуг:</strong> <span class="out-total-sum">____________</span> тенге.</p>
+                    <div class="act-doc-section-title">3. Подтверждение оказания услуг и замечания Заказчика</div>
+                    <p>Услуги оказаны Исполнителем в полном объеме, надлежащего качества и в установленные сроки. Заказчик произвел осмотр и приемку результатов выполненных работ.<br>
+                    <strong>Замечания Заказчика:</strong> «<span class="out-remarks-b2c">Замечаний не имею, работы выполнены полностью.</span>»</p>
 
-                    <div class="act-doc-section-title">3. Подтверждение оказания услуг</div>
-                    <p>Исполнитель оказал услуги в полном объеме и в срок.<br>
-                    <strong>Замечания Заказчика:</strong> «<span class="out-remarks-b2c">Замечаний не имею.</span>»</p>
-
+                    <div class="act-doc-section-title">4. Адреса, реквизиты и подписи сторон</div>
                     <div class="act-signatures-block">
                         <div class="act-sig-col">
-                            <strong>Исполнитель</strong><br>
+                            <strong>Исполнитель:</strong><br>
                             ТОО «Tap Taza»<br>
                             Представитель: <span class="out-rep-isp">___________________</span><br>
-                            Подпись ___________
+                            Подпись: ______________
                         </div>
                         <div class="act-sig-col">
-                            <strong>Заказчик</strong><br>
-                            Ф.И.О. <span class="out-b2c-name-sig">___________________</span><br>
-                            Подпись ___________
+                            <strong>Заказчик:</strong><br>
+                            Ф.И.О.: <span class="out-b2c-name-sig">___________________</span><br>
+                            Подпись: ______________
                         </div>
                     </div>
                 </div>
 
-                <!-- ВАРИАНТ B2B -->
                 <div id="view-b2b" style="display:none;">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2173,62 +2140,70 @@
                     </div>
 
                     <div class="act-info-block">
-                        <strong>Исполнитель:</strong> ТОО «Tap Taza» БИН: <span class="out-bin-isp">_______________________</span><br>
-                        <strong>Заказчик:</strong> Наименование ЮЛ <span class="out-b2b-company">___________________________________________</span><br>
-                        БИН <span class="out-b2b-bin">_________________________________</span><br>
-                        Адрес объекта: <span class="out-object-address">___________________________________________</span>
+                        <strong>Исполнитель:</strong> ТОО «Tap Taza», БИН: <span class="out-bin-isp">_______________________</span><br>
+                        <strong>Заказчик:</strong> <span class="out-b2b-company">___________________________________________</span>, БИН: <span class="out-b2b-bin">_____________________</span><br>
+                        <strong>Адрес объекта:</strong> <span class="out-object-address">___________________________________________</span>
                     </div>
 
-                    <div class="act-doc-section-title">1. Оказанные услуги</div>
+                    <div class="act-doc-section-title">1. Основание</div>
+                    <p>Настоящий Акт составлен в соответствии с Договором на оказание клининговых услуг № <span class="out-act-num">________</span>.</p>
+
+                    <div class="act-doc-section-title">2. Перечень оказанных услуг</div>
                     <table class="act-doc-table">
                         <thead>
                             <tr>
                                 <th style="width: 30px;">№</th>
-                                <th>Услуга</th>
+                                <th>Наименование работы (услуги)</th>
                                 <th style="width: 80px;">Кол-во</th>
-                                <th style="width: 80px;">Цена, ₸</th>
-                                <th style="width: 80px;">Сумма, ₸</th>
+                                <th style="width: 90px;">Цена, ₸</th>
+                                <th style="width: 90px;">Сумма, ₸</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>Клининговые услуги по уборке помещений</td>
+                                <td>Клининговые услуги по уборке коммерческих помещений</td>
                                 <td>1 услуга</td>
                                 <td class="out-price-main">________</td>
                                 <td class="out-price-main">________</td>
                             </tr>
                             <tr>
                                 <td>2</td>
-                                <td class="out-dop-name">Дополнительные услуги</td>
+                                <td class="out-dop-name">Дополнительные услуги / Специализированная чистка</td>
                                 <td class="out-dop-qty">________</td>
                                 <td class="out-price-dop">________</td>
                                 <td class="out-price-dop">________</td>
                             </tr>
                         </tbody>
                     </table>
+                    <p style="margin-top: 8px;">
+                        <strong>Итого стоимость оказанных услуг:</strong> <span class="out-total-sum">____________</span> тенге.<br>
+                        <strong>В том числе НДС:</strong> <span class="out-vat">Без НДС</span>
+                    </p>
 
-                    <p><strong>Итого стоимость услуг:</strong> <span class="out-total-sum">____________</span> тенге.<br>
-                    <strong>В том числе НДС:</strong> <span class="out-vat">Без НДС</span></p>
+                    <div class="act-doc-section-title">3. Подтверждение оказания услуг и замечания Заказчика</div>
+                    <p>Услуги оказаны в полном объеме, в соответствии с требованиями Договора и регламентами. Стороны претензий по объёму, качеству и срокам оказания услуг не имеют.<br>
+                    <strong>Замечания Заказчика:</strong> «Замечания отсутствуют.»</p>
 
+                    <div class="act-doc-section-title">4. Адреса, реквизиты и подписи сторон</div>
                     <div class="act-signatures-block">
                         <div class="act-sig-col">
-                            <strong>Исполнитель</strong><br>
+                            <strong>Исполнитель:</strong><br>
                             ТОО «Tap Taza»<br>
                             Представитель: <span class="out-rep-isp">___________________</span><br>
-                            Подпись ___________
+                            Подпись / М.П.: ______________
                         </div>
                         <div class="act-sig-col">
-                            <strong>Заказчик</strong><br>
+                            <strong>Заказчик:</strong><br>
+                            <span class="out-b2b-company">___________________</span><br>
                             Представитель: <span class="out-rep-zak">___________________</span><br>
-                            Подпись ___________
+                            Подпись / М.П.: ______________
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 9: STATUS LOOKUP -->
         <section id="status" class="module">
             <div class="lookup-box">
                 <div class="brand-logo" style="margin: 0 auto 16px;">TT</div>
@@ -2253,7 +2228,6 @@
         </section>
     </main>
 
-    <!-- Modal for Client Memo -->
     <div class="modal-backdrop" id="memoModal">
         <div class="modal-card">
             <h3 style="margin-bottom:12px;">📌 Памятка Клиенту</h3>
@@ -2265,7 +2239,6 @@
         </div>
     </div>
 
-    <!-- Modal for Editing Order in CRM -->
     <div class="modal-backdrop" id="editOrderModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование Заказа</h3>
@@ -2317,7 +2290,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding Employee -->
     <div class="modal-backdrop" id="addEmpModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">+ Добавить Сотрудника</h3>
@@ -2351,7 +2323,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding New Schedule Order -->
     <div class="modal-backdrop" id="addSchedModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">+ Добавить заказ в график</h3>
@@ -2405,7 +2376,6 @@
         </div>
     </div>
 
-    <!-- Modal for Editing/Deleting Schedule Order -->
     <div class="modal-backdrop" id="editSchedModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование заказа в графике</h3>
@@ -2463,14 +2433,23 @@
         </div>
     </div>
 
-    <!-- Toast Banner -->
     <div id="toast">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">Действие выполнено успешно!</span>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
+        // --- REALTIME DATABASE FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            databaseURL: "https://supervisor-464a6-default-rtdb.firebaseio.com/"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+        const dbRef = db.ref('crm_state');
+
         // Drawer Navigation Logic for Mobile
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('mainSidebar');
@@ -2498,7 +2477,7 @@
             return `${y}-${m}-${day}`;
         }
 
-        // Global State
+        // Global State (Синхронизирован под ваши данные!)
         let state = {
             orders: [
                 {
@@ -2529,24 +2508,26 @@
                 }
             ],
             employees: [
-                { id: 1, name: 'Асхат Касымов', role: 'Бригадир (Комплект 1)', payType: 'daily', rate: 12000, shifts: 15 },
-                { id: 2, name: 'Ерлан Мамыров', role: 'Клинер (Комплект 2)', payType: 'daily', rate: 12000, shifts: 12 },
-                { id: 3, name: 'Айгерим СMM', role: 'SMM-маркетолог', payType: 'monthly', rate: 350000, shifts: 0 }
+                { id: 1, name: 'Гуля', role: 'Клинер 3', payType: 'daily', rate: 12000, shifts: 10 },
+                { id: 2, name: 'Рыскуль', role: 'Клинер 2', payType: 'daily', rate: 12000, shifts: 12 },
+                { id: 3, name: 'Жадыра', role: 'Клинер 1', payType: 'daily', rate: 12000, shifts: 13 },
+                { id: 4, name: 'Диана', role: 'СММ', payType: 'monthly', rate: 350000, shifts: 0 },
+                { id: 5, name: 'Али', role: 'Таргет', payType: 'monthly', rate: 250000, shifts: 0 },
+                { id: 6, name: 'Асылбек', role: 'Project Manager', payType: 'monthly', rate: 350000, shifts: 0 }
             ],
             kits: [
-                { id: 1, name: 'Комплект №1', status: 'Выдан (На объекте)', assignee: 'Асхат Касымов', notes: 'Исправен' },
-                { id: 2, name: 'Комплект №2', status: 'Выдан (На объекте)', assignee: 'Ерлан Мамыров', notes: 'Исправен' },
-                { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Данияр Токтаров', notes: 'Исправен' }
+                { id: 1, name: 'Комплект №1', status: 'Выдан (На объекте)', assignee: 'Гуля', notes: 'Исправен' },
+                { id: 2, name: 'Комплект №2', status: 'Выдан (На объекте)', assignee: 'Рыскуль', notes: 'Исправен' },
+                { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Жадыра', notes: 'Исправен' }
             ],
             scheduleEvents: [
-                { id: 101, date: getTodayISOStr(), staffId: 1, cleanerName: 'Асхат К.', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Оплачен' },
-                { id: 102, date: getTodayISOStr(), staffId: 1, cleanerName: 'Асхат и Ерлан', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'Ожидает оплаты' },
-                { id: 103, date: getTodayISOStr(), staffId: 2, cleanerName: 'Ерлан М.', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Выставили счет на оплату (компания)' },
-                { id: 104, date: getTodayISOStr(), staffId: 2, cleanerName: 'Ерлан М.', startTime: '21:30', endTime: '23:59', title: 'CHANEL эскалатор', address: 'Самал 2, 111', statusTag: 'Счет оплачен (компания)' },
-                { id: 105, date: getTodayISOStr(), staffId: 3, cleanerName: 'Данияр Т.', startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Оплачен' }
+                { id: 101, date: getTodayISOStr(), staffId: 1, cleanerName: 'Гуля', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Оплачен' },
+                { id: 102, date: getTodayISOStr(), staffId: 1, cleanerName: 'Рыскуль', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'Ожидает оплаты' },
+                { id: 103, date: getTodayISOStr(), staffId: 2, cleanerName: 'Жадыра', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Выставили счет на оплату (компания)' }
             ]
         };
 
+        // Загружаем из локального хранилища браузера
         if(localStorage.getItem('tap_taza_state')) {
             try {
                 const loaded = JSON.parse(localStorage.getItem('tap_taza_state'));
@@ -2557,8 +2538,21 @@
             } catch(e) { console.error(e); }
         }
 
+        // Автоматическая подгрузка и синхронизация из облака Firebase Realtime DB
+        dbRef.on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                state = val;
+                localStorage.setItem('tap_taza_state', JSON.stringify(state));
+                renderAllModules();
+            }
+        });
+
         function saveState() {
             localStorage.setItem('tap_taza_state', JSON.stringify(state));
+            if(dbRef) {
+                dbRef.set(state);
+            }
         }
 
         function reloadPageData() {
@@ -3697,207 +3691,4 @@
                 card.className = 'kit-card';
 
                 card.innerHTML = `
-                    <div class="kit-card-header">
-                        <span class="kit-title">🧰 ${kit.name}</span>
-                        <span class="badge ${getStatusBadgeClass(kit.status)}">${kit.status}</span>
-                    </div>
-                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><b>Ответственный:</b> ${kit.assignee}</p>
-
-                    <div style="margin-top:8px;">
-                        <select class="select-status" style="width:100%; margin-top:4px;" onchange="updateKitStatus(${kit.id}, this.value)">
-                            <option value="Сдан на складе" ${kit.status === 'Сдан на складе' ? 'selected' : ''}>🟢 Сдан на складе</option>
-                            <option value="Выдан (На объекте)" ${kit.status === 'Выдан (На объекте)' ? 'selected' : ''}>🟠 Выдан (На объекте)</option>
-                            <option value="Поломка / На ремонте" ${kit.status === 'Поломка / На ремонте' ? 'selected' : ''}>🔴 Поломка / На ремонте</option>
-                        </select>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function updateKitStatus(kitId, newStatus) {
-            const kit = state.kits.find(k => k.id === kitId);
-            if(kit) {
-                kit.status = newStatus;
-                saveState();
-                renderWarehouseKitsStatus();
-            }
-        }
-
-        function updateWhKitDisplay() {}
-
-        function sendWarehouseToWhatsApp() {
-            const empName = document.getElementById('whEmpName').value.trim() || 'Сотрудник';
-            const kitVal = document.getElementById('whKitSelect').value;
-            const kitName = `Комплект №${kitVal}`;
-
-            const selectedEq = [];
-            document.querySelectorAll('.equipment-checklist-grid input[type="checkbox"]:checked').forEach(cb => {
-                selectedEq.push(cb.value);
-            });
-
-            const eqText = selectedEq.length > 0 ? selectedEq.join(', ') : 'Только базовый комплект';
-            const actionText = activeWarehouseTab === 'issue' ? '🕹 ВЫДАЧА (УТРО)' : '🕹 ВОЗВРАТ (ВЕЧЕР)';
-            const statusText = whIsDamaged ? '⚠️ ПОЛОМКИ' : '✅ БЕЗ ПОЛОМОК';
-            const notes = document.getElementById('whNotes').value.trim() || 'Замечаний нет';
-
-            const message = `🧹 *СКЛАД КЛИНИНГА TAP TAZA*
-----------------------------------
-*Операция:* ${actionText}
-*Сотрудник:* ${empName}
-*Комплект:* ${kitName}
-*Доп. оборудование:* ${eqText}
-*Состояние:* ${statusText}
-*Комментарии:* ${notes}`;
-
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        // ACTS
-        let currentActMode = 'b2c';
-
-        function switchActMode(mode) {
-            currentActMode = mode;
-            document.getElementById('tab-b2c').classList.toggle('active', mode === 'b2c');
-            document.getElementById('tab-b2b').classList.toggle('active', mode === 'b2b');
-
-            document.querySelectorAll('.field-b2c').forEach(el => el.style.display = mode === 'b2c' ? 'flex' : 'none');
-            document.querySelectorAll('.field-b2b').forEach(el => el.style.display = mode === 'b2b' ? 'flex' : 'none');
-
-            document.getElementById('view-b2c').style.display = mode === 'b2c' ? 'block' : 'none';
-            document.getElementById('view-b2b').style.display = mode === 'b2b' ? 'block' : 'none';
-
-            updateActCode();
-        }
-
-        function updateActCode() {
-            const actNum = document.getElementById('in-act-num').value || '________';
-            const city = document.getElementById('in-city').value || '____________________';
-            const rawDate = document.getElementById('in-date').value;
-            const binIsp = document.getElementById('in-bin-isp').value || '_______________________';
-            const repIsp = document.getElementById('in-rep-isp').value || '_______________________';
-
-            let day = '__', month = '______________', year = '_';
-            if (rawDate) {
-                const d = new Date(rawDate);
-                const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-                day = String(d.getDate()).padStart(2, '0');
-                month = months[d.getMonth()];
-                year = String(d.getFullYear()).slice(-2);
-            }
-
-            const priceMain = Number(document.getElementById('in-price-main').value.replace(/\s/g, '')) || 0;
-            const priceDop = Number(document.getElementById('in-price-dop').value.replace(/\s/g, '')) || 0;
-            const dopName = document.getElementById('in-dop-name').value || 'Доп. услуги';
-            const dopQty = document.getElementById('in-dop-qty').value || '________';
-
-            const subtotal = priceMain + priceDop;
-            const vatType = document.getElementById('in-vat-type').value;
-
-            let finalTotal = subtotal;
-            let vatText = 'Без НДС';
-
-            if (vatType === 'included') {
-                const vatVal = Math.round(subtotal - (subtotal / 1.16));
-                vatText = vatVal.toLocaleString('ru-RU') + ' тенге (16%)';
-            } else if (vatType === 'added') {
-                const vatVal = Math.round(subtotal * 0.16);
-                finalTotal = subtotal + vatVal;
-                vatText = vatVal.toLocaleString('ru-RU') + ' тенге (16% сверху)';
-            }
-
-            const objAddress = document.getElementById('in-object-address').value || '___________________________________________';
-            const customRemarks = document.getElementById('in-remarks').value;
-
-            document.querySelectorAll('.out-act-num').forEach(e => e.innerText = actNum);
-            document.querySelectorAll('.out-city').forEach(e => e.innerText = city);
-            document.querySelectorAll('.out-day').forEach(e => e.innerText = day);
-            document.querySelectorAll('.out-month').forEach(e => e.innerText = month);
-            document.querySelectorAll('.out-year').forEach(e => e.innerText = year);
-            document.querySelectorAll('.out-bin-isp').forEach(e => e.innerText = binIsp);
-            document.querySelectorAll('.out-rep-isp').forEach(e => e.innerText = repIsp);
-            document.querySelectorAll('.out-object-address').forEach(e => e.innerText = objAddress);
-
-            document.querySelectorAll('.out-price-main').forEach(e => e.innerText = priceMain ? priceMain.toLocaleString('ru-RU') : '________');
-            document.querySelectorAll('.out-price-dop').forEach(e => e.innerText = priceDop ? priceDop.toLocaleString('ru-RU') : '________');
-            document.querySelectorAll('.out-dop-name').forEach(e => e.innerText = dopName);
-            document.querySelectorAll('.out-dop-qty').forEach(e => e.innerText = dopQty);
-            document.querySelectorAll('.out-total-sum').forEach(e => e.innerText = finalTotal ? finalTotal.toLocaleString('ru-RU') : '____________');
-
-            if (currentActMode === 'b2c') {
-                const b2cName = document.getElementById('in-b2c-name').value || '___________________________________________';
-                const b2cIin = document.getElementById('in-b2c-iin').value || '_________________________________';
-                const phone = document.getElementById('in-phone').value || '___________________________________________';
-
-                document.querySelectorAll('.out-b2c-name').forEach(e => e.innerText = b2cName);
-                document.querySelectorAll('.out-b2c-name-sig').forEach(e => e.innerText = b2cName);
-                document.querySelectorAll('.out-b2c-iin').forEach(e => e.innerText = b2cIin);
-                document.querySelectorAll('.out-phone').forEach(e => e.innerText = phone);
-                document.querySelectorAll('.out-remarks-b2c').forEach(e => e.innerText = customRemarks || 'Замечаний не имею.');
-            } else {
-                const company = document.getElementById('in-b2b-company').value || '___________________________________________';
-                const bin = document.getElementById('in-b2b-bin').value || '_________________________________';
-                const repZak = document.getElementById('in-rep-zak').value || '_______________________';
-
-                document.querySelectorAll('.out-b2b-company').forEach(e => e.innerText = company);
-                document.querySelectorAll('.out-b2b-bin').forEach(e => e.innerText = bin);
-                document.querySelectorAll('.out-rep-zak').forEach(e => e.innerText = repZak);
-                document.querySelectorAll('.out-vat').forEach(e => e.innerText = vatText);
-            }
-        }
-
-        function saveAsPDF() {
-            window.print();
-        }
-
-        function copyShareableLink() {
-            const mode = currentActMode;
-            const act = encodeURIComponent(document.getElementById('in-act-num').value);
-            const priceMain = encodeURIComponent(document.getElementById('in-price-main').value);
-            const priceDop = encodeURIComponent(document.getElementById('in-price-dop').value);
-            const vat = document.getElementById('in-vat-type').value;
-            const baseUrl = window.location.href.split('?')[0];
-            const fullUrl = `${baseUrl}?mode=${mode}&act=${act}&price1=${priceMain}&price2=${priceDop}&vat=${vat}`;
-
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                showToast('Ссылка скопирована!');
-            });
-        }
-
-        // STATUS LOOKUP
-        function showStatusResult() {
-            const query = document.getElementById('trackingInput').value.trim().toUpperCase();
-            const resBox = document.getElementById('statusResult');
-
-            if (!query) return;
-
-            const ord = state.orders.find(o => o.id.toUpperCase() === query || o.id.toUpperCase() === 'TT-' + query);
-
-            if (ord) {
-                document.getElementById('statusOrderTitle').innerText = 'Заказ № ' + ord.id;
-                document.getElementById('statusCustomer').innerText = ord.customerName;
-                document.getElementById('statusAddress').innerText = ord.customerAddress;
-                document.getElementById('statusServiceType').innerText = ord.serviceType;
-                document.getElementById('statusPrepay').innerText = ord.prepaymentReceived ? '✅ Получена (20k)' : '❌ Не получена';
-
-                const badge = document.getElementById('statusBadge');
-                badge.innerText = ord.status;
-                badge.className = `badge ${getStatusBadgeClass(ord.status)}`;
-
-                resBox.style.display = 'block';
-            } else {
-                showToast('Заказ не найден', '⚠️');
-                resBox.style.display = 'none';
-            }
-        }
-
-        window.onload = function() {
-            document.getElementById('in-date').valueAsDate = new Date();
-            initMap();
-            renderAllModules();
-            updateCalculator();
-            updateChecklistProgress();
-        };
-    </script>
-</body>
-</html>
+                    <div class="kit-card-
