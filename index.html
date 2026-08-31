@@ -8,10 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Leaflet Map CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -1201,7 +1199,6 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <aside>
         <div class="brand">
             <div class="brand-logo">TT</div>
@@ -1262,9 +1259,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main>
-        <!-- Header -->
         <div class="header-bar">
             <div class="header-title">
                 <h2 id="page-title">Аналитика и Карта заказов</h2>
@@ -1283,7 +1278,6 @@
             </div>
         </div>
 
-        <!-- MODULE 1: ANALYTICS & MAP -->
         <section id="analytics" class="module active">
             <div class="grid-4">
                 <div class="stat-card">
@@ -1318,7 +1312,6 @@
 
             <div class="dashboard-grid">
                 <div>
-                    <!-- Days Distribution Chart -->
                     <div class="card">
                         <div class="card-header">
                             <h3>📊 Динамика доходов (₸)</h3>
@@ -1327,7 +1320,6 @@
                         <canvas id="daysChart" height="140"></canvas>
                     </div>
 
-                    <!-- Active Orders Table in Analytics -->
                     <div class="card">
                         <div class="card-header">
                             <h3>📋 Действующие заказы в системе</h3>
@@ -1345,15 +1337,13 @@
                                     </tr>
                                 </thead>
                                 <tbody id="analyticsOrdersTableBody">
-                                    <!-- Dynamic Rows -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <!-- Interactive Leaflet Map -->
                     <div class="card">
                         <div class="card-header">
                             <h3>🗺 Карта выездов (Алматы)</h3>
@@ -1362,7 +1352,6 @@
                         <div id="mapContainer"></div>
                     </div>
 
-                    <!-- Financial Summary Quick Card -->
                     <div class="card" style="background: linear-gradient(135deg, var(--dark), var(--dark-surface)); color:#fff;">
                         <h3 style="color:#fff; margin-bottom:8px;">💡 Депозиты и Предоплаты</h3>
                         <p style="font-size:13px; opacity:0.9;">Фиксированный залог за бронирование даты — <b>20,000 ₸</b>.</p>
@@ -1374,10 +1363,8 @@
             </div>
         </section>
 
-        <!-- MODULE 2: SCHEDULE & CALENDAR -->
         <section id="schedule" class="module">
             <div class="card">
-                <!-- Navigation & Controls Header -->
                 <div class="sched-header">
                     <div class="sched-date-nav">
                         <div class="sched-date-title" id="schedCurrentDate">Сегодня</div>
@@ -1387,7 +1374,6 @@
 
                     <div style="display:flex; gap:12px; align-items:center;">
                         <button class="btn btn-primary" style="padding:7px 14px; font-size:12px;" onclick="openAddSchedModal()">+ Добавить заказ</button>
-                        <!-- View Selector: День / Неделя / Месяц -->
                         <div class="sched-view-pills">
                             <button class="sched-pill-btn active" id="viewBtnDay" onclick="setSchedView('day')">День</button>
                             <button class="sched-pill-btn" id="viewBtnWeek" onclick="setSchedView('week')">Неделя</button>
@@ -1396,9 +1382,7 @@
                     </div>
                 </div>
 
-                <!-- Schedule Grid Body (Day View) -->
                 <div class="sched-grid-container" id="schedDayGrid">
-                    <!-- Column Titles (3 fixed columns: 1 Бригада, 2 Бригада, Химчистка) -->
                     <div class="sched-columns-header">
                         <div style="border-right:1px solid var(--border);"></div>
                         <div class="sched-col-title">
@@ -1424,9 +1408,7 @@
                         </div>
                     </div>
 
-                    <!-- Time Grid Body (00:00 to 23:59) -->
                     <div class="sched-body-grid">
-                        <!-- Y-Axis Time Labels (24 slots) -->
                         <div class="sched-time-labels">
                             <div class="sched-time-slot-label">00:00</div>
                             <div class="sched-time-slot-label">01:00</div>
@@ -1454,22 +1436,17 @@
                             <div class="sched-time-slot-label">23:00</div>
                         </div>
 
-                        <!-- Column 1: 1 Бригада -->
                         <div class="sched-staff-column" id="col-staff-1"></div>
-                        <!-- Column 2: 2 Бригада -->
                         <div class="sched-staff-column" id="col-staff-2"></div>
-                        <!-- Column 3: Химчистка -->
                         <div class="sched-staff-column" id="col-staff-3"></div>
                     </div>
                 </div>
 
-                <!-- Views for Week / Month -->
                 <div id="schedWeekGrid" style="display:none; padding:10px;"></div>
                 <div id="schedMonthGrid" style="display:none; padding:10px;"></div>
             </div>
         </section>
 
-        <!-- MODULE 3: ORDERS & CLIENT MEMO -->
         <section id="orders" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1491,14 +1468,12 @@
                             </tr>
                         </thead>
                         <tbody id="ordersTableBody">
-                            <!-- Dynamic Orders Rows -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 4: CLEANING CALCULATOR -->
         <section id="calculator" class="module">
             <div class="card">
                 <div class="calc-grid">
@@ -1511,7 +1486,6 @@
                             </div>
                         </div>
 
-                        <!-- Main Property Section -->
                         <div id="calcPropertySection">
                             <div class="form-group">
                                 <label class="form-label">2. Выберите тип объекта</label>
@@ -1537,7 +1511,6 @@
                             </div>
                         </div>
 
-                        <!-- Extras Section -->
                         <div class="form-group">
                             <label class="form-label">Выберите дополнительные услуги Tap Taza:</label>
                             <div class="extra-services">
@@ -1580,7 +1553,6 @@
                             </div>
                         </div>
 
-                        <!-- Manual Price Entry Section -->
                         <div class="form-group" id="manualPriceSection" style="background:var(--primary-light); padding:16px; border-radius:10px; border:1px solid var(--primary-border);">
                             <label class="form-label" style="color:var(--primary-dark); font-size:14px;">✍️ Ручной ввод цены / Своя стоимость (₸):</label>
                             <input type="number" id="calcManualPriceInput" class="form-input" placeholder="Введите цену вручную (например: 15000)" oninput="updateCalculator()" style="font-weight:700; font-size:16px;">
@@ -1590,7 +1562,7 @@
                         <div class="form-group">
                             <label class="form-label">Данные Клиента & Предоплата</label>
                             <input type="text" id="calcCustomerName" class="form-input" placeholder="ФИО Клиента" value="Мухтар Бекжанов">
-                            <input type="text" id="calcCustomerPhone" class="form-input" placeholder="Телефон WhatsApp (+7 700 ...)" value="+7 (777) 090-88-28">
+                            <input type="text" id="calcCustomerPhone" class="form-input" placeholder="Телефон WhatsApp (+7 771 ...)" value="+7 771 071 93 75">
                             <input type="text" id="calcCustomerAddress" class="form-input" placeholder="Адрес объекта" value="г. Алматы, пр. Аль-Фараби, д. 77">
                             
                             <div style="margin-top:12px;">
@@ -1603,7 +1575,6 @@
                         </div>
                     </div>
 
-                    <!-- Calculator Summary -->
                     <div class="calc-summary-box">
                         <h3 style="color:#2dd4bf; margin-bottom:16px; font-size:18px;">Итоговый расчет стоимости</h3>
                         <div class="summary-row">
@@ -1639,7 +1610,6 @@
             </div>
         </section>
 
-        <!-- MODULE 5: EMPLOYEES & SALARY -->
         <section id="employees" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1685,14 +1655,12 @@
                             </tr>
                         </thead>
                         <tbody id="employeesTableBody">
-                            <!-- Dynamic Employees Rows -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 6: SUPERVISOR CHECKLIST -->
         <section id="supervisor" class="module">
             <div class="card">
                 <div class="card-header">
@@ -1703,12 +1671,10 @@
                     </div>
                 </div>
 
-                <!-- Select Active Order -->
                 <div class="form-group" style="background:var(--bg-main); padding:16px; border-radius:8px; border:1px solid var(--border);">
                     <label class="form-label" style="font-size:14px; color:var(--dark);">🎯 Выберите обслуживаемый заказ:</label>
                     <select id="superOrderSelect" class="form-input" style="font-weight:600;" onchange="loadOrderIntoSupervisor()">
-                        <!-- Dynamic options -->
-                    </select>
+                        </select>
                 </div>
 
                 <div style="margin-bottom:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
@@ -1766,7 +1732,6 @@
             </div>
         </section>
 
-        <!-- MODULE 7: WAREHOUSE & EQUIPMENT KITS -->
         <section id="inventory" class="module">
             <div class="warehouse-box">
                 <h2 class="warehouse-title">🧹 Склад Клининга Tap Taza</h2>
@@ -1827,12 +1792,10 @@
                     <h3>📦 Текущий статус 3-х мобильных комплектов на складе</h3>
                 </div>
                 <div class="kits-grid" id="whKitsStatusGrid">
-                    <!-- Dynamic Kit Status Cards -->
-                </div>
+                    </div>
             </div>
         </section>
 
-        <!-- MODULE 8: ACTS GENERATOR -->
         <section id="acts" class="module">
             <div class="act-control-panel">
                 <div class="act-tabs">
@@ -1862,7 +1825,6 @@
                         <input type="text" id="in-rep-isp" value="Бекжанов М. М." oninput="updateActCode()">
                     </div>
 
-                    <!-- B2C Fields -->
                     <div class="form-group field-b2c">
                         <label>Ф.И.О. Заказчика:</label>
                         <input type="text" id="in-b2c-name" value="Мухтар Бекжанов" oninput="updateActCode()">
@@ -1872,7 +1834,6 @@
                         <input type="text" id="in-b2c-iin" value="900101300123" oninput="updateActCode()">
                     </div>
 
-                    <!-- B2B Fields -->
                     <div class="form-group field-b2b" style="display:none;">
                         <label>Наименование ЮЛ Заказчика:</label>
                         <input type="text" id="in-b2b-company" value="ТОО «Business Solutions»" oninput="updateActCode()">
@@ -1896,7 +1857,7 @@
 
                     <div class="form-group field-b2c">
                         <label>Телефон Заказчика:</label>
-                        <input type="text" id="in-phone" value="+7 (777) 090-88-28" oninput="updateActCode()">
+                        <input type="text" id="in-phone" value="+7 771 071 93 75" oninput="updateActCode()">
                     </div>
                     <div class="form-group" style="grid-column: span 2;">
                         <label>Адрес объекта оказания услуг:</label>
@@ -1935,15 +1896,14 @@
                     </div>
                 </div>
 
-                <div style="display:flex; gap:12px; margin-top:15px;">
-                    <button class="btn btn-primary" onclick="window.print()">🖨️ Печать / Сохранить в PDF</button>
+                <div style="display:flex; gap:12px; margin-top:15px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Печать</button>
+                    <button class="btn btn-outline" onclick="saveAsPDF()">📥 Сохранить в PDF</button>
                     <button class="btn btn-whatsapp" onclick="copyShareableLink()">🔗 Скопировать ссылку</button>
                 </div>
             </div>
 
-            <!-- Бланк документа -->
             <div class="act-document-sheet">
-                <!-- ВАРИАНТ B2C -->
                 <div id="view-b2c">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2031,7 +1991,6 @@
                     </div>
                 </div>
 
-                <!-- ВАРИАНТ B2B -->
                 <div id="view-b2b" style="display:none;">
                     <div class="act-header-title">
                         <h1>АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ)</h1>
@@ -2120,7 +2079,6 @@
             </div>
         </section>
 
-        <!-- MODULE 9: STATUS LOOKUP -->
         <section id="status" class="module">
             <div class="lookup-box">
                 <div class="brand-logo" style="margin: 0 auto 16px;">TT</div>
@@ -2146,7 +2104,6 @@
         </section>
     </main>
 
-    <!-- Modal for Client Memo -->
     <div class="modal-backdrop" id="memoModal">
         <div class="modal-card">
             <h3 style="margin-bottom:12px;">📌 Памятка Клиенту и Регламент Заказа</h3>
@@ -2158,7 +2115,6 @@
         </div>
     </div>
 
-    <!-- Modal for Editing Order in CRM -->
     <div class="modal-backdrop" id="editOrderModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование Заказа</h3>
@@ -2210,7 +2166,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding Employee -->
     <div class="modal-backdrop" id="addEmpModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">+ Добавить Сотрудника</h3>
@@ -2244,7 +2199,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding New Schedule Order -->
     <div class="modal-backdrop" id="addSchedModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">+ Добавить заказ в график</h3>
@@ -2298,7 +2252,6 @@
         </div>
     </div>
 
-    <!-- Modal for Editing/Deleting Schedule Order -->
     <div class="modal-backdrop" id="editSchedModal">
         <div class="modal-card">
             <h3 style="margin-bottom:16px;">✏️ Редактирование заказа в графике</h3>
@@ -2356,13 +2309,11 @@
         </div>
     </div>
 
-    <!-- Toast Banner -->
     <div id="toast">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">Действие выполнено успешно!</span>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
         // Calendar & Schedule Date Control State (Defaults dynamically to Real Today)
         let currentScheduleDate = new Date();
@@ -2383,7 +2334,7 @@
                     id: 'TT-8921',
                     createdAt: new Date().toISOString(),
                     customerName: 'Мухтар Бекжанов',
-                    customerPhone: '+7 (777) 090-88-28',
+                    customerPhone: '+7 771 071 93 75',
                     customerAddress: 'г. Алматы, пр. Аль-Фараби, д. 77',
                     serviceType: 'Генеральная уборка (120 м²)',
                     extras: ['🧊 Холодильник внутри', '🔥 Духовка от жира', '🪟 Мойка окон (2 шт)'],
@@ -2396,7 +2347,7 @@
                     id: 'TT-8922',
                     createdAt: new Date().toISOString(),
                     customerName: 'ТОО «Алма Инвест»',
-                    customerPhone: '+7 (701) 555-12-34',
+                    customerPhone: '+7 771 071 93 75',
                     customerAddress: 'мкр. Самал-2, д. 14',
                     serviceType: 'После ремонта (210 м²)',
                     extras: ['💨 Парогенератор', '🚪 Кухонные шкафы'],
@@ -2538,7 +2489,6 @@
                 renderAnalytics();
                 if(map) setTimeout(() => { map.invalidateSize(); }, 200);
             } else if(moduleId === 'schedule') {
-                // AUTO-UPDATE DATE TO TODAY WHEN SWITCHING TO SCHEDULE TAB
                 currentScheduleDate = new Date();
                 updateScheduleDateDisplay();
                 renderScheduleCards();
@@ -2711,15 +2661,12 @@
         }
 
         function renderDayView() {
-            // Clear columns
             [1, 2, 3].forEach(id => {
                 const col = document.getElementById(`col-staff-${id}`);
                 if (col) col.innerHTML = '';
             });
 
             const currentDateStr = getISOFormattedDate(currentScheduleDate);
-
-            // Filter events for current date
             const filteredEvents = state.scheduleEvents.filter(ev => ev.date === currentDateStr);
 
             filteredEvents.forEach(ev => {
@@ -2973,7 +2920,6 @@
             showToast(`Заказ "${title}" добавлен на ${dateVal}!`, '📅');
         }
 
-        /* Editing and Deleting Schedule Order */
         function openEditSchedModal(eventId) {
             const ev = state.scheduleEvents.find(e => e.id === eventId);
             if (!ev) return;
@@ -3271,7 +3217,7 @@
 
         function transferCalcToOrdersAndAct() {
             const custName = document.getElementById('calcCustomerName').value || 'Новый Клиент';
-            const custPhone = document.getElementById('calcCustomerPhone').value || '+7 (700) 000-00-00';
+            const custPhone = document.getElementById('calcCustomerPhone').value || '+7 771 071 93 75';
             const custAddr = document.getElementById('calcCustomerAddress').value || 'г. Алматы';
             const prepayReceived = (document.getElementById('calcPrepaySelect').value === 'true');
             const orderNo = 'TT-' + Math.floor(1000 + Math.random() * 9000);
@@ -3479,8 +3425,8 @@
                 <b>ПРАВИЛА ПОДГОТОВКИ ОБЪЕКТА:</b><br>
                 1. Обеспечить доступ к помещению, наличие воды и электроснабжения.<br>
                 2. <b>ЦЕННЫЕ ВЕЩИ:</b> В целях безопасности просим до начала уборки убрать в закрываемые шкафы или сейфы денежные средства, ювелирные изделия и ценные бумаги.<br>
-                3. <b>ПРИЕМКА И ПРАВИЛО 24 ЧАСОВ:</b> Осмотрите объект после завершения. По правилу 24 часов вы можете направить мотивированные замечания.<br><br>
-                📞 Контакты: +7 (777) 090-88-28
+                3. <b>ПРИЕМКА И КОНТРОЛЬ КАЧЕСТВА:</b> Для квартир, частных домов и других жилых помещений приемка разовой или генеральной уборки производится не позднее чем через 1 час после завершения работ, а проверка качества поверхностей — в течение первых 30 минут (СТ РК ГОСТ Р 51870 / СТ РК 3778-2022).<br><br>
+                📞 Контакты: +7 771 071 93 75
             `;
 
             document.getElementById('memoContent').innerHTML = memoText;
@@ -3497,8 +3443,9 @@
 Памятка клиенту:
 1. Уберите ценные вещи в закрываемые места.
 2. Обеспечьте доступ к воде и свету.
+3. Приемка работы производится не позднее чем через 1 час после завершения, проверка поверхностей — в течение 30 минут.
 
-Спасибо за выбор Tap Taza! Тел: +7 (777) 090-88-28`;
+Спасибо за выбор Tap Taza! Тел: +7 771 071 93 75`;
 
             document.getElementById('btnSendMemoWA').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(rawMsg)}`;
             document.getElementById('memoModal').classList.add('active');
@@ -3566,7 +3513,6 @@
             document.getElementById('whTabIssue').classList.toggle('active', tab === 'issue');
             document.getElementById('whTabReturn').classList.toggle('active', tab === 'return');
             
-            const banner = document.getElementById('whStatusBanner');
             if(tab === 'issue') {
                 document.getElementById('whStatusText').innerText = 'Всё выдано исправно / Взял инвентарь';
             } else {
@@ -3765,6 +3711,10 @@ _Зафиксировано в CRM Tap Taza_`;
                 document.querySelectorAll('.out-vat').forEach(e => e.innerText = vatText);
                 document.querySelectorAll('.out-remarks-b2b').forEach(e => e.innerText = customRemarks || 'Услуги приняты. Претензий по объему, качеству и срокам оказания услуг не имеется.');
             }
+        }
+
+        function saveAsPDF() {
+            window.print();
         }
 
         function copyShareableLink() {
