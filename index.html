@@ -24,14 +24,14 @@
             --primary-light: #f0fdfa;    /* Soft Teal Tint */
             --primary-border: #99f6e4;   /* Light Teal Border */
             
-            --dark: #0f172a;             /* Deep Slate Navy Sidebar */
+            --dark: #0f172a;              /* Deep Slate Navy Sidebar */
             --dark-surface: #1e293b;     /* Slate 800 */
             --dark-hover: #334155;       /* Slate 700 */
             
             --accent: #0284c7;           /* Sky Blue Accent */
             --accent-light: #e0f2fe;     /* Sky Light Tint */
             
-            --emerald: #10b981;         /* Success Emerald */
+            --emerald: #10b981;          /* Success Emerald */
             --emerald-light: #d1fae5;    
             
             --amber: #f59e0b;            /* Warning Gold */
@@ -45,7 +45,7 @@
             
             --bg-main: #f8fafc;          /* Light Off-White Background */
             --card-bg: #ffffff;          /* Card Pure White */
-            --border: #e2e8f0;           /* Soft Border */
+            --border: #e2e8f0;            /* Soft Border */
             --border-hover: #cbd5e1;
             
             --text-main: #0f172a;        /* Main Text Slate 900 */
@@ -1111,7 +1111,7 @@
         .sched-staff-column {
             position: relative;
             border-right: 1px solid var(--border);
-            height: 720px; /* 12 slots * 60px */
+            height: 1440px; /* 24 slots * 60px = 1440px (с 00:00 до 23:59) */
             background-size: 100% 60px;
             background-image: linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
         }
@@ -1371,10 +1371,10 @@
             </div>
         </section>
 
-        <!-- MODULE 2: SCHEDULE & CALENDAR (ADAPTED FROM PHOTO) -->
+        <!-- MODULE 2: SCHEDULE & CALENDAR -->
         <section id="schedule" class="module">
             <div class="card">
-                <!-- Navigation & Controls Header (From Photo) -->
+                <!-- Navigation & Controls Header -->
                 <div class="sched-header">
                     <div class="sched-date-nav">
                         <div class="sched-date-title" id="schedCurrentDate">Сегодня ср, 26 августа</div>
@@ -1395,36 +1395,44 @@
 
                 <!-- Schedule Grid Body (Day View) -->
                 <div class="sched-grid-container" id="schedDayGrid">
-                    <!-- Column Titles (Cleaners / Brigades) -->
+                    <!-- Column Titles (3 fixed columns: 1 Бригада, 2 Бригада, Химчистка) -->
                     <div class="sched-columns-header">
                         <div style="border-right:1px solid var(--border);"></div>
                         <div class="sched-col-title">
-                            <div class="sched-avatar-circle">АК</div>
+                            <div class="sched-avatar-circle">Б1</div>
                             <div class="sched-col-info">
-                                <h4>Асхат К.</h4>
-                                <p>Бригадир (Комплект 1)</p>
+                                <h4>1 Бригада</h4>
+                                <p>Выездная бригада №1</p>
                             </div>
                         </div>
                         <div class="sched-col-title">
-                            <div class="sched-avatar-circle" style="background:#0284c7;">ЕМ</div>
+                            <div class="sched-avatar-circle" style="background:#0284c7;">Б2</div>
                             <div class="sched-col-info">
-                                <h4>Ерлан М.</h4>
-                                <p>Клинер-эксперт (Комплект 2)</p>
+                                <h4>2 Бригада</h4>
+                                <p>Выездная бригада №2</p>
                             </div>
                         </div>
                         <div class="sched-col-title">
-                            <div class="sched-avatar-circle" style="background:#f59e0b;">ДТ</div>
+                            <div class="sched-avatar-circle" style="background:#f59e0b;">ХМ</div>
                             <div class="sched-col-info">
-                                <h4>Данияр Т.</h4>
-                                <p>Специалист химчистки</p>
+                                <h4>Химчистка</h4>
+                                <p>Специалист по химчистке</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Time Grid Body -->
+                    <!-- Time Grid Body (00:00 to 23:59) -->
                     <div class="sched-body-grid">
-                        <!-- Y-Axis Time Labels -->
+                        <!-- Y-Axis Time Labels (24 slots) -->
                         <div class="sched-time-labels">
+                            <div class="sched-time-slot-label">00:00</div>
+                            <div class="sched-time-slot-label">01:00</div>
+                            <div class="sched-time-slot-label">02:00</div>
+                            <div class="sched-time-slot-label">03:00</div>
+                            <div class="sched-time-slot-label">04:00</div>
+                            <div class="sched-time-slot-label">05:00</div>
+                            <div class="sched-time-slot-label">06:00</div>
+                            <div class="sched-time-slot-label">07:00</div>
                             <div class="sched-time-slot-label">08:00</div>
                             <div class="sched-time-slot-label">09:00</div>
                             <div class="sched-time-slot-label">10:00</div>
@@ -1437,26 +1445,24 @@
                             <div class="sched-time-slot-label">17:00</div>
                             <div class="sched-time-slot-label">18:00</div>
                             <div class="sched-time-slot-label">19:00</div>
+                            <div class="sched-time-slot-label">20:00</div>
+                            <div class="sched-time-slot-label">21:00</div>
+                            <div class="sched-time-slot-label">22:00</div>
+                            <div class="sched-time-slot-label">23:00</div>
                         </div>
 
-                        <!-- Column 1: Асхат K. -->
+                        <!-- Column 1: 1 Бригада -->
                         <div class="sched-staff-column" id="col-staff-1"></div>
-                        <!-- Column 2: Ерлан М. -->
+                        <!-- Column 2: 2 Бригада -->
                         <div class="sched-staff-column" id="col-staff-2"></div>
-                        <!-- Column 3: Данияр Т. -->
+                        <!-- Column 3: Химчистка -->
                         <div class="sched-staff-column" id="col-staff-3"></div>
                     </div>
                 </div>
 
                 <!-- Views for Week / Month -->
-                <div id="schedWeekGrid" style="display:none; padding:40px; text-align:center; color:var(--text-muted);">
-                    <h3>📅 Недельный обзор всех выездов</h3>
-                    <p id="schedWeekSummaryText" style="margin-top:8px;">Отображается текущая неделя с суммарной загрузкой клининговых бригад Tap Taza.</p>
-                </div>
-                <div id="schedMonthGrid" style="display:none; padding:40px; text-align:center; color:var(--text-muted);">
-                    <h3>🗓 Календарь на месяц</h3>
-                    <p id="schedMonthSummaryText" style="margin-top:8px;">Сетка месяца с разбивкой по бронированиям и зафиксированным предоплатам.</p>
-                </div>
+                <div id="schedWeekGrid" style="display:none; padding:10px;"></div>
+                <div id="schedMonthGrid" style="display:none; padding:10px;"></div>
             </div>
         </section>
 
@@ -2248,12 +2254,16 @@
                 <input type="text" id="schedInputTitle" class="form-input" placeholder="например: Смагулова Динара">
             </div>
             <div class="form-group">
-                <label class="form-label">Бригада / Клинер</label>
+                <label class="form-label">Столбец в графике</label>
                 <select id="schedInputStaff" class="form-input">
-                    <option value="1">Асхат К. (Бригада 1)</option>
-                    <option value="2">Ерлан М. (Бригада 2)</option>
-                    <option value="3">Данияр Т. (Химчистка)</option>
+                    <option value="1">1 Бригада</option>
+                    <option value="2">2 Бригада</option>
+                    <option value="3">Химчистка</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Бригада / Клинер (впишите вручную)</label>
+                <input type="text" id="schedInputCleanerName" class="form-input" placeholder="например: Асхат К. или Ерлан и Данияр">
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div class="form-group">
@@ -2337,13 +2347,13 @@
                 { id: 3, name: 'Комплект №3', status: 'Сдан на складе', assignee: 'Данияр Токтаров', notes: 'Исправен' }
             ],
             scheduleEvents: [
-                { id: 101, date: '2026-08-26', staffId: 1, startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Пришёл' },
-                { id: 102, date: '2026-08-26', staffId: 1, startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'В процессе' },
-                { id: 103, date: '2026-08-26', staffId: 2, startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Пришёл' },
-                { id: 104, date: '2026-08-26', staffId: 2, startTime: '10:00', endTime: '11:30', title: 'Нурланова Камила', address: 'ЖК Легенда', statusTag: 'Долг' },
-                { id: 105, date: '2026-08-26', staffId: 3, startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Пришёл' },
-                { id: 106, date: '2026-08-27', staffId: 1, startTime: '09:00', endTime: '11:00', title: 'Муканов Бауржан', address: 'ЖК Медеу', statusTag: 'В процессе' },
-                { id: 107, date: '2026-08-28', staffId: 2, startTime: '10:00', endTime: '13:00', title: 'Аскарова Айнур', address: 'мкр. Аксай', statusTag: 'Пришёл' }
+                { id: 101, date: '2026-08-26', staffId: 1, cleanerName: 'Асхат К.', startTime: '08:00', endTime: '09:30', title: 'Смагулова Динара', address: 'Аль-Фараби 77', statusTag: 'Пришёл' },
+                { id: 102, date: '2026-08-26', staffId: 1, cleanerName: 'Асхат и Ерлан', startTime: '10:00', endTime: '12:00', title: 'Сериков Данияр', address: 'Самал-2', statusTag: 'В процессе' },
+                { id: 103, date: '2026-08-26', staffId: 2, cleanerName: 'Ерлан М.', startTime: '08:30', endTime: '10:00', title: 'Оспанов Ерлан', address: 'Достык 45', statusTag: 'Пришёл' },
+                { id: 104, date: '2026-08-26', staffId: 2, cleanerName: 'Ерлан М.', startTime: '10:00', endTime: '11:30', title: 'Нурланова Камила', address: 'ЖК Легенда', statusTag: 'Долг' },
+                { id: 105, date: '2026-08-26', staffId: 3, cleanerName: 'Данияр Т.', startTime: '09:00', endTime: '10:30', title: 'Кайргалиев Арман', address: 'Абая 150', statusTag: 'Пришёл' },
+                { id: 106, date: '2026-08-27', staffId: 1, cleanerName: 'Бригада 1', startTime: '09:00', endTime: '11:00', title: 'Муканов Бауржан', address: 'ЖК Медеу', statusTag: 'В процессе' },
+                { id: 107, date: '2026-08-28', staffId: 2, cleanerName: 'Ерлан М.', startTime: '10:00', endTime: '13:00', title: 'Аскарова Айнур', address: 'мкр. Аксай', statusTag: 'Пришёл' }
             ]
         };
 
@@ -2543,7 +2553,7 @@
             return 'badge-danger';
         }
 
-        // ---------------- MODULE 2: SCHEDULE & CALENDAR (FIXED & FULLY WORKING) ----------------
+        // ---------------- MODULE 2: SCHEDULE & CALENDAR ----------------
         function formatDateForSchedule(date) {
             const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
             const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
@@ -2552,7 +2562,6 @@
             const dayNum = date.getDate();
             const monthName = months[date.getMonth()];
             
-            // Check if today (26 Aug 2026)
             const today = new Date(2026, 7, 26);
             const isToday = date.toDateString() === today.toDateString();
             
@@ -2565,10 +2574,14 @@
             if(activeSchedView === 'day') {
                 label.innerText = formatDateForSchedule(currentScheduleDate);
             } else if(activeSchedView === 'week') {
-                const start = new Date(currentScheduleDate);
-                const end = new Date(currentScheduleDate);
-                end.setDate(end.getDate() + 6);
-                label.innerText = `${start.getDate()} — ${end.getDate()} ${['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][end.getMonth()]}`;
+                const curr = new Date(currentScheduleDate);
+                const dayOfWeek = curr.getDay();
+                const distanceToMon = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+                const mon = new Date(curr);
+                mon.setDate(curr.getDate() + distanceToMon);
+                const sun = new Date(mon);
+                sun.setDate(mon.getDate() + 6);
+                label.innerText = `${mon.getDate()} — ${sun.getDate()} ${['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][sun.getMonth()]}`;
             } else if(activeSchedView === 'month') {
                 const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
                 label.innerText = `${months[currentScheduleDate.getMonth()]} ${currentScheduleDate.getFullYear()}`;
@@ -2610,6 +2623,16 @@
         }
 
         function renderScheduleCards() {
+            if (activeSchedView === 'day') {
+                renderDayView();
+            } else if (activeSchedView === 'week') {
+                renderWeekView();
+            } else if (activeSchedView === 'month') {
+                renderMonthView();
+            }
+        }
+
+        function renderDayView() {
             // Clear columns
             [1, 2, 3].forEach(id => {
                 const col = document.getElementById(`col-staff-${id}`);
@@ -2630,10 +2653,9 @@
 
                 const startMin = timeToMinutes(ev.startTime);
                 const endMin = timeToMinutes(ev.endTime);
-                const baseMin = 8 * 60; // 08:00 AM
 
-                const topPos = ((startMin - baseMin) / 60) * 60;
-                const cardHeight = ((endMin - startMin) / 60) * 60;
+                const topPos = (startMin / 60) * 60;
+                const cardHeight = Math.max(((endMin - startMin) / 60) * 60, 38);
 
                 const card = document.createElement('div');
                 card.className = 'sched-event-card';
@@ -2641,11 +2663,13 @@
                 card.style.height = `${cardHeight - 4}px`;
 
                 const tagClass = ev.statusTag === 'Долг' ? 'sched-tag-amber' : 'sched-tag-teal';
+                const cleanerInfo = ev.cleanerName ? `<div style="font-size:10px; color:var(--primary-dark); font-weight:700;">👤 ${ev.cleanerName}</div>` : '';
 
                 card.innerHTML = `
                     <div>
                         <div class="sched-event-time">${ev.startTime} - ${ev.endTime}</div>
                         <div class="sched-event-title">${ev.title}</div>
+                        ${cleanerInfo}
                     </div>
                     <div class="sched-event-tags">
                         <span class="sched-tag ${tagClass}">${ev.statusTag}</span>
@@ -2654,19 +2678,176 @@
                 `;
                 targetCol.appendChild(card);
             });
+        }
 
-            // Update week/month textual info
-            const weekText = document.getElementById('schedWeekSummaryText');
-            if(weekText) {
-                weekText.innerText = `Неделя (${formatDateForSchedule(currentScheduleDate)}): Найдено ${filteredEvents.length} зафиксированных выездов.`;
+        function renderWeekView() {
+            const grid = document.getElementById('schedWeekGrid');
+            grid.innerHTML = '';
+
+            const curr = new Date(currentScheduleDate);
+            const dayOfWeek = curr.getDay();
+            const distanceToMon = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
+            const monday = new Date(curr);
+            monday.setDate(curr.getDate() + distanceToMon);
+
+            const weekContainer = document.createElement('div');
+            weekContainer.style.display = 'grid';
+            weekContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(130px, 1fr))';
+            weekContainer.style.gap = '10px';
+
+            const daysNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+            for (let i = 0; i < 7; i++) {
+                const dayDate = new Date(monday);
+                dayDate.setDate(monday.getDate() + i);
+                const dateStr = getISOFormattedDate(dayDate);
+
+                const dayCol = document.createElement('div');
+                dayCol.style.border = '1px solid var(--border)';
+                dayCol.style.borderRadius = '10px';
+                dayCol.style.padding = '10px';
+                dayCol.style.background = '#f8fafc';
+                dayCol.style.minHeight = '320px';
+
+                const dayHeader = document.createElement('div');
+                dayHeader.style.fontWeight = '700';
+                dayHeader.style.fontSize = '13px';
+                dayHeader.style.borderBottom = '1px solid var(--border)';
+                dayHeader.style.paddingBottom = '6px';
+                dayHeader.style.marginBottom = '10px';
+                dayHeader.style.textAlign = 'center';
+                dayHeader.innerText = `${daysNames[i]}, ${dayDate.getDate()} ${['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][dayDate.getMonth()]}`;
+
+                dayCol.appendChild(dayHeader);
+
+                const events = state.scheduleEvents.filter(e => e.date === dateStr);
+                events.forEach(ev => {
+                    const card = document.createElement('div');
+                    card.style.background = '#e6f4f1';
+                    card.style.borderLeft = '3px solid var(--primary)';
+                    card.style.borderRadius = '6px';
+                    card.style.padding = '8px';
+                    card.style.marginBottom = '8px';
+                    card.style.fontSize = '11px';
+                    card.style.textAlign = 'left';
+
+                    const colName = ev.staffId == 1 ? '1 Бригада' : (ev.staffId == 2 ? '2 Бригада' : 'Химчистка');
+                    const cleanerText = ev.cleanerName ? ` (${ev.cleanerName})` : '';
+
+                    card.innerHTML = `
+                        <div style="font-weight:800; color:var(--primary-dark);">${ev.startTime} - ${ev.endTime}</div>
+                        <div style="font-weight:700; color:var(--text-main); margin:2px 0;">${ev.title}</div>
+                        <div style="color:var(--text-muted); font-size:10px;"><b>${colName}</b>${cleanerText}</div>
+                        <div style="color:var(--text-muted); font-size:10px;">📍 ${ev.address}</div>
+                        <span class="sched-tag ${ev.statusTag === 'Долг' ? 'sched-tag-amber' : 'sched-tag-teal'}" style="margin-top:4px; display:inline-block;">${ev.statusTag}</span>
+                    `;
+                    dayCol.appendChild(card);
+                });
+
+                if (events.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.style.color = '#cbd5e1';
+                    empty.style.fontSize = '11px';
+                    empty.style.marginTop = '20px';
+                    empty.style.textAlign = 'center';
+                    empty.innerText = 'Нет заказов';
+                    dayCol.appendChild(empty);
+                }
+
+                weekContainer.appendChild(dayCol);
             }
-            const monthText = document.getElementById('schedMonthSummaryText');
-            if(monthText) {
-                monthText.innerText = `Месяц (${currentScheduleDate.getFullYear()}): Загрузка клининга сформирована.`;
+
+            grid.appendChild(weekContainer);
+        }
+
+        function renderMonthView() {
+            const grid = document.getElementById('schedMonthGrid');
+            grid.innerHTML = '';
+
+            const year = currentScheduleDate.getFullYear();
+            const month = currentScheduleDate.getMonth();
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            let startDay = firstDay.getDay();
+            if (startDay === 0) startDay = 7;
+
+            const totalDays = lastDay.getDate();
+
+            const monthContainer = document.createElement('div');
+            monthContainer.style.display = 'grid';
+            monthContainer.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            monthContainer.style.gap = '6px';
+
+            const daysNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            daysNames.forEach(d => {
+                const header = document.createElement('div');
+                header.style.fontWeight = '700';
+                header.style.fontSize = '12px';
+                header.style.textAlign = 'center';
+                header.style.padding = '6px';
+                header.style.background = '#e2e8f0';
+                header.style.borderRadius = '4px';
+                header.innerText = d;
+                monthContainer.appendChild(header);
+            });
+
+            for (let i = 1; i < startDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.style.background = '#f1f5f9';
+                emptyCell.style.borderRadius = '6px';
+                emptyCell.style.minHeight = '80px';
+                emptyCell.style.opacity = '0.5';
+                monthContainer.appendChild(emptyCell);
             }
+
+            for (let d = 1; d <= totalDays; d++) {
+                const cellDate = new Date(year, month, d);
+                const dateStr = getISOFormattedDate(cellDate);
+
+                const cell = document.createElement('div');
+                cell.style.border = '1px solid var(--border)';
+                cell.style.borderRadius = '6px';
+                cell.style.padding = '6px';
+                cell.style.background = '#ffffff';
+                cell.style.minHeight = '90px';
+                cell.style.fontSize = '11px';
+                cell.style.textAlign = 'left';
+
+                const dayNum = document.createElement('div');
+                dayNum.style.fontWeight = '800';
+                dayNum.style.marginBottom = '4px';
+                dayNum.style.fontSize = '12px';
+                dayNum.innerText = d;
+                cell.appendChild(dayNum);
+
+                const events = state.scheduleEvents.filter(e => e.date === dateStr);
+                events.forEach(ev => {
+                    const badge = document.createElement('div');
+                    badge.style.background = '#e6f4f1';
+                    badge.style.borderLeft = '2px solid var(--primary)';
+                    badge.style.padding = '3px 5px';
+                    badge.style.marginBottom = '4px';
+                    badge.style.borderRadius = '3px';
+                    badge.style.fontSize = '10px';
+                    badge.style.whiteSpace = 'nowrap';
+                    badge.style.overflow = 'hidden';
+                    badge.style.textOverflow = 'ellipsis';
+                    const colName = ev.staffId == 1 ? '1 Бр' : (ev.staffId == 2 ? '2 Бр' : 'Хим');
+                    const cleanerText = ev.cleanerName ? ` - ${ev.cleanerName}` : '';
+                    badge.innerText = `${ev.startTime} ${ev.title} (${colName}${cleanerText})`;
+                    cell.appendChild(badge);
+                });
+
+                monthContainer.appendChild(cell);
+            }
+
+            grid.appendChild(monthContainer);
         }
 
         function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
             const [h, m] = timeStr.split(':').map(Number);
             return h * 60 + m;
         }
@@ -2684,6 +2865,7 @@
             const dateVal = document.getElementById('schedInputDate').value || getISOFormattedDate(currentScheduleDate);
             const title = document.getElementById('schedInputTitle').value.trim() || 'Новый Заказ';
             const staffId = Number(document.getElementById('schedInputStaff').value);
+            const cleanerName = document.getElementById('schedInputCleanerName').value.trim();
             const startTime = document.getElementById('schedInputStartTime').value;
             const endTime = document.getElementById('schedInputEndTime').value;
             const address = document.getElementById('schedInputAddress').value.trim() || 'Объект';
@@ -2693,6 +2875,7 @@
                 id: Date.now(),
                 date: dateVal,
                 staffId: staffId,
+                cleanerName: cleanerName,
                 startTime: startTime,
                 endTime: endTime,
                 title: title,
