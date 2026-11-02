@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="tt-core.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -70,6 +73,17 @@
 
             <div class="space-y-4">
                 <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Заказ из CRM</label>
+                    <select id="obj-order" onchange="pickOrder()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-brand-600 bg-white font-semibold">
+                        <option value="">Загрузка заказов…</option>
+                    </select>
+                    <div id="order-info" class="hidden mt-2 text-xs bg-brand-50 border border-brand-100 rounded-xl p-3 leading-relaxed"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Супервайзер</label>
+                    <input type="text" id="sup-name" placeholder="Ваше имя" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-brand-600 bg-white">
+                </div>
+                <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Адрес объекта *</label>
                     <input type="text" id="obj-address" placeholder="Напр: пр. Достык 105, кв 42" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-brand-600 bg-white">
                 </div>
@@ -107,13 +121,13 @@
                     <span class="w-7 h-7 rounded-lg bg-brand-600 text-white font-black text-xs flex items-center justify-center">2</span>
                     <h2 class="font-extrabold text-slate-900 text-base">Фото ДО уборки</h2>
                 </div>
-                <span class="text-xs text-slate-400 font-medium">Google Диск</span>
+                <span class="text-xs text-slate-400 font-medium" data-cnt>до 8 фото</span>
             </div>
 
             <p class="text-xs text-slate-500 mb-4">Сделайте фото общих планов и проблемных мест до начала работ.</p>
 
             <div class="space-y-3">
-                <input type="file" id="files-before" multiple accept="image/*" class="hidden" onchange="handleFileSelect(this, 'preview-before')">
+                <input type="file" id="files-before" multiple accept="image/*" class="hidden" onchange="handleFileSelect(this, 'before')">
                 <label for="files-before" class="w-full border-2 border-dashed border-slate-300 hover:border-brand-600 rounded-xl py-4 flex flex-col items-center justify-center cursor-pointer bg-white transition-all">
                     <span class="text-2xl mb-1">📸</span>
                     <span class="text-xs font-bold text-slate-700">Выбрать или сделать снимки</span>
@@ -122,7 +136,7 @@
                 <div id="preview-before" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
                 <button type="button" onclick="uploadFolder('before')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                    📁 Загрузить ФОТО ДО на Google Диск
+                    ✅ Фото ДО готовы — дальше
                 </button>
             </div>
         </div>
@@ -158,13 +172,13 @@
                     <span class="w-7 h-7 rounded-lg bg-brand-600 text-white font-black text-xs flex items-center justify-center">4</span>
                     <h2 class="font-extrabold text-slate-900 text-base">Фото ПОСЛЕ уборки</h2>
                 </div>
-                <span class="text-xs text-slate-400 font-medium">Google Диск</span>
+                <span class="text-xs text-slate-400 font-medium" data-cnt>до 8 фото</span>
             </div>
 
             <p class="text-xs text-slate-500 mb-4">Сделайте фото сияющих чистотой комнат, сантехники и узлов.</p>
 
             <div class="space-y-3">
-                <input type="file" id="files-after" multiple accept="image/*" class="hidden" onchange="handleFileSelect(this, 'preview-after')">
+                <input type="file" id="files-after" multiple accept="image/*" class="hidden" onchange="handleFileSelect(this, 'after')">
                 <label for="files-after" class="w-full border-2 border-dashed border-slate-300 hover:border-brand-600 rounded-xl py-4 flex flex-col items-center justify-center cursor-pointer bg-white transition-all">
                     <span class="text-2xl mb-1">✨</span>
                     <span class="text-xs font-bold text-slate-700">Сделать финальные снимки</span>
@@ -173,7 +187,7 @@
                 <div id="preview-after" class="grid grid-cols-3 gap-2 empty:hidden"></div>
 
                 <button type="button" onclick="uploadFolder('after')" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                    📁 Загрузить ФОТО ПОСЛЕ на Google Диск
+                    ✅ Фото ПОСЛЕ готовы — дальше
                 </button>
             </div>
         </div>
@@ -186,8 +200,11 @@
             </div>
 
             <button type="button" id="btn-accept" onclick="acceptByClient()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2">
-                🤝 Объект принят заказчиком
+                🤝 Объект принят — сохранить отчёт
             </button>
+
+            <textarea id="sup-remarks" rows="2" placeholder="Замечания / что сказал клиент" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-brand-600 bg-white"></textarea>
+            <div id="report-result" class="hidden text-xs bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2"></div>
 
             <button type="button" id="btn-exit" onclick="leaveObject()" disabled class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
                 🚪 Покинули объект (Завершить смену)
@@ -197,166 +214,176 @@
     </main>
 
     <script>
-        // Checklists database (25 points for each type)
-        const checklists = {
-            standard: [
-                "Протирка горизонтальных поверхностей на высоте рук", "Очистка внешних фасадов шкафов и тумб",
-                "Протирка рабочих столов", "Дезинфекция ручек, выключателей и кнопок",
-                "Обеспыливание мониторов и оргтехники", "Протирка клавиатур и телефонов",
-                "Обеспыливание подоконников", "Полировка зеркал и стеклянных дверей",
-                "Очистка дверных полотен и наличников", "Протирка внешних фасадов кухни",
-                "Мытье рабочей столешницы и фартука", "Дезинфекция раковины и смесителя",
-                "Протирка плиты и вытяжки снаружи", "Очистка внешних корпусов СВЧ и холодильника",
-                "Дезинфекция унитаза и биде", "Чистка раковины и смесителей",
-                "Освежающее мытье ванны и душ-поддона", "Протирка зеркал в ванной",
-                "Очистка полов пылесосом Kärcher", "Влажная уборка плинтусов",
-                "Мытье полов с учетом покрытия", "Сбор и вынос мусора (до 10 кг)",
-                "Замена пакетов в мусорках", "Проверка цветовой кодировки салфеток",
-                "Финальный осмотр объекта супервайзером"
-            ],
-            general: [
-                "Удаление пыли и паутины со стен и потолков", "Мытье люстр, светильников и бра",
-                "Протирка карнизов и верха кондиционеров", "Очистка верхов шкафов на всю высоту",
-                "Протирка и дезинфекция столов и декора", "Дезинфекция ручек, розеток, выключателей",
-                "Обеспыливание ТВ, техники и кабелей", "Полировка зеркал и глянцевых панелей",
-                "Очистка дверей, наличников и замков", "Глубокая очистка кухонного гарнитура",
-                "Удаление жира с фартука и столешницы", "Обезжиривание плиты и фильтров вытяжки",
-                "Очистка уплотнителей бытовой техники", "Дезинфекция зоны мусорного ведра",
-                "Мытье плитки в санузле на всю высоту", "Удаление известкового налета и водного камня",
-                "Глубокая дезинфекция всей сантехники", "Полировка ванны и душевой кабины",
-                "Глубокая чистка полов и ковров Kärcher", "Выдувка и мытье радиаторов изнутри",
-                "Уборка под мебелью и плинтусов", "Мытье полов спецсоставами",
-                "Вынос мусора (до 10 кг)", "Контроль кодировки микрофибры",
-                "Финальный прием качества супервайзером"
-            ],
-            repair: [
-                "Обеспыливание потолков и стен пылесосом Kärcher", "Выдувка пыли из радиаторов отопления",
-                "Очистка вентрешеток и люков", "Удаление затирки, цемента и штукатурки",
-                "Удаление следов краски, клея и герметика", "Снятие защитных пленок и скотча",
-                "Очистка подрозетников и щитков", "Очистка светильников от строительной пыли",
-                "Обеспыливание дверных коробок и петель", "Очистка внешних поверхностей мебели",
-                "Влажная протирка внутренних полок пустых шкафов", "Сухая очистка пылесосом встроенных ниш",
-                "Протирка элементов декора и плинтусов", "Полировка металлических ручек",
-                "Смыв строительного налета с плитки", "Очистка новой сантехники от затирки",
-                "Мытье и полировка ванны и трапов", "Полировка хромированных смесителей",
-                "Обеспыливание оконных профилей и пазов", "Мытье подоконников и откосов",
-                "Двустороннее мытье остекления", "Уборка полов строительным пылесосом Kärcher",
-                "Многоэтапное влажное мытье полов", "Сбор строительного мусора (до 15 кг)",
-                "Финальный прием и сдаточный фотоотчет"
-            ]
-        };
-
-        // Link to WhatsApp Support Group
+        // ====== Мобильный кабинет супервайзера: заказы из CRM, отчёт в Firebase ======
+        if (!firebase.apps.length) firebase.initializeApp(TT.FIREBASE);
+        const db = firebase.database();
         const WHATSAPP_SUPPORT_GROUP = "https://chat.whatsapp.com/Cwt9SySl2f0L6v0QmvJbtf?s=sh&p=i&mlu=4";
+        const photos = { before: [], after: [] };
+        let orders = [], events = [], current = null;
+
+        function todayISO() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+
+        db.ref('appState').on('value', snap => {
+            const st = snap.val() || {};
+            orders = (Array.isArray(st.orders) ? st.orders : Object.values(st.orders || {})).filter(Boolean);
+            events = (Array.isArray(st.scheduleEvents) ? st.scheduleEvents : Object.values(st.scheduleEvents || {})).filter(Boolean);
+            renderOrderSelect();
+        }, err => {
+            console.error(err);
+            document.getElementById('obj-order').innerHTML = '<option value="">Нет связи с CRM — заполните адрес вручную</option>';
+        });
+
+        function renderOrderSelect() {
+            const sel = document.getElementById('obj-order');
+            const cur = sel.value || (current && current.id) || '';
+            const today = new Set(events.filter(e => e.date === todayISO()).map(e => e.orderId));
+            const active = orders.filter(o => o.status !== 'Завершен');
+            const t = active.filter(o => today.has(o.id)), rest = active.filter(o => !today.has(o.id));
+            const opt = o => `<option value="${TT.esc(o.id)}">#${TT.esc(o.id)} · ${TT.esc(o.customerName)} · ${TT.esc(o.customerAddress)}</option>`;
+            sel.innerHTML = '<option value="">— Без заказа (ввести вручную) —</option>' +
+                (t.length ? `<optgroup label="Сегодня по графику">${t.map(opt).join('')}</optgroup>` : '') +
+                (rest.length ? `<optgroup label="Другие активные">${rest.map(opt).join('')}</optgroup>` : '');
+            if (cur && orders.some(o => o.id === cur)) sel.value = cur;
+        }
+
+        function pickOrder() {
+            const id = document.getElementById('obj-order').value;
+            current = orders.find(o => o.id === id) || null;
+            const info = document.getElementById('order-info');
+            if (!current) { info.classList.add('hidden'); return; }
+            const ev = events.find(e => e.orderId === current.id && e.date === todayISO());
+            info.classList.remove('hidden');
+            info.innerHTML = `<b>${TT.esc(current.customerName)}</b> · ${TT.esc(current.customerPhone)}<br>🧹 ${TT.esc(current.serviceType)}` +
+                (current.extras && current.extras.length ? `<br>➕ ${TT.esc(current.extras.join(', '))}` : '') +
+                (current.kind === 'sub' ? `<br>🔁 Визит ${(current.visitsDone || 0) + 1} из ${current.visitsTotal || '?'}` : '') +
+                (ev ? `<br>🕘 ${ev.startTime}–${ev.endTime}${ev.cleanerName ? ' · клинер ' + TT.esc(ev.cleanerName) : ''}` : '') +
+                (current.note ? `<br>📝 ${TT.esc(current.note)}` : '');
+            document.getElementById('obj-address').value = current.customerAddress || '';
+            const obj = current.calc && current.calc.obj;
+            if (obj) document.getElementById('obj-type').value = obj;
+            document.getElementById('cleaning-type').value = TT.checklistKeyForOrder(current);
+            renderChecklist();
+        }
 
         function renderChecklist() {
             const type = document.getElementById('cleaning-type').value;
-            const items = checklists[type];
             const container = document.getElementById('checklist-container');
-            container.innerHTML = '';
-
-            items.forEach((item, idx) => {
-                const label = document.createElement('label');
-                label.className = "flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:border-brand-500 transition";
-                label.innerHTML = `
-                    <input type="checkbox" class="checklist-item w-4 h-4 mt-0.5 accent-brand-600 rounded cursor-pointer" onchange="updateChecklistProgress()">
-                    <span class="text-slate-700 font-medium">${idx + 1}. ${item}</span>
-                `;
-                container.appendChild(label);
-            });
+            container.innerHTML = TT.CHECKLISTS[type].map((item, idx) => `
+                <label class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:border-brand-500 transition">
+                    <input type="checkbox" data-i="${idx}" class="checklist-item w-4 h-4 mt-0.5 accent-brand-600 rounded cursor-pointer" onchange="updateChecklistProgress()">
+                    <span class="text-slate-700 font-medium">${idx + 1}. ${TT.esc(item)}</span>
+                </label>`).join('');
             updateChecklistProgress();
         }
 
         function updateChecklistProgress() {
-            const checkboxes = document.querySelectorAll('.checklist-item');
+            const total = document.querySelectorAll('.checklist-item').length;
             const checked = document.querySelectorAll('.checklist-item:checked').length;
-            const total = checkboxes.length;
-
             document.getElementById('checklist-counter').innerText = `${checked} / ${total}`;
-            const percent = total > 0 ? (checked / total) * 100 : 0;
-            document.getElementById('checklist-progress').style.width = `${percent}%`;
+            document.getElementById('checklist-progress').style.width = `${total ? checked / total * 100 : 0}%`;
+        }
+
+        function setBadge(text, cls) {
+            const b = document.getElementById('status-badge');
+            b.innerText = text;
+            b.className = 'px-2.5 py-1 rounded-full text-xs font-bold ' + cls;
         }
 
         function arriveOnSite() {
             const address = document.getElementById('obj-address').value.trim();
-            if(!address) {
-                alert('Пожалуйста, введите адрес объекта!');
-                return;
-            }
-
-            document.getElementById('status-badge').innerText = 'На объекте';
-            document.getElementById('status-badge').className = 'px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold';
-
-            // Unlock Step 2
+            if (!address) { alert('Выберите заказ или введите адрес объекта'); return; }
+            if (!document.getElementById('sup-name').value.trim()) { alert('Укажите ваше имя'); return; }
+            try { localStorage.setItem('tt_sup_name', document.getElementById('sup-name').value.trim()); } catch (e) {}
+            setBadge('На объекте', 'bg-emerald-100 text-emerald-800');
             document.getElementById('step-2').classList.remove('step-inactive');
-
-            // Open WhatsApp support group
+            if (current) {
+                db.ref('appState/orders').transaction(list => {
+                    if (!list) return list;
+                    const arr = Array.isArray(list) ? list : Object.values(list);
+                    const o = arr.find(x => x && x.id === current.id);
+                    if (o && o.status !== 'Завершен') { o.status = 'В процессе'; o.arrivedAt = new Date().toISOString(); }
+                    return list;
+                }).catch(console.error);
+            }
             window.open(WHATSAPP_SUPPORT_GROUP, '_blank');
         }
 
-        function handleFileSelect(input, previewId) {
-            const preview = document.getElementById(previewId);
-            preview.innerHTML = '';
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
-                        preview.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
+        async function handleFileSelect(input, stage) {
+            const files = Array.from(input.files || []);
+            input.value = '';
+            for (const f of files.slice(0, Math.max(0, 8 - photos[stage].length))) {
+                try { photos[stage].push(await TT.compressImage(f)); } catch (e) { console.error(e); }
             }
+            renderPhotos(stage);
+        }
+
+        function renderPhotos(stage) {
+            const preview = document.getElementById('preview-' + stage);
+            preview.innerHTML = photos[stage].map((src, i) =>
+                `<div class="relative"><img src="${src}" class="w-full h-20 object-cover rounded-lg border border-slate-200">
+                 <button type="button" onclick="photos['${stage}'].splice(${i},1); renderPhotos('${stage}')" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white text-xs">✕</button></div>`).join('');
+            const step = document.getElementById(stage === 'before' ? 'step-2' : 'step-4');
+            step.querySelector('[data-cnt]').innerText = `${photos[stage].length} / 8 фото`;
         }
 
         function uploadFolder(stage) {
-            const address = document.getElementById('obj-address').value.trim();
-            const input = document.getElementById(stage === 'before' ? 'files-before' : 'files-after');
-
-            if (!input.files || input.files.length === 0) {
-                alert('Сначала выберите фотографии!');
-                return;
-            }
-
-            const folderName = `TapTaza_${address}_${stage.toUpperCase()}_${new Date().toISOString().slice(0,10)}`;
-            alert(`Инициализация создания папки на Google Диске:\n"${folderName}"\n\nЗагрузка ${input.files.length} фото...`);
-
-            // Unlock next logical step
-            if(stage === 'before') {
-                document.getElementById('step-3').classList.remove('step-inactive');
-            } else {
-                document.getElementById('step-5').classList.remove('step-inactive');
-            }
+            if (!photos[stage].length) { alert('Сначала сделайте фотографии!'); return; }
+            document.getElementById(stage === 'before' ? 'step-3' : 'step-5').classList.remove('step-inactive');
+            document.getElementById(stage === 'before' ? 'step-3' : 'step-5').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function completeChecklist() {
             const checked = document.querySelectorAll('.checklist-item:checked').length;
-            if(checked < 25) {
-                if(!confirm(`Отмечено ${checked} из 25 пунктов. Вы уверены, что хотите продолжить?`)) return;
-            }
-
+            const total = document.querySelectorAll('.checklist-item').length;
+            if (checked < total && !confirm(`Отмечено ${checked} из ${total} пунктов. Продолжить?`)) return;
             document.getElementById('step-4').classList.remove('step-inactive');
-            alert('Чек-лист успешно зафиксирован! Переходите к Фото ПОСЛЕ.');
+            document.getElementById('step-4').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function acceptByClient() {
-            document.getElementById('btn-accept').className = "w-full bg-emerald-600 text-white font-extrabold py-3.5 rounded-xl shadow-md text-xs flex items-center justify-center gap-2";
-            document.getElementById('btn-accept').innerHTML = "✅ Объект успешно принят заказчиком";
-            
-            const btnExit = document.getElementById('btn-exit');
-            btnExit.disabled = false;
-            btnExit.classList.remove('opacity-50', 'cursor-not-allowed');
+        async function acceptByClient() {
+            const btn = document.getElementById('btn-accept');
+            btn.disabled = true; btn.innerHTML = '⏳ Сохраняем отчёт…';
+            const type = document.getElementById('cleaning-type').value;
+            const boxes = Array.from(document.querySelectorAll('.checklist-item'));
+            const report = {
+                orderId: current ? current.id : 'NO-ORDER',
+                supervisor: document.getElementById('sup-name').value.trim(),
+                checklistType: type,
+                done: boxes.filter(b => b.checked).length, total: boxes.length,
+                missed: boxes.filter(b => !b.checked).map(b => TT.CHECKLISTS[type][+b.dataset.i]),
+                remarks: document.getElementById('sup-remarks').value.trim(),
+                photosBefore: photos.before.slice(), photosAfter: photos.after.slice(),
+                customerName: current ? current.customerName : '',
+                address: document.getElementById('obj-address').value.trim(),
+                service: current ? current.serviceType : TT.CHECKLIST_NAMES[type],
+                objType: document.getElementById('obj-type').value
+            };
+            try {
+                const res = await TT.saveReport(db, report.orderId, report);
+                const ord = res.order || current;
+                btn.className = "w-full bg-emerald-600 text-white font-extrabold py-3.5 rounded-xl shadow-md text-xs flex items-center justify-center gap-2";
+                btn.innerHTML = "✅ Отчёт сохранён, объект принят";
+                const box = document.getElementById('report-result');
+                box.classList.remove('hidden');
+                box.innerHTML = `<div><b>Отчёт в CRM.</b>${ord && ord.kind === 'sub' ? ` Визит ${ord.visitsDone} из ${ord.visitsTotal}.` : ''}</div>` +
+                    (ord && ord.customerPhone ? `<a target="_blank" href="${TT.waLink(ord.customerPhone, TT.clientReportMessage(ord, res.url, report))}" class="block text-center bg-[#25d366] text-white font-bold py-2.5 rounded-lg">📲 Отправить фотоотчёт клиенту</a>` : '') +
+                    `<a target="_blank" href="https://wa.me/?text=${encodeURIComponent(`🎒 Отчёт Tap Taza\nЗаказ: #${report.orderId}\nАдрес: ${report.address}\nЧек-лист: ${report.done}/${report.total}\nФото: до ${report.photosBefore.length}, после ${report.photosAfter.length}\n${res.url}`)}" class="block text-center border border-slate-300 bg-white font-bold py-2.5 rounded-lg">💬 В группу WhatsApp</a>`;
+                const exit = document.getElementById('btn-exit');
+                exit.disabled = false; exit.classList.remove('opacity-50', 'cursor-not-allowed');
+                setBadge('Сдано', 'bg-blue-100 text-blue-800');
+            } catch (e) {
+                console.error(e);
+                btn.disabled = false; btn.innerHTML = '🤝 Объект принят — сохранить отчёт';
+                alert('Не удалось сохранить отчёт. Проверьте интернет и нажмите ещё раз — фото не потеряются.');
+            }
         }
 
         function leaveObject() {
-            const address = document.getElementById('obj-address').value;
-            alert(`Смена на объекте "${address}" завершена!\nСпасибо за отличную работу.`);
+            alert(`Смена на объекте "${document.getElementById('obj-address').value}" завершена!\nСпасибо за отличную работу.`);
             location.reload();
         }
 
-        // Initialize checklist on load
+        try { document.getElementById('sup-name').value = localStorage.getItem('tt_sup_name') || ''; } catch (e) {}
         renderChecklist();
     </script>
 </body>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фотоотчёт об уборке — Tap Taza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="tt-core.js"></script>
+<style>
+:root{--blue:#0052a5;--navy:#0a2a4f;--green:#16a34a;--green7:#15803d;--mint:#f0fdf4;--bg:#f5faf7;--line:#e2ebe6;--muted:#64748b;--body:#44546a}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 Manrope,system-ui,sans-serif;background:var(--bg);color:var(--body)}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.logo{font:800 22px Unbounded,sans-serif;color:var(--blue);letter-spacing:-.02em}.logo span{color:var(--green7)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border-radius:24px;padding:26px;margin:16px 0 20px}
+.hero h1{font:800 24px/1.2 Unbounded,sans-serif;margin:0 0 8px}
+.hero p{margin:2px 0;color:#bcd3ec;font-size:14px}
+.pill{display:inline-block;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px;margin-top:10px;color:#fff}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:16px}
+.card h2{font:800 17px Unbounded,sans-serif;color:var(--navy);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;cursor:zoom-in;border:1px solid var(--line)}
+.empty{color:var(--muted);font-size:14px}
+.bar{height:10px;background:#e2ebe6;border-radius:6px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;background:var(--green)}
+ul.chk{list-style:none;padding:0;margin:0;columns:2 260px;column-gap:18px;font-size:14px}
+ul.chk li{break-inside:avoid;padding:4px 0 4px 26px;position:relative}
+ul.chk li:before{content:'✓';position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;background:var(--mint);color:var(--green7);font-weight:800;font-size:12px;text-align:center;line-height:18px}
+ul.chk li.no{color:var(--muted)}ul.chk li.no:before{content:'–';background:#f1f5f9;color:var(--muted)}
+.stars{display:flex;gap:8px;margin:6px 0 12px}
+.stars button{font-size:34px;line-height:1;background:none;border:0;cursor:pointer;color:#cbd5e1;padding:0}
+.stars button.on{color:#f59e0b}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;min-height:80px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:999px;font:700 15px Manrope,sans-serif;border:0;cursor:pointer;text-decoration:none;background:var(--blue);color:#fff;margin-top:10px}
+.btn.wa{background:#25d366}
+.lb{position:fixed;inset:0;background:rgba(10,42,79,.92);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+.lb.on{display:flex}.lb img{max-width:100%;max-height:100%;border-radius:12px}
+.msg{padding:14px;border-radius:14px;background:var(--mint);color:var(--green7);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Tap<span>Taza</span></div>
+  <div id="app"><div class="card empty">Загружаем отчёт…</div></div>
+</div>
+<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbImg" alt=""></div>
+<script>
+(async function () {
+  const app = document.getElementById('app');
+  const qs = new URLSearchParams(location.search);
+  const o = qs.get('o'), r = qs.get('r');
+  if (!o || !r) { app.innerHTML = '<div class="card empty">Ссылка на отчёт неполная. Попросите менеджера прислать её ещё раз.</div>'; return; }
+  if (!firebase.apps.length) firebase.initializeApp(TT.FIREBASE);
+  const db = firebase.database();
+  const ref = db.ref(`reports/${o}/${r}`);
+  let rep;
+  try { rep = (await ref.once('value')).val(); } catch (e) { console.error(e); }
+  if (!rep) { app.innerHTML = '<div class="card empty">Отчёт не найден. Возможно, ссылка устарела.</div>'; return; }
+
+  const E = TT.esc;
+  const items = TT.CHECKLISTS[rep.checklistType] || [];
+  const missed = new Set(rep.missed || []);
+  const pct = rep.total ? Math.round(rep.done / rep.total * 100) : 0;
+  const photos = (list) => (list && list.length) ? `<div class="grid">${list.map(src => `<img src="${src}" alt="Фото" loading="lazy">`).join('')}</div>` : '<div class="empty">Фото не добавлены</div>';
+  const fb = rep.feedback || null;
+
+  app.innerHTML = `
+    <div class="hero">
+      <h1>Уборка завершена ✨</h1>
+      <p>Заказ №${E(o)}${rep.customerName ? ' · ' + E(rep.customerName) : ''}</p>
+      <p>${E(rep.address || '')}</p>
+      <p>${E(rep.service || '')}</p>
+      <span class="pill">${new Date(rep.createdAt).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}${rep.supervisor ? ' · супервайзер ' + E(rep.supervisor) : ''}</span>
+    </div>
+    <div class="card"><h2>Было</h2>${photos(rep.photosBefore)}</div>
+    <div class="card"><h2>Стало</h2>${photos(rep.photosAfter)}</div>
+    <div class="card">
+      <h2>Чек-лист: ${rep.done} из ${rep.total}</h2>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <ul class="chk">${items.map(t => `<li class="${missed.has(t) ? 'no' : ''}">${E(t)}</li>`).join('')}</ul>
+      ${rep.remarks ? `<p style="margin-top:14px;"><b>Комментарий супервайзера:</b> ${E(rep.remarks)}</p>` : ''}
+    </div>
+    <div class="card" id="fbCard">
+      <h2>Как вам уборка?</h2>
+      ${fb ? `<div class="msg">Спасибо за оценку ${'★'.repeat(fb.rating)}! Мы всё учтём.</div>` : `
+      <div class="stars" id="stars">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}" aria-label="${n} из 5">★</button>`).join('')}</div>
+      <textarea id="fbText" placeholder="Что понравилось, что улучшить?"></textarea>
+      <button class="btn" id="fbSend">Отправить оценку</button>`}
+      <div><a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${TT.WA}?text=${encodeURIComponent('Здравствуйте! По заказу №' + o + ': ')}">Написать менеджеру в WhatsApp</a></div>
+    </div>`;
+
+  app.querySelectorAll('.grid img').forEach(img => img.onclick = () => { document.getElementById('lbImg').src = img.src; document.getElementById('lb').classList.add('on'); });
+
+  let rating = 0;
+  const stars = document.getElementById('stars');
+  if (stars) {
+    stars.onclick = e => {
+      const b = e.target.closest('[data-n]'); if (!b) return;
+      rating = +b.dataset.n;
+      stars.querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.n <= rating));
+    };
+    document.getElementById('fbSend').onclick = async () => {
+      if (!rating) { stars.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 250); return; }
+      const fbData = { rating, text: document.getElementById('fbText').value.trim(), at: new Date().toISOString() };
+      try {
+        await ref.child('feedback').set(fbData);
+        // оценка видна менеджеру в CRM рядом с отчётом
+        db.ref('appState/orders').transaction(orders => {
+          if (!orders) return orders;
+          const list = Array.isArray(orders) ? orders : Object.values(orders);
+          const ord = list.find(x => x && x.id === o);
+          const reps = ord && (Array.isArray(ord.reports) ? ord.reports : Object.values(ord.reports || {}));
+          const sm = reps && reps.find(x => x && x.key === r);
+          if (sm) { sm.rating = rating; ord.reports = reps; }
+          return orders;
+        }).catch(console.error);
+        document.getElementById('fbCard').querySelector('h2').insertAdjacentHTML('afterend', `<div class="msg">Спасибо за оценку ${'★'.repeat(rating)}! Мы всё учтём.</div>`);
+        stars.remove(); document.getElementById('fbText').remove(); document.getElementById('fbSend').remove();
+      } catch (e) { alert('Не получилось отправить. Попробуйте ещё раз.'); }
+    };
+  }
+})();
+</script>
+</body>
+</html>

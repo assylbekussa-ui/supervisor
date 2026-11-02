@@ -15,6 +15,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="tt-core.js"></script>
 
     <style>
         :root {
@@ -1315,6 +1316,7 @@
                 grid-template-columns: 1fr;
             }
 
+            .sup-top-grid { grid-template-columns: 1fr !important; }
             .calc-grid {
                 grid-template-columns: 1fr;
             }
@@ -1625,133 +1627,126 @@
 
         <section id="calculator" class="module">
             <div class="card">
+                <div class="card-header">
+                    <h3>🧮 Калькулятор — цены как на сайте</h3>
+                    <button class="btn btn-whatsapp" onclick="openImportModal()">📥 Заявка с сайта (WhatsApp)</button>
+                </div>
                 <div class="calc-grid">
                     <div>
                         <div class="form-group">
-                            <label class="form-label">1. Режим заказа</label>
-                            <div class="option-group">
-                                <div class="option-btn selected" id="calcModeFull" onclick="setCalcOrderMode('full', this)">🏠 Полноценная уборка</div>
-                                <div class="option-btn" id="calcModeExtraOnly" onclick="setCalcOrderMode('extra_only', this)">✨ Чисто доп. услуги / Своя цена</div>
+                            <label class="form-label">1. Что оформляем</label>
+                            <div class="option-group" id="calcKindGroup">
+                                <div class="option-btn selected" data-kind="once" onclick="setCalcKind('once')">🏠 Разовая уборка</div>
+                                <div class="option-btn" data-kind="sub" onclick="setCalcKind('sub')">🔁 Абонемент</div>
+                                <div class="option-btn" data-kind="custom" onclick="setCalcKind('custom')">💼 B2B / Своя цена</div>
                             </div>
                         </div>
 
-                        <div id="calcPropertySection">
+                        <!-- Разовая уборка -->
+                        <div id="calcOnceSection">
                             <div class="form-group">
-                                <label class="form-label">2. Выберите тип объекта</label>
-                                <div class="option-group">
-                                    <div class="option-btn selected" onclick="selectPropertyType('Квартира', this)">🏢 Квартира</div>
-                                    <div class="option-btn" onclick="selectPropertyType('Офис', this)">💼 Офис</div>
-                                    <div class="option-btn" onclick="selectPropertyType('Частный дом', this)">🏡 Частный дом</div>
-                                </div>
+                                <label class="form-label">2. Тип объекта</label>
+                                <div class="option-group" id="calcObjGroup"></div>
                             </div>
-
                             <div class="form-group">
                                 <label class="form-label">3. Вид уборки</label>
-                                <div class="option-group">
-                                    <div class="option-btn selected" onclick="setServiceType('standard', this)">Влажная</div>
-                                    <div class="option-btn" onclick="setServiceType('general', this)">Генеральная</div>
-                                    <div class="option-btn" onclick="setServiceType('repair', this)">После ремонта</div>
-                                </div>
+                                <div class="option-group" id="calcTypeGroup"></div>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">4. Площадь помещения: <b id="areaDisplay" style="color:var(--primary); font-size:16px;">60 м²</b></label>
-                                <input type="range" class="range-slider" min="20" max="350" value="60" id="areaSlider" oninput="updateCalculator()">
+                                <label class="form-label">4. Площадь, м²</label>
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <button class="counter-btn" style="width:40px;height:40px;font-size:18px;" onclick="changeArea(-5)">−</button>
+                                    <input type="number" id="calcAreaInput" class="form-input" style="max-width:120px; text-align:center; font-weight:800; font-size:16px;" min="10" max="1000" value="60" oninput="setArea(this.value, true)">
+                                    <button class="counter-btn" style="width:40px;height:40px;font-size:18px;" onclick="changeArea(5)">+</button>
+                                </div>
+                                <input type="range" class="range-slider" min="10" max="400" value="60" id="areaSlider" oninput="setArea(this.value)" style="margin-top:12px;">
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Выберите дополнительные услуги Tap Taza:</label>
-                            <div class="extra-services">
-                                <div class="extra-card" onclick="toggleExtra(this, 4500, '🧊 Холодильник внутри')">
-                                    <span>🧊 Холодильник</span>
-                                    <b>+4,500 ₸</b>
-                                </div>
-                                <div class="extra-card" onclick="toggleExtra(this, 3900, '🔥 Духовка от жира')">
-                                    <span>🔥 Духовка от жира</span>
-                                    <b>+3,900 ₸</b>
-                                </div>
-                                <div class="extra-card" onclick="toggleExtra(this, 7000, '🚪 Кухонные шкафы')">
-                                    <span>🚪 Кухонные шкафы</span>
-                                    <b>+7,000 ₸</b>
-                                </div>
-                                <div class="extra-card" onclick="toggleExtra(this, 2500, '📻 Микроволновка')">
-                                    <span>📻 Микроволновка</span>
-                                    <b>+2,500 ₸</b>
-                                </div>
-                                <div class="extra-card" onclick="toggleExtra(this, 4000, '🪟 Балкон / Лоджия')">
-                                    <span>🪟 Балкон / Лоджия</span>
-                                    <b>+4,000 ₸</b>
-                                </div>
-                                <div class="extra-card" onclick="toggleExtra(this, 5000, '💨 Парогенератор')">
-                                    <span>💨 Парогенератор</span>
-                                    <b>+5,000 ₸</b>
-                                </div>
+                        <!-- Абонемент -->
+                        <div id="calcSubSection" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">2. Комнат в квартире</label>
+                                <div class="option-group" id="calcRoomsGroup" style="grid-template-columns:repeat(5,1fr);"></div>
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">3. Тариф</label>
+                                <div class="option-group" id="calcPlanGroup" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"></div>
+                            </div>
+                            <label class="checklist-item" style="border:1px solid var(--border); border-radius:10px; margin-bottom:18px;">
+                                <input type="checkbox" id="calcBath2" onchange="updateCalculator()"> 2-й санузел (+10 000 ₸ в месяц)
+                            </label>
+                        </div>
 
-                            <div style="margin-top:12px; border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <b>🪟 Мойка окон</b><br>
-                                    <span style="font-size:11px; color:var(--text-muted);">2,500 ₸ / окно</span>
-                                </div>
-                                <div class="counter-box">
-                                    <button class="counter-btn" onclick="changeWindows(-1)">-</button>
-                                    <span id="windowCountDisplay" style="font-weight:700; font-size:14px; min-width:20px; text-align:center;">0</span>
-                                    <button class="counter-btn" onclick="changeWindows(1)">+</button>
-                                </div>
+                        <!-- B2B / своя цена -->
+                        <div id="calcCustomSection" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">2. Описание услуги</label>
+                                <input type="text" id="calcCustomTitle" class="form-input" placeholder="Напр.: Ежедневная уборка офиса 400 м²" oninput="updateCalculator()">
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">Компания (для B2B)</label>
+                                <input type="text" id="calcCompany" class="form-input" placeholder="ТОО «...»">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="calcAddonsSection">
+                            <label class="form-label">Дополнительные услуги</label>
+                            <div class="extra-services" id="calcAddons"></div>
                         </div>
 
                         <div class="form-group" id="manualPriceSection" style="background:var(--primary-light); padding:14px; border-radius:10px; border:1px solid var(--primary-border);">
-                            <label class="form-label" style="color:var(--primary-dark); font-size:13px;">✍️ Ручной ввод цены (₸):</label>
-                            <input type="number" id="calcManualPriceInput" class="form-input" placeholder="Введите цену вручную" oninput="updateCalculator()" style="font-weight:700; font-size:15px;">
+                            <label class="form-label" style="color:var(--primary-dark); font-size:13px;">✍️ Своя цена (₸) — заменяет расчёт, если заполнено</label>
+                            <input type="number" id="calcManualPriceInput" class="form-input" placeholder="Оставьте пустым — будет цена по сайту" oninput="updateCalculator()" style="font-weight:700; font-size:15px;">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Данные Клиента & Предоплата</label>
-                            <input type="text" id="calcCustomerName" class="form-input" placeholder="ФИО Клиента" value="Мухтар Бекжанов">
-                            <input type="text" id="calcCustomerPhone" class="form-input" placeholder="Телефон WhatsApp" value="+7 771 071 93 75">
-                            <input type="text" id="calcCustomerAddress" class="form-input" placeholder="Адрес объекта" value="г. Алматы, пр. Аль-Фараби, д. 77">
-                            
-                            <div style="margin-top:12px;">
-                                <label class="form-label">Статус предоплаты (20 000 ₸):</label>
+                            <label class="form-label">Клиент</label>
+                            <input type="text" id="calcCustomerName" class="form-input" placeholder="Имя клиента" style="margin-bottom:8px;">
+                            <input type="text" id="calcCustomerPhone" class="form-input" placeholder="Телефон WhatsApp: +7 7XX XXX XX XX" style="margin-bottom:8px;">
+                            <input type="text" id="calcCustomerAddress" class="form-input" placeholder="Адрес объекта" style="margin-bottom:8px;">
+                            <input type="text" id="calcNote" class="form-input" placeholder="Комментарий (код домофона, пожелания...)">
+                        </div>
+
+                        <div class="form-group" style="background:var(--bg-main); padding:14px; border-radius:10px; border:1px solid var(--border);">
+                            <label class="form-label">📅 Сразу поставить в график (необязательно)</label>
+                            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                                <input type="date" id="calcDate" class="form-input">
+                                <input type="time" id="calcStart" class="form-input" value="09:00">
+                                <select id="calcCleaner" class="form-input"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Предоплата</label>
+                            <div style="display:grid; grid-template-columns:1fr 160px; gap:8px;">
                                 <select id="calcPrepaySelect" class="form-input" style="font-weight:600;">
-                                    <option value="false">❌ Не получена</option>
-                                    <option value="true" selected>✅ Предоплата получена (20 000 ₸)</option>
+                                    <option value="false" selected>❌ Не получена</option>
+                                    <option value="true">✅ Получена</option>
                                 </select>
+                                <input type="number" id="calcPrepayAmount" class="form-input" value="20000" title="Сумма предоплаты, ₸">
                             </div>
                         </div>
                     </div>
 
                     <div class="calc-summary-box">
-                        <h3 style="color:#2dd4bf; margin-bottom:16px; font-size:18px;">Итоговый расчет стоимости</h3>
-                        <div class="summary-row">
-                            <span>Тип заказа:</span>
-                            <span id="sumProperty">Квартира</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Вид / Описание:</span>
-                            <span id="sumService">Поддерживающая</span>
-                        </div>
-                        <div class="summary-row" id="sumAreaRow">
-                            <span>Площадь:</span>
-                            <span id="sumArea">60 м²</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Выбранные доп. услуги:</span>
-                            <span id="sumExtrasDisplay" style="text-align:right; font-weight:600; color:#cbd5e1;">Нет</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Расчетное время:</span>
-                            <span id="sumTime">~3.5 - 4 ч</span>
-                        </div>
+                        <h3 style="color:#2dd4bf; margin-bottom:16px; font-size:18px;">Итоговый расчёт</h3>
+                        <div id="calcSummaryRows"></div>
                         <div class="summary-row total">
-                            <span>Итоговая цена:</span>
-                            <span id="totalPrice">50,000 ₸</span>
+                            <span>Итого:</span>
+                            <span id="totalPrice">50 000 ₸</span>
                         </div>
+                        <div id="calcSummaryNote" style="font-size:12px; color:#94a3b8; margin-top:4px;"></div>
+                        <div id="calcSiteCheck" style="display:none; font-size:12px; margin-top:10px; padding:8px 10px; border-radius:8px;"></div>
 
                         <button class="btn btn-primary" style="width:100%; margin-top:20px; justify-content:center; padding:12px;" onclick="transferCalcToOrdersAndAct()">
-                            📄 Перенести в Заказы и Акт
+                            ✅ Создать заказ
+                        </button>
+                        <button class="btn btn-whatsapp" style="width:100%; margin-top:10px; justify-content:center; padding:12px;" onclick="sendCalcToClient()">
+                            💬 Отправить расчёт клиенту
+                        </button>
+                        <button class="btn btn-outline" style="width:100%; margin-top:10px; justify-content:center; padding:10px; background:transparent; color:#cbd5e1; border-color:#334155;" onclick="resetCalculator()">
+                            Очистить
                         </button>
                     </div>
                 </div>
@@ -1812,20 +1807,36 @@
             <div class="card">
                 <div class="card-header">
                     <h3>🎒 Панель супервайзера</h3>
-                    <div>
-                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="selectAllChecklist(true)">Выбрать все</button>
-                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="selectAllChecklist(false)">Сбросить</button>
+                    <a class="btn btn-outline" href="supervisor.html" target="_blank">📱 Мобильный кабинет</a>
+                </div>
+
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;" class="sup-top-grid">
+                    <div class="form-group">
+                        <label class="form-label">🎯 Заказ</label>
+                        <select id="superOrderSelect" class="form-input" style="font-weight:600;" onchange="loadOrderIntoSupervisor()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">👤 Супервайзер</label>
+                        <select id="superName" class="form-input"></select>
                     </div>
                 </div>
 
-                <div class="form-group" style="background:var(--bg-main); padding:14px; border-radius:8px; border:1px solid var(--border);">
-                    <label class="form-label">🎯 Обслуживаемый заказ:</label>
-                    <select id="superOrderSelect" class="form-input" style="font-weight:600;" onchange="loadOrderIntoSupervisor()"></select>
-                </div>
+                <div id="superOrderCard" style="display:none; background:var(--bg-main); padding:14px; border-radius:10px; border:1px solid var(--border); margin-bottom:18px; font-size:13px; line-height:1.6;"></div>
 
-                <div style="margin-bottom:12px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
-                    <span>Чек-лист:</span>
-                    <span id="checklistProgressText" style="color:var(--primary);">0 / 25 (0%)</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span style="font-size:13px; font-weight:600;">Чек-лист:</span>
+                        <select id="superChecklistType" class="form-input" style="width:auto; padding:6px 10px;" onchange="renderSupervisorChecklist()">
+                            <option value="standard">Поддерживающая</option>
+                            <option value="general">Генеральная</option>
+                            <option value="repair">После ремонта</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <span id="checklistProgressText" style="color:var(--primary); font-weight:700; font-size:13px;">0 / 25 (0%)</span>
+                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="selectAllChecklist(true)">Все</button>
+                        <button class="btn btn-outline" style="padding:4px 8px; font-size:12px;" onclick="selectAllChecklist(false)">Сброс</button>
+                    </div>
                 </div>
                 <div class="checklist-progress-bar">
                     <div class="checklist-progress-fill" id="checklistProgressFill"></div>
@@ -1833,45 +1844,36 @@
 
                 <div class="supervisor-photo-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
                     <div>
-                        <label class="form-label">📸 1. Фото ДО уборки</label>
-                        <input type="file" id="photosBefore" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="previewPhotos(this, 'previewBefore')">
+                        <label class="form-label">📸 Фото ДО уборки <span id="cntBefore" style="color:var(--text-muted);"></span></label>
+                        <input type="file" id="photosBefore" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="addSupPhotos(this, 'before')">
                         <div class="photo-preview-grid" id="previewBefore"></div>
                     </div>
                     <div>
-                        <label class="form-label">✨ 2. Фото ПОСЛЕ уборки</label>
-                        <input type="file" id="photosAfter" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="previewPhotos(this, 'previewAfter')">
+                        <label class="form-label">✨ Фото ПОСЛЕ уборки <span id="cntAfter" style="color:var(--text-muted);"></span></label>
+                        <input type="file" id="photosAfter" class="btn btn-outline" style="width:100%;" multiple accept="image/*" onchange="addSupPhotos(this, 'after')">
                         <div class="photo-preview-grid" id="previewAfter"></div>
                     </div>
                 </div>
 
-                <div id="checklistItemsContainer">
-                    <div class="checklist-group">
-                        <div class="checklist-title">1. Жилые и рабочие зоны</div>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Протирка открытых поверхностей</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Очистка фасадов мебели</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Дезинфекция ручек и выключателей</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Обеспыливание техники</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Чистка подоконников</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Полировка зеркал и стекол</label>
-                    </div>
+                <div id="checklistItemsContainer" style="columns:2 320px; column-gap:16px;"></div>
 
-                    <div class="checklist-group">
-                        <div class="checklist-title">2. Кухня & Санузел</div>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Мытье столешницы и фартука</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Дезинфекция раковины и сантехники</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Мытье унитаза и ванны</label>
-                        <label class="checklist-item"><input type="checkbox" onchange="updateChecklistProgress()"> Очистка кафельной плитки</label>
-                    </div>
+                <div class="form-group" style="margin-top:16px;">
+                    <label class="form-label">Замечания / что сказал клиент</label>
+                    <textarea id="superRemarks" class="form-input" rows="2" placeholder="Напр.: клиент доволен, просил в следующий раз уделить внимание балкону"></textarea>
                 </div>
 
-                <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
-                    <button class="btn btn-primary" style="padding:12px; flex:1;" onclick="submitSupervisorChecklist()">
-                        ✅ Подтвердить
+                <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="btnSaveReport" style="padding:12px; flex:1;" onclick="submitSupervisorChecklist()">
+                        ✅ Сохранить отчёт и закрыть визит
                     </button>
                     <button class="btn btn-whatsapp" style="padding:12px; flex:1;" onclick="sendSupervisorReportToWhatsAppGroup()">
-                        💬 Отправить в WhatsApp
+                        💬 Кратко в WhatsApp-группу
                     </button>
                 </div>
+
+                <div id="superResult" style="display:none; margin-top:16px; background:var(--emerald-light); border:1px solid #6ee7b7; padding:14px; border-radius:10px; font-size:13px;"></div>
+
+                <div id="superHistory" style="margin-top:20px;"></div>
             </div>
         </section>
 
@@ -2215,6 +2217,19 @@
         </section>
     </main>
 
+    <div class="modal-backdrop" id="importModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom:6px;">📥 Заявка с сайта</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Скопируйте сообщение клиента из WhatsApp (калькулятор, абонемент или запрос КП) и вставьте сюда — CRM разберёт его и пересчитает по тем же ценам.</p>
+            <textarea id="importText" class="form-input" rows="8" placeholder="Здравствуйте! Хочу заказать уборку.&#10;Объект: Квартира&#10;Вид: Генеральная&#10;Площадь: 60 м²&#10;..."></textarea>
+            <input type="text" id="importPhone" class="form-input" style="margin-top:8px;" placeholder="Номер клиента из WhatsApp (если нет в тексте)">
+            <div id="importPreview" style="margin-top:12px; font-size:13px; background:var(--bg-main); padding:10px 12px; border-radius:8px; min-height:20px;"></div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                <button class="btn btn-outline" onclick="closeImportModal()">Отмена</button>
+                <button class="btn btn-primary" onclick="applyImport()">Перенести в калькулятор</button>
+            </div>
+        </div>
+    </div>
     <div class="modal-backdrop" id="memoModal">
         <div class="modal-card">
             <h3 style="margin-bottom:12px;">📌 Памятка Клиенту</h3>
@@ -2257,7 +2272,7 @@
             <div class="form-group">
                 <label class="form-label">Статус предоплаты</label>
                 <select id="editPrepayment" class="form-input">
-                    <option value="true">✅ Предоплата получена (20 000 ₸)</option>
+                    <option value="true">✅ Предоплата получена</option>
                     <option value="false">❌ Не получена</option>
                 </select>
             </div>
@@ -2580,6 +2595,7 @@
             renderEmployees();
             renderWarehouseKitsStatus();
             updateSupervisorDropdown();
+            populateCalcCleaners();
             updateActCode();
             updateScheduleDateDisplay();
             renderScheduleCards();
@@ -2647,9 +2663,9 @@
                 'analytics': ['Аналитика и Карта заказов', 'Динамический мониторинг выручки и объектов в Алматы'],
                 'schedule': ['График выездов и Календарь', 'Интерактивная сетка задействованных бригад по времени'],
                 'orders': ['Список Заказов, Статусы & Управление', 'Полный контроль заказов, смены статусов и отправки памяток'],
-                'calculator': ['Онлайн-калькулятор уборок', 'Точный расчет стоимости / Заказ на доп. услуги'],
+                'calculator': ['Калькулятор заказов', 'Те же цены, что на сайте: разовая уборка, абонементы, B2B'],
                 'employees': ['Сотрудники & Расчет ЗП', 'Управление персоналом, изменение ставок и расчет окладов'],
-                'supervisor': ['Панель супервайзера', 'Выбор заказа, фотофиксация и отчет в WhatsApp'],
+                'supervisor': ['Панель супервайзера', 'Чек-лист 25 пунктов, фото до/после, фотоотчёт клиенту'],
                 'inventory': ['Склад & Мобильные комплекты', 'Учет сдачи/выдачи 3-х комплектов и доп. оборудования'],
                 'acts': ['Генератор актов выполненных работ', 'Удобное переключение B2C/B2B и формирование документов'],
                 'status': ['Проверка статуса заказа', 'Отслеживание выполнения уборки в реальном времени']
@@ -3203,15 +3219,18 @@
                     <td><b>${ord.customerName}</b><br><span style="font-size:11px; color:var(--text-muted);">${ord.customerPhone}</span></td>
                     <td>${ord.customerAddress}</td>
                     <td>
-                        <b>${ord.serviceType}</b>
+                        ${ord.kind === 'sub' ? '<span class="badge badge-info">🔁 Абонемент</span> ' : ord.kind === 'custom' ? '<span class="badge badge-warning">💼 B2B</span> ' : ''}${ord.source === 'Сайт' ? '<span class="badge badge-success">🌐 Сайт</span><br>' : ''}
+                        <b>${TT.esc(ord.serviceType)}</b>
                         <div style="font-size:11px; color:var(--primary); font-weight:600; margin-top:2px;">
-                            ➕ Доп: ${extrasText}
+                            ➕ Доп: ${TT.esc(extrasText)}
                         </div>
+                        ${ord.kind === 'sub' ? `<div style="font-size:11px; margin-top:2px;">Визитов: <b>${ord.visitsDone || 0} / ${ord.visitsTotal || '?'}</b></div>` : ''}
+                        ${(ord.reports && Object.keys(ord.reports).length) ? `<div style="font-size:11px; margin-top:2px;">📸 Отчётов: <b>${Object.keys(ord.reports).length}</b></div>` : ''}
                     </td>
                     <td>
                         <b>${Number(ord.totalPrice).toLocaleString()} ₸</b><br>
                         <select class="select-prepay" onchange="changeOrderPrepayment('${ord.id}', this.value)">
-                            <option value="true" ${ord.prepaymentReceived ? 'selected' : ''}>✅ Предоплата (20k)</option>
+                            <option value="true" ${ord.prepaymentReceived ? 'selected' : ''}>✅ Предоплата${ord.prepayAmount ? ' ' + TT.fmt(ord.prepayAmount) + ' ₸' : ''}</option>
                             <option value="false" ${!ord.prepaymentReceived ? 'selected' : ''}>❌ Не получена</option>
                         </select>
                     </td>
@@ -3227,6 +3246,7 @@
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
                             <button class="btn btn-outline" style="padding:4px 8px; font-size:11px; background:#f0fdfa;" onclick="addOrderToScheduleDirect('${ord.id}')">📅 В график</button>
                             <button class="btn btn-whatsapp" style="padding:4px 8px; font-size:11px;" onclick="openMemoModal('${ord.id}')">📲 Памятка</button>
+                            <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="openSupervisorFor('${ord.id}')">🎒 Визит</button>
                             <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="openEditOrderModal('${ord.id}')">✏️</button>
                             <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteOrder('${ord.id}')">🗑</button>
                         </div>
@@ -3311,185 +3331,279 @@
             showToast(`Заказ #${orderId} изменен!`, '✅');
         }
 
-        let calcOrderMode = 'full';
-        let currentBaseRate = 500;
-        let currentServiceTitle = 'Влажная (поддерживающая)';
-        let selectedPropertyType = 'Квартира';
-        let extraTotal = 0;
-        let windowCount = 0;
-        let selectedExtrasList = [];
+        // ==========================================
+        // 🧮 Калькулятор — та же логика и цены, что на сайте (tt-core.js)
+        // ==========================================
+        const calc = {
+            kind: 'once', obj: 'Квартира', type: 's', area: 60,
+            q: TT.ADD.map(() => 0), rooms: 1, plan: 'taza', sitePrice: 0
+        };
 
-        function setCalcOrderMode(mode, el) {
-            calcOrderMode = mode;
-            document.getElementById('calcModeFull').classList.remove('selected');
-            document.getElementById('calcModeExtraOnly').classList.remove('selected');
-            el.classList.add('selected');
+        function renderCalculatorControls() {
+            document.getElementById('calcObjGroup').innerHTML = TT.OBJ.map(o =>
+                `<div class="option-btn ${o === calc.obj ? 'selected' : ''}" onclick="calc.obj='${o}'; renderCalculatorControls(); updateCalculator();">${o === 'Квартира' ? '🏢' : o === 'Офис' ? '💼' : '🏡'} ${o}</div>`).join('');
+            document.getElementById('calcTypeGroup').innerHTML = TT.TYPES.map(t =>
+                `<div class="option-btn ${t.id === calc.type ? 'selected' : ''}" onclick="calc.type='${t.id}'; renderCalculatorControls(); updateCalculator();">${t.t}<br><small style="font-weight:600;">${TT.fmt(t.p)} ₸/м²</small></div>`).join('');
+            document.getElementById('calcRoomsGroup').innerHTML = [1, 2, 3, 4, 5].map(r =>
+                `<div class="option-btn ${r === calc.rooms ? 'selected' : ''}" onclick="calc.rooms=${r}; renderCalculatorControls(); updateCalculator();">${r}${r === 5 ? '+' : ''}</div>`).join('');
+            document.getElementById('calcPlanGroup').innerHTML = TT.PLANS.map(p => {
+                const s = TT.calcSub({ rooms: calc.rooms, plan: p.id });
+                return `<div class="option-btn ${p.id === calc.plan ? 'selected' : ''}" onclick="calc.plan='${p.id}'; renderCalculatorControls(); updateCalculator();">${p.t}<br><small style="font-weight:600;">${TT.fmt(s.price)} ₸ · ${p.visits} виз.</small></div>`;
+            }).join('');
+            document.getElementById('calcAddons').innerHTML = TT.ADD.map((a, i) => `
+                <div class="extra-card ${calc.q[i] ? 'selected' : ''}" style="cursor:default; flex-direction:column; align-items:flex-start; gap:8px;">
+                    <div><b style="font-size:13px;">${a.ic} ${a.t}</b><br><span style="font-size:11px; color:var(--text-muted);">${TT.fmt(a.p)} ₸/${a.u}</span></div>
+                    <div class="counter-box">
+                        <button class="counter-btn" onclick="changeAddon(${i},-1)">−</button>
+                        <span style="font-weight:700; min-width:18px; text-align:center;">${calc.q[i]}</span>
+                        <button class="counter-btn" onclick="changeAddon(${i},1)">+</button>
+                    </div>
+                </div>`).join('');
+            document.querySelectorAll('#calcKindGroup .option-btn').forEach(b => b.classList.toggle('selected', b.dataset.kind === calc.kind));
+            document.getElementById('calcOnceSection').style.display = calc.kind === 'once' ? 'block' : 'none';
+            document.getElementById('calcSubSection').style.display = calc.kind === 'sub' ? 'block' : 'none';
+            document.getElementById('calcCustomSection').style.display = calc.kind === 'custom' ? 'block' : 'none';
+            document.getElementById('calcAddonsSection').style.display = calc.kind === 'sub' ? 'none' : 'block';
+        }
 
-            const propSec = document.getElementById('calcPropertySection');
-            const sumAreaRow = document.getElementById('sumAreaRow');
+        function populateCalcCleaners() {
+            const sel = document.getElementById('calcCleaner');
+            if (!sel) return;
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">Клинер…</option>' + (state.employees || [])
+                .filter(e => /клинер|бригад|cleaner/i.test(e.role || '') || e.payType === 'daily')
+                .map(e => `<option value="${TT.esc(e.name)}">${TT.esc(e.name)}</option>`).join('');
+            sel.value = cur;
+        }
 
-            if(mode === 'extra_only') {
-                propSec.style.display = 'none';
-                sumAreaRow.style.display = 'none';
-                document.getElementById('sumProperty').innerText = 'Заказ на доп. услуги';
-                document.getElementById('sumService').innerText = 'Дополнительные услуги / Своя цена';
+        function setCalcKind(kind) { calc.kind = kind; renderCalculatorControls(); updateCalculator(); }
+        function changeAddon(i, d) { calc.q[i] = Math.max(0, Math.min(20, calc.q[i] + d)); renderCalculatorControls(); updateCalculator(); }
+        function changeArea(d) { setArea(calc.area + d); }
+        function setArea(v, fromInput) {
+            const n = Number(v);
+            if (fromInput && !n) return;
+            calc.area = Math.max(TT.AREA_MIN, Math.min(TT.AREA_MAX, Math.round(n) || 60));
+            if (!fromInput) document.getElementById('calcAreaInput').value = calc.area;
+            document.getElementById('areaSlider').value = Math.min(400, calc.area);
+            updateCalculator();
+        }
+
+        /** Возвращает всё, что нужно для заказа: цену, название, строки сводки */
+        function computeCalc() {
+            const manual = Number(document.getElementById('calcManualPriceInput').value) || 0;
+            const addonTitles = [];
+            let rows = [], price = 0, title = '', note = '', visits = 0, calcData = {}, compare = 0;
+
+            if (calc.kind === 'sub') {
+                const s = TT.calcSub({ rooms: calc.rooms, plan: calc.plan, bath2: document.getElementById('calcBath2').checked });
+                price = s.total; visits = s.visits; compare = s.price;
+                title = `Абонемент «${s.P.t}» · ${s.rooms} комн.${s.bath ? ' + 2-й санузел' : ''}`;
+                rows = [['Тариф', s.P.t], ['Квартира', `${s.rooms} комн.`], ['Визитов', `${s.visits} поддерживающих`],
+                        ['Абонемент', TT.fmt(s.price) + ' ₸']];
+                if (s.bath) rows.push(['2-й санузел', '+' + TT.fmt(s.bath) + ' ₸']);
+                rows.push(['Первичный выезд', s.first ? TT.fmt(s.first) + ' ₸' : '0 ₸ (в подарок)']);
+                note = `≈ ${TT.fmt(s.perVisit)} ₸ за уборку` + (s.P.gifts ? ` · Подарки: ${s.P.gifts}` : '') + (s.P.recurring ? ' · Списание раз в месяц' : '');
+                calcData = { rooms: s.rooms, plan: s.P.id, bath2: !!s.bath };
             } else {
-                propSec.style.display = 'block';
-                sumAreaRow.style.display = 'flex';
-                document.getElementById('sumProperty').innerText = selectedPropertyType;
-                document.getElementById('sumService').innerText = currentServiceTitle;
+                const r = TT.calcOnce({ type: calc.type, area: calc.area, q: calc.q });
+                r.lines.forEach(l => addonTitles.push(`${l.t} × ${l.q}`));
+                if (calc.kind === 'once') {
+                    price = r.sum; compare = r.sum;
+                    title = `${r.T.t} (${calc.area} м²)`;
+                    rows = [['Объект', calc.obj], ['Вид уборки', r.T.t], ['Площадь', `${calc.area} м² × ${TT.fmt(r.T.p)} ₸`], ['Основная работа', TT.fmt(r.base) + ' ₸']];
+                    if (r.add) rows.push(['Доп. услуги', TT.fmt(r.add) + ' ₸']);
+                    if (r.minApplied) note = 'Применён минимальный заказ 50 000 ₸';
+                    calcData = { type: calc.type, area: calc.area, obj: calc.obj, q: calc.q.slice() };
+                } else {
+                    price = r.add; compare = r.add;
+                    title = document.getElementById('calcCustomTitle').value.trim() || (r.add ? 'Дополнительные услуги' : 'Услуга по договорённости');
+                    rows = [['Услуга', title]];
+                    const comp = document.getElementById('calcCompany').value.trim();
+                    if (comp) rows.push(['Компания', comp]);
+                    if (r.add) rows.push(['Доп. услуги', TT.fmt(r.add) + ' ₸']);
+                    if (!manual) note = 'Для B2B укажите цену вручную';
+                    calcData = { q: calc.q.slice(), company: comp };
+                }
+                addonTitles.forEach(t => rows.push(['  •', t]));
             }
-            updateCalculator();
-        }
-
-        function selectPropertyType(type, el) {
-            selectedPropertyType = type;
-            el.parentNode.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-            if(calcOrderMode === 'full') {
-                document.getElementById('sumProperty').innerText = type;
-            }
-            updateCalculator();
-        }
-
-        function setServiceType(type, el) {
-            el.parentNode.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-
-            if(type === 'standard') {
-                currentBaseRate = 500;
-                currentServiceTitle = 'Влажная (поддерживающая)';
-            } else if(type === 'general') {
-                currentBaseRate = 850;
-                currentServiceTitle = 'Генеральная уборка';
-            } else if(type === 'repair') {
-                currentBaseRate = 1100;
-                currentServiceTitle = 'После ремонта';
-            }
-            if(calcOrderMode === 'full') {
-                document.getElementById('sumService').innerText = currentServiceTitle;
-            }
-            updateCalculator();
-        }
-
-        function toggleExtra(el, price, title) {
-            el.classList.toggle('selected');
-            if(el.classList.contains('selected')) {
-                extraTotal += price;
-                selectedExtrasList.push({ title, price });
-            } else {
-                extraTotal -= price;
-                selectedExtrasList = selectedExtrasList.filter(item => item.title !== title);
-            }
-            updateCalculator();
-        }
-
-        function changeWindows(delta) {
-            windowCount += delta;
-            if(windowCount < 0) windowCount = 0;
-            document.getElementById('windowCountDisplay').innerText = windowCount;
-            updateCalculator();
+            if (manual > 0) { rows.push(['Своя цена', 'вместо ' + TT.fmt(price) + ' ₸']); price = manual; }
+            rows.push(['Время', TT.estimateTime(calc.kind, calc.area, calc.type)]);
+            return { price, title, rows, note, visits, addonTitles, calcData, compare, manual: manual > 0 };
         }
 
         function updateCalculator() {
-            const manualPriceVal = document.getElementById('calcManualPriceInput').value;
-            let calculated = 0;
+            if (!document.getElementById('calcSummaryRows')) return;
+            const c = computeCalc();
+            document.getElementById('calcSummaryRows').innerHTML = c.rows.map(([k, v]) =>
+                `<div class="summary-row"><span>${TT.esc(k)}</span><span style="text-align:right; font-weight:600; color:#e2e8f0;">${TT.esc(v)}</span></div>`).join('');
+            document.getElementById('totalPrice').innerText = TT.fmt(c.price) + ' ₸';
+            document.getElementById('calcSummaryNote').innerText = c.note;
 
-            if(manualPriceVal && Number(manualPriceVal) > 0) {
-                calculated = Number(manualPriceVal);
-            } else if(calcOrderMode === 'extra_only') {
-                const windowTotal = windowCount * 2500;
-                calculated = extraTotal + windowTotal;
-            } else {
-                const area = parseInt(document.getElementById('areaSlider').value);
-                document.getElementById('areaDisplay').innerText = area + ' м²';
-                document.getElementById('sumArea').innerText = area + ' м²';
+            // Сверка с ценой, которую клиент видел на сайте
+            const box = document.getElementById('calcSiteCheck');
+            if (calc.sitePrice) {
+                const ok = Math.abs(c.compare - calc.sitePrice) < 1;
+                box.style.display = 'block';
+                box.style.background = ok ? 'rgba(16,185,129,.15)' : 'rgba(245,158,11,.18)';
+                box.style.color = ok ? '#6ee7b7' : '#fcd34d';
+                box.innerText = ok ? `✓ Совпадает с ценой на сайте (${TT.fmt(calc.sitePrice)} ₸)`
+                                   : `⚠ На сайте клиент видел ${TT.fmt(calc.sitePrice)} ₸ — проверьте перед подтверждением`;
+            } else box.style.display = 'none';
+        }
 
-                const windowTotal = windowCount * 2500;
-                calculated = (area * currentBaseRate) + extraTotal + windowTotal;
-                if(calculated < 50000) calculated = 50000;
-            }
+        function resetCalculator() {
+            Object.assign(calc, { kind: 'once', obj: 'Квартира', type: 's', area: 60, q: TT.ADD.map(() => 0), rooms: 1, plan: 'taza', sitePrice: 0 });
+            ['calcManualPriceInput', 'calcCustomerName', 'calcCustomerPhone', 'calcCustomerAddress', 'calcNote', 'calcCustomTitle', 'calcCompany', 'calcDate'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('calcBath2').checked = false;
+            document.getElementById('calcAreaInput').value = 60;
+            document.getElementById('areaSlider').value = 60;
+            document.getElementById('calcPrepaySelect').value = 'false';
+            renderCalculatorControls(); updateCalculator();
+        }
 
-            document.getElementById('totalPrice').innerText = calculated.toLocaleString() + ' ₸';
+        function newOrderId() {
+            let id;
+            do { id = 'TT-' + Math.floor(10000 + Math.random() * 90000); } while (state.orders.some(o => o.id === id));
+            return id;
+        }
 
-            let extrasTitles = selectedExtrasList.map(e => e.title);
-            if(windowCount > 0) extrasTitles.push(`🪟 Мойка окон (${windowCount} шт)`);
-
-            document.getElementById('sumExtrasDisplay').innerText = extrasTitles.length > 0 ? extrasTitles.join(', ') : 'Нет';
-
-            if(calcOrderMode === 'extra_only') {
-                document.getElementById('sumTime').innerText = '~1.5 - 2.5 ч';
-            } else {
-                const area = parseInt(document.getElementById('areaSlider').value);
-                if(area <= 80) {
-                    document.getElementById('sumTime').innerText = '~3 - 4 ч';
-                } else if(area <= 180) {
-                    document.getElementById('sumTime').innerText = '~4 - 5 ч';
-                } else {
-                    document.getElementById('sumTime').innerText = '~6 - 8 ч';
-                }
-            }
+        function addHours(time, h) {
+            const [hh, mm] = (time || '09:00').split(':').map(Number);
+            const t = Math.min(23 * 60 + 59, hh * 60 + mm + Math.round(h * 60));
+            return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
         }
 
         function transferCalcToOrdersAndAct() {
-            const custName = document.getElementById('calcCustomerName').value || 'Новый Клиент';
-            const custPhone = document.getElementById('calcCustomerPhone').value || '+7 771 071 93 75';
-            const custAddr = document.getElementById('calcCustomerAddress').value || 'г. Алматы';
-            const prepayReceived = (document.getElementById('calcPrepaySelect').value === 'true');
-            const orderNo = 'TT-' + Math.floor(1000 + Math.random() * 9000);
-
-            let extrasTitles = selectedExtrasList.map(e => e.title);
-            if (windowCount > 0) {
-                extrasTitles.push(`🪟 Мойка окон (${windowCount} шт)`);
+            const c = computeCalc();
+            const custName = document.getElementById('calcCustomerName').value.trim();
+            const custPhone = document.getElementById('calcCustomerPhone').value.trim();
+            const custAddr = document.getElementById('calcCustomerAddress').value.trim();
+            if (!custName || TT.waPhone(custPhone).length < 11) {
+                showToast('Укажите имя и телефон клиента', '⚠️');
+                return;
             }
+            if (!c.price) { showToast('Цена 0 ₸ — укажите свою цену', '⚠️'); return; }
 
-            const manualPriceVal = document.getElementById('calcManualPriceInput').value;
-            let finalPrice = 0;
-
-            if (manualPriceVal && Number(manualPriceVal) > 0) {
-                finalPrice = Number(manualPriceVal);
-            } else if (calcOrderMode === 'extra_only') {
-                finalPrice = extraTotal + (windowCount * 2500);
-            } else {
-                const area = parseInt(document.getElementById('areaSlider').value);
-                finalPrice = (area * currentBaseRate) + extraTotal + (windowCount * 2500);
-                if (finalPrice < 50000) finalPrice = 50000;
-            }
-
-            const areaVal = calcOrderMode === 'full' ? document.getElementById('areaSlider').value + ' м²' : 'Доп. услуги';
-            const fullServiceTitle = calcOrderMode === 'full' ? `${currentServiceTitle} (${areaVal})` : 'Дополнительные услуги';
-
+            const orderNo = newOrderId();
+            const prepay = document.getElementById('calcPrepaySelect').value === 'true';
             const newOrder = {
                 id: orderNo,
                 createdAt: new Date().toISOString(),
+                source: calc.sitePrice || calc.imported ? 'Сайт' : 'CRM',
+                kind: calc.kind,
+                calc: c.calcData,
                 customerName: custName,
                 customerPhone: custPhone,
-                customerAddress: custAddr,
-                serviceType: fullServiceTitle,
-                extras: extrasTitles,
-                totalPrice: finalPrice,
-                prepaymentReceived: prepayReceived,
+                customerAddress: custAddr || 'г. Алматы',
+                serviceType: c.title,
+                extras: c.addonTitles,
+                note: document.getElementById('calcNote').value.trim(),
+                totalPrice: c.price,
+                prepaymentReceived: prepay,
+                prepayAmount: Number(document.getElementById('calcPrepayAmount').value) || 0,
                 status: 'Новый заказ',
                 lat: 43.2389 + (Math.random() - 0.5) * 0.04,
                 lng: 76.8897 + (Math.random() - 0.5) * 0.04
             };
-
+            if (calc.kind === 'sub') { newOrder.visitsTotal = c.visits; newOrder.visitsDone = 0; }
             state.orders.unshift(newOrder);
 
-            // Автоматическое заполнение формы Акта выполненных работ
+            // Сразу в график, если указана дата
+            const date = document.getElementById('calcDate').value;
+            if (date) {
+                const start = document.getElementById('calcStart').value || '09:00';
+                const cleaner = document.getElementById('calcCleaner').value;
+                const emp = state.employees.find(e => e.name === cleaner);
+                const hours = calc.kind === 'once' ? (calc.area <= 80 ? 4 : calc.area <= 180 ? 5 : 8) : 3;
+                state.scheduleEvents = state.scheduleEvents || [];
+                state.scheduleEvents.push({
+                    id: Date.now(), orderId: orderNo, date, staffId: 1, cleanerName: cleaner,
+                    startTime: start, endTime: addHours(start, hours),
+                    title: `${custName} (${c.title.split(' (')[0]})`, address: newOrder.customerAddress,
+                    statusTag: prepay ? 'Оплачен' : 'Ожидает оплаты'
+                });
+                if (emp && emp.payType === 'daily') emp.shifts = (emp.shifts || 0) + 1;
+                newOrder.status = 'Планируется выезд';
+            }
+
+            // Автозаполнение акта
             document.getElementById('in-act-num').value = orderNo.replace('TT-', '');
             document.getElementById('in-b2c-name').value = custName;
             document.getElementById('in-phone').value = custPhone;
-            document.getElementById('in-object-address').value = custAddr;
-            document.getElementById('in-price-main').value = finalPrice;
-            document.getElementById('in-dop-name').value = extrasTitles.length > 0 ? extrasTitles.join(', ') : 'Нет';
+            document.getElementById('in-object-address').value = newOrder.customerAddress;
+            document.getElementById('in-price-main').value = c.price;
+            document.getElementById('in-dop-name').value = c.addonTitles.length ? c.addonTitles.join(', ') : 'Нет';
             document.getElementById('in-dop-qty').value = '1 комплект';
             document.getElementById('in-price-dop').value = '0';
+            if (calc.kind === 'custom' && c.calcData.company) document.getElementById('in-b2b-company').value = c.calcData.company;
 
             saveState();
             renderAllModules();
-            showToast(`Заказ #${orderNo} перенесен в реестр и Акт!`, '📄');
+            showToast(`Заказ #${orderNo} создан${date ? ' и поставлен в график' : ''}!`, '📄');
+            resetCalculator();
             switchModule('orders');
+        }
+
+        function sendCalcToClient() {
+            const c = computeCalc();
+            const phone = document.getElementById('calcCustomerPhone').value;
+            if (TT.waPhone(phone).length < 11) { showToast('Укажите телефон клиента', '⚠️'); return; }
+            const name = document.getElementById('calcCustomerName').value.trim();
+            const lines = c.rows.filter(r => r[0] !== 'Время').map(([k, v]) => k.trim() === '•' ? `  • ${v}` : `${k}: ${v}`);
+            const text = `Здравствуйте${name ? ', ' + name : ''}! Расчёт уборки Tap Taza:\n\n${lines.join('\n')}\n\nИтого: ${TT.fmt(c.price)} ₸` +
+                (c.note ? `\n${c.note}` : '') + `\n\nПодтвердите, пожалуйста, удобные дату и время — и мы забронируем бригаду.`;
+            window.open(TT.waLink(phone, text), '_blank');
+        }
+
+        // ---------- Импорт заявки с сайта ----------
+        function openImportModal() {
+            document.getElementById('importText').value = '';
+            document.getElementById('importPhone').value = '';
+            document.getElementById('importPreview').innerHTML = '';
+            document.getElementById('importModal').classList.add('active');
+            setTimeout(() => document.getElementById('importText').focus(), 50);
+        }
+        function closeImportModal() { document.getElementById('importModal').classList.remove('active'); }
+
+        function previewImport() {
+            const p = TT.parseSiteMessage(document.getElementById('importText').value);
+            const box = document.getElementById('importPreview');
+            if (!p.kind) { box.innerHTML = '<span style="color:var(--text-muted);">Вставьте текст сообщения, которое клиент отправил с сайта.</span>'; return p; }
+            const label = { once: '🏠 Разовая уборка', sub: '🔁 Абонемент', custom: '💼 Запрос КП (B2B)' }[p.kind];
+            let det = '';
+            if (p.kind === 'once') {
+                const r = TT.calcOnce(p);
+                det = `${r.T.t}, ${p.area} м², ${p.obj}` + (r.lines.length ? `; доп.: ${r.lines.map(l => l.t + ' × ' + l.q).join(', ')}` : '') +
+                      `<br>Цена по CRM: <b>${TT.fmt(r.sum)} ₸</b>` + (p.sitePrice ? ` · на сайте: ${TT.fmt(p.sitePrice)} ₸` : '');
+            } else if (p.kind === 'sub') {
+                const s = TT.calcSub(p);
+                det = `«${s.P.t}», ${s.rooms} комн. · к оплате <b>${TT.fmt(s.total)} ₸</b>`;
+            } else {
+                det = `${TT.esc(p.company || p.name)} · ${TT.esc(p.obj)} · ${p.area || '—'} м² · ${TT.esc(p.freq)}`;
+            }
+            box.innerHTML = `<b>${label}</b><br>${det}`;
+            return p;
+        }
+
+        function applyImport() {
+            const p = previewImport();
+            if (!p.kind) { showToast('Не удалось распознать заявку', '⚠️'); return; }
+            resetCalculator();
+            calc.kind = p.kind; calc.sitePrice = p.sitePrice || 0; calc.imported = true;
+            if (p.kind === 'once') { Object.assign(calc, { type: p.type, area: p.area, obj: p.obj, q: p.q }); document.getElementById('calcAreaInput').value = p.area; document.getElementById('areaSlider').value = Math.min(400, p.area); }
+            if (p.kind === 'sub') { Object.assign(calc, { rooms: p.rooms, plan: p.plan }); document.getElementById('calcBath2').checked = !!p.bath2; }
+            if (p.kind === 'custom') {
+                document.getElementById('calcCustomTitle').value = `${p.obj || 'Объект'}${p.area ? ', ' + p.area + ' м²' : ''}${p.freq ? ' · ' + p.freq : ''}`;
+                document.getElementById('calcCompany').value = p.company || '';
+                document.getElementById('calcCustomerName').value = p.name || '';
+                document.getElementById('calcNote').value = p.note || '';
+            }
+            const phone = document.getElementById('importPhone').value.trim() || p.phone;
+            if (phone) document.getElementById('calcCustomerPhone').value = phone;
+            renderCalculatorControls(); updateCalculator();
+            closeImportModal();
+            switchModule('calculator');
+            showToast('Заявка перенесена в калькулятор — заполните клиента и создайте заказ', '📥');
         }
 
         // ==========================================
@@ -3599,79 +3713,160 @@
         }
 
         // ==========================================
-        // 🎒 Панель Супервайзера (Чек-лист)
+        // 🎒 Панель Супервайзера — отчёт с фото в Firebase
         // ==========================================
+        const supPhotos = { before: [], after: [] };
+        let lastReport = null;
+
         function updateSupervisorDropdown() {
             const select = document.getElementById('superOrderSelect');
             if (!select) return;
-            select.innerHTML = '<option value="">-- Выберите заказ для проверки --</option>';
+            const cur = select.value;
+            const active = state.orders.filter(o => o.status !== 'Завершен');
+            const done = state.orders.filter(o => o.status === 'Завершен');
+            const opt = o => `<option value="${TT.esc(o.id)}">#${TT.esc(o.id)} — ${TT.esc(o.customerName)} · ${TT.esc(o.serviceType)}${o.kind === 'sub' ? ` · ${o.visitsDone || 0}/${o.visitsTotal || '?'}` : ''}</option>`;
+            select.innerHTML = '<option value="">-- Выберите заказ --</option>' +
+                (active.length ? `<optgroup label="В работе">${active.map(opt).join('')}</optgroup>` : '') +
+                (done.length ? `<optgroup label="Завершённые">${done.map(opt).join('')}</optgroup>` : '');
+            if (cur && state.orders.some(o => o.id === cur)) select.value = cur;
 
-            state.orders.forEach(ord => {
-                const opt = document.createElement('option');
-                opt.value = ord.id;
-                opt.textContent = `#${ord.id} — ${ord.customerName} (${ord.customerAddress})`;
-                select.appendChild(opt);
-            });
+            const nameSel = document.getElementById('superName');
+            if (nameSel) {
+                const curName = nameSel.value;
+                nameSel.innerHTML = (state.employees || []).map(e => `<option>${TT.esc(e.name)}</option>`).join('');
+                if (curName) nameSel.value = curName;
+            }
+            renderSupervisorOrderCard();
+        }
+
+        function openSupervisorFor(orderId) {
+            switchModule('supervisor');
+            document.getElementById('superOrderSelect').value = orderId;
+            loadOrderIntoSupervisor();
+        }
+
+        function getSupOrder() {
+            const id = document.getElementById('superOrderSelect').value;
+            return state.orders.find(o => o.id === id);
+        }
+
+        function renderSupervisorOrderCard() {
+            const ord = getSupOrder();
+            const card = document.getElementById('superOrderCard');
+            const hist = document.getElementById('superHistory');
+            if (!card) return;
+            if (!ord) { card.style.display = 'none'; hist.innerHTML = ''; return; }
+            card.style.display = 'block';
+            card.innerHTML = `<b style="font-size:14px;">#${TT.esc(ord.id)} · ${TT.esc(ord.customerName)}</b> <span class="badge ${getStatusBadgeClass(ord.status)}">${TT.esc(ord.status)}</span><br>
+                📍 ${TT.esc(ord.customerAddress)} · 📞 ${TT.esc(ord.customerPhone)}<br>
+                🧹 ${TT.esc(ord.serviceType)}${ord.extras && ord.extras.length ? ' · ➕ ' + TT.esc(ord.extras.join(', ')) : ''}<br>
+                ${ord.kind === 'sub' ? `🔁 Визитов: <b>${ord.visitsDone || 0} из ${ord.visitsTotal || '?'}</b><br>` : ''}
+                ${ord.note ? `📝 ${TT.esc(ord.note)}` : ''}`;
+            const reps = Array.isArray(ord.reports) ? ord.reports : Object.values(ord.reports || {});
+            hist.innerHTML = reps.length ? `<div class="checklist-title">История отчётов (${reps.length})</div>` + reps.slice().reverse().map(r =>
+                `<div class="checklist-item" style="justify-content:space-between;"><span>${new Date(r.at).toLocaleString('ru-RU')} · ${TT.esc(r.by)} · ✔ ${r.done}/${r.total} · 📸 ${r.nb}+${r.na}${r.rating ? ' · ' + '⭐'.repeat(r.rating) : ''}</span>
+                 <a class="btn btn-outline" style="padding:4px 8px; font-size:11px;" target="_blank" href="${TT.reportUrl(ord.id, r.key)}">Открыть</a></div>`).join('') : '';
         }
 
         function loadOrderIntoSupervisor() {
-            const orderId = document.getElementById('superOrderSelect').value;
-            if (!orderId) return;
-            showToast(`Загружен заказ #${orderId}`, '🎯');
+            const ord = getSupOrder();
+            document.getElementById('superResult').style.display = 'none';
+            if (!ord) { renderSupervisorOrderCard(); return; }
+            document.getElementById('superChecklistType').value = TT.checklistKeyForOrder(ord);
+            supPhotos.before = []; supPhotos.after = [];
+            renderSupPhotos();
+            document.getElementById('superRemarks').value = '';
+            renderSupervisorChecklist();
+            renderSupervisorOrderCard();
+        }
+
+        function renderSupervisorChecklist() {
+            const key = document.getElementById('superChecklistType').value;
+            const items = TT.CHECKLISTS[key];
+            document.getElementById('checklistItemsContainer').innerHTML = items.map((t, i) =>
+                `<label class="checklist-item" style="break-inside:avoid;"><input type="checkbox" data-i="${i}" onchange="updateChecklistProgress()"> ${i + 1}. ${TT.esc(t)}</label>`).join('');
             updateChecklistProgress();
         }
 
         function updateChecklistProgress() {
-            const checkboxes = document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]');
-            const total = checkboxes.length;
-            let checkedCount = 0;
-
-            checkboxes.forEach(cb => {
-                if (cb.checked) checkedCount++;
-            });
-
-            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
-            document.getElementById('checklistProgressText').innerText = `${checkedCount} / ${total} (${percent}%)`;
-            document.getElementById('checklistProgressFill').style.width = `${percent}%`;
+            const boxes = document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]');
+            const done = Array.from(boxes).filter(b => b.checked).length;
+            const pct = boxes.length ? Math.round(done / boxes.length * 100) : 0;
+            document.getElementById('checklistProgressText').innerText = `${done} / ${boxes.length} (${pct}%)`;
+            document.getElementById('checklistProgressFill').style.width = pct + '%';
         }
 
-        function selectAllChecklist(status) {
-            const checkboxes = document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = status);
+        function selectAllChecklist(v) {
+            document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]').forEach(b => b.checked = v);
             updateChecklistProgress();
         }
 
-        function previewPhotos(input, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'photo-preview-item';
-                        container.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
+        async function addSupPhotos(input, stage) {
+            const files = Array.from(input.files || []);
+            input.value = '';
+            const room = 8 - supPhotos[stage].length;
+            if (files.length > room) showToast('Максимум 8 фото на этап', '⚠️');
+            for (const f of files.slice(0, Math.max(0, room))) {
+                try { supPhotos[stage].push(await TT.compressImage(f)); } catch (e) { console.error(e); }
             }
+            renderSupPhotos();
         }
 
-        function submitSupervisorChecklist() {
-            const orderId = document.getElementById('superOrderSelect').value;
-            if (!orderId) {
-                alert('Выберите заказ!');
-                return;
+        function removeSupPhoto(stage, i) { supPhotos[stage].splice(i, 1); renderSupPhotos(); }
+
+        function renderSupPhotos() {
+            [['before', 'previewBefore', 'cntBefore'], ['after', 'previewAfter', 'cntAfter']].forEach(([st, box, cnt]) => {
+                document.getElementById(box).innerHTML = supPhotos[st].map((src, i) =>
+                    `<img src="${src}" class="photo-preview-item" title="Нажмите, чтобы удалить" style="cursor:pointer;" onclick="removeSupPhoto('${st}', ${i})">`).join('');
+                document.getElementById(cnt).innerText = supPhotos[st].length ? `(${supPhotos[st].length})` : '';
+            });
+        }
+
+        async function submitSupervisorChecklist() {
+            const ord = getSupOrder();
+            if (!ord) { showToast('Выберите заказ', '⚠️'); return; }
+            const key = document.getElementById('superChecklistType').value;
+            const boxes = Array.from(document.querySelectorAll('#checklistItemsContainer input[type="checkbox"]'));
+            const done = boxes.filter(b => b.checked).length;
+            if (!supPhotos.after.length && !confirm('Нет фото «после». Сохранить отчёт без них?')) return;
+            if (done < boxes.length && !confirm(`Отмечено ${done} из ${boxes.length}. Сохранить как есть?`)) return;
+
+            const btn = document.getElementById('btnSaveReport');
+            btn.disabled = true; btn.innerText = '⏳ Сохраняем…';
+            try {
+                const report = {
+                    orderId: ord.id, supervisor: document.getElementById('superName').value || '',
+                    checklistType: key, done, total: boxes.length,
+                    missed: boxes.filter(b => !b.checked).map(b => TT.CHECKLISTS[key][+b.dataset.i]),
+                    remarks: document.getElementById('superRemarks').value.trim(),
+                    photosBefore: supPhotos.before.slice(), photosAfter: supPhotos.after.slice(),
+                    customerName: ord.customerName, address: ord.customerAddress, service: ord.serviceType
+                };
+                const res = await TT.saveReport(db, ord.id, report);
+                lastReport = { ...res, report, order: res.order || ord };
+                const o = lastReport.order;
+                document.getElementById('superResult').style.display = 'block';
+                document.getElementById('superResult').innerHTML = `✅ <b>Отчёт сохранён.</b> Заказ #${TT.esc(o.id)}: ${TT.esc(o.status)}${o.kind === 'sub' ? ` (${o.visitsDone}/${o.visitsTotal})` : ''}
+                    <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                        <a class="btn btn-whatsapp" target="_blank" href="${TT.waLink(o.customerPhone, TT.clientReportMessage(o, res.url, report))}">📲 Отправить фотоотчёт клиенту</a>
+                        <a class="btn btn-outline" target="_blank" href="${res.url}">👁 Открыть отчёт</a>
+                    </div>`;
+                supPhotos.before = []; supPhotos.after = []; renderSupPhotos(); selectAllChecklist(false);
+                showToast(`Отчёт по заказу #${ord.id} сохранён`, '✅');
+            } catch (e) {
+                console.error(e);
+                showToast('Не удалось сохранить отчёт — проверьте интернет', '⚠️');
+            } finally {
+                btn.disabled = false; btn.innerText = '✅ Сохранить отчёт и закрыть визит';
             }
-            showToast(`Чек-лист по заказу #${orderId} успешно принят!`, '✅');
         }
 
         function sendSupervisorReportToWhatsAppGroup() {
-            const orderId = document.getElementById('superOrderSelect').value || '---';
+            const ord = getSupOrder();
             const progressText = document.getElementById('checklistProgressText').innerText;
-            const text = encodeURIComponent(`🎒 *ОТЧЕТ СУПЕРВАЙЗЕРА TAP TAZA*\nОбъект: Заказ #${orderId}\nГотовность чек-листа: ${progressText}\nКачество: Проверено и соответствует стандарту!`);
-            window.open(`https://wa.me/?text=${text}`, '_blank');
+            const link = lastReport && ord && lastReport.order.id === ord.id ? `\nФотоотчёт: ${lastReport.url}` : '';
+            const text = `🎒 *ОТЧЁТ СУПЕРВАЙЗЕРА TAP TAZA*\nЗаказ: #${ord ? ord.id : '---'}${ord ? ' · ' + ord.customerName + '\nАдрес: ' + ord.customerAddress : ''}\nСупервайзер: ${document.getElementById('superName').value || '—'}\nЧек-лист: ${progressText}\nФото: до ${supPhotos.before.length || (lastReport ? lastReport.report.photosBefore.length : 0)}, после ${supPhotos.after.length || (lastReport ? lastReport.report.photosAfter.length : 0)}${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         // ==========================================
@@ -3858,12 +4053,17 @@
                 document.getElementById('statusCustomer').innerText = ord.customerName;
                 document.getElementById('statusAddress').innerText = ord.customerAddress;
                 document.getElementById('statusServiceType').innerText = ord.serviceType;
-                document.getElementById('statusPrepay').innerText = ord.prepaymentReceived ? '✅ Получена (20 000 ₸)' : '❌ Не получена';
+                document.getElementById('statusPrepay').innerText = ord.prepaymentReceived ? `✅ Получена${ord.prepayAmount ? ' (' + TT.fmt(ord.prepayAmount) + ' ₸)' : ''}` : '❌ Не получена';
 
                 const badge = document.getElementById('statusBadge');
                 badge.innerText = ord.status;
                 badge.className = `badge ${getStatusBadgeClass(ord.status)}`;
 
+                const reps = Array.isArray(ord.reports) ? ord.reports : Object.values(ord.reports || {});
+                let extra = document.getElementById('statusExtra');
+                if (!extra) { extra = document.createElement('div'); extra.id = 'statusExtra'; extra.style.cssText = 'font-size:12px; margin-top:8px;'; resultBox.appendChild(extra); }
+                extra.innerHTML = (ord.kind === 'sub' ? `<p><b>Визитов по абонементу:</b> ${ord.visitsDone || 0} из ${ord.visitsTotal || '?'}</p>` : '') +
+                    reps.map(r => `<p>📸 <a href="${TT.reportUrl(ord.id, r.key)}" target="_blank">Фотоотчёт от ${new Date(r.at).toLocaleDateString('ru-RU')}</a></p>`).join('');
                 resultBox.style.display = 'block';
                 showToast(`Заказ #${ord.id} найден!`, '🔍');
             } else {
@@ -3886,7 +4086,7 @@
                 `• Адрес: ${ord.customerAddress}\n` +
                 `• Услуга: ${ord.serviceType}\n` +
                 `• Сумма заказа: ${Number(ord.totalPrice).toLocaleString()} ₸\n` +
-                `• Залог за бронирование: ${ord.prepaymentReceived ? '✅ Получен (20,000 ₸)' : '❌ Ожидает оплаты'}\n\n` +
+                `• Залог за бронирование: ${ord.prepaymentReceived ? `✅ Получен${ord.prepayAmount ? ' (' + TT.fmt(ord.prepayAmount) + ' ₸)' : ''}` : '❌ Ожидает оплаты'}\n\n` +
                 `💡 *Подготовка к приезду бригады:*\n` +
                 `1. Пожалуйста, обеспечьте доступ к воде и электричеству.\n` +
                 `2. Уберите личные ценные вещи и документы в безопасное место.\n` +
@@ -3911,8 +4111,11 @@
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
+            renderCalculatorControls();
+            renderSupervisorChecklist();
             renderAllModules();
             updateCalculator();
+            document.getElementById('importText').addEventListener('input', previewImport);
         });
     </script>
 </body>
